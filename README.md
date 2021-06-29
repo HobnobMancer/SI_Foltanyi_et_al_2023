@@ -63,9 +63,20 @@ XX of the genomes contained no protein annotations.
 
 **1.3.2. Annotate genomes**
 
-The XX genomes with no protein annotations were annotated using `prokka`. The predicted proteins sequences were written out to one FASTA file per parsed genome, and stored in `thermotogae_dbcan_input`.
+The XX genomes with no protein annotations were annotated using `prokka`  [Seemann, 2014].
+
+> Seemann T. (2014) Prokka: rapid prokaryotic genome annotation. Bioinformatics. 30(14):2068-9
+
+The bash script `cazomevolve/scripts/genomes/predict_cds_prokka.sh` was used to automate invoking `prokka` for all genomes retrieved from NCBI, and which did not contain any CDS features.
 ```bash
+scripts/genomes/predict_cds_prokka.sh \
+thermotogae_prokka_input \      # path to dir containing genomes that contain no CDS features
+thermotogae_prokka_output \     # path to output dir to write prokka output to
+thermotogae_dbcan_input \       # path to dir containing protein sequences to be parsed by dbCAN
+| tee prokka_log_file.log       # write out a log file
 ```
+
+The predicted proteins sequences were written out to one FASTA file per parsed genome, and stored in `thermotogae_dbcan_input`.
 
 **1.3.3. Get CAZy annotated CAZymes**
 
