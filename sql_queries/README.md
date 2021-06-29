@@ -144,7 +144,9 @@ Sadly no results were returned.
 ## Query 6, remove EC number filter
 
 One issue with relying on EC number annotation is that computationally predicted 4 digit EC numbers are not often very accuracte, 
-and the minority of CAZymes are annotated with an EC number. Therefore, query 5 was repeated, without the EC number filter.
+and the minority of CAZymes are annotated with an EC number. Therefore, query 5 was repeated, without the EC number filter. An additionally, CAZy class 
+filter was applied. Xylosidase is a GH class function, therefore, only CAZymes from families in GH were retrieved, in an attempt in retrieving proteins with some 
+functional similarity.
 
 ```sql
 SELECT DISTINCT genbanks.genbank_accession, cazymes.cazyme_id, families.family, taxs.genus, taxs.species, pdbs.pdb_accession
@@ -169,10 +171,11 @@ WHERE (pdbs.pdb_accession is not null) AND (cazymes_genbanks.'primary' = 1) AND 
 (taxs.genus = 'Kosmotoga') OR (taxs.genus = 'Mesotoga') OR (taxs.genus = 'Athalassotoga') OR (taxs.genus = 'Mesoaciditoga') OR
 (taxs.genus = 'Defluviitoga') OR (taxs.genus = 'Geotoga') OR (taxs.genus = 'Marinitoga') OR (taxs.genus = 'Oceanotoga') OR
 (taxs.genus = 'Petrotoga') OR (taxs.genus = 'Tepiditoga') OR (taxs.genus = 'Fervidobacterium') OR (taxs.genus = 'Thermosipho') OR
-(taxs.genus = 'Pseudothermotoga') OR (taxs.genus = 'Thermopallium') OR (taxs.genus = 'Thermotoga') OR (taxs.genus = 'Thermotogales'))
+(taxs.genus = 'Pseudothermotoga') OR (taxs.genus = 'Thermopallium') OR (taxs.genus = 'Thermotoga') OR (taxs.genus = 'Thermotogales')) AND 
+(families.family like 'GH%')
 ```
 
-140 results were returned. These results are stored in this directory, in the file `query_6_thermotogae_pdb_accessions.csv`
+131 results were returned. These results are stored in this directory, in the file `query_6_thermotogae_pdb_accessions.csv`
 
 # Retrieving the PDB accessions
 
