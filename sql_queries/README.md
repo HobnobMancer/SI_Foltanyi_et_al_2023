@@ -189,6 +189,36 @@ WHERE (pdbs.pdb_accession is not null) AND (cazymes_genbanks.'primary' = 1) AND 
 
 201 results were returned. These results are stored in this directory, in the file `query_6_thermotogae_pdb_accessions.csv`
 
+## Query 7, CAZyme name query
+
+Many CAZymes are not annotated with an EC number, but they are frequently given a named based upon their activity. Therefore, the CAZyme database was queried for CAZymes 
+with the phrase '' in their name.
+
+```sql
+SELECT DISTINCT genbanks.genbank_accession, cazymes.cazyme_id, cazymes.cazyme_name, families.family, taxs.genus, taxs.species, pdbs.pdb_accession
+FROM genbanks
+INNER JOIN cazymes_genbanks ON genbanks.genbank_id = cazymes_genbanks.genbank_id
+INNER JOIN cazymes ON cazymes_genbanks.cazyme_id = cazymes.cazyme_id
+
+INNER JOIN cazymes_families ON cazymes.cazyme_id = cazymes_families.cazyme_id
+INNER JOIN families ON cazymes_families.family_id = families.family_id
+
+INNER JOIN taxs ON cazymes.taxonomy_id = taxs.taxonomy_id
+
+INNER JOIN kingdoms ON taxs.kingdom_id = kingdoms.kingdom_id
+
+INNER JOIN cazymes_pdbs ON cazymes.cazyme_id = cazymes_pdbs.cazyme_id
+INNER JOIN pdbs ON cazymes_pdbs.pdb_id = pdbs.pdb_id
+
+WHERE (pdbs.pdb_accession is not null) AND 
+(cazymes_genbanks.'primary' = 1) AND 
+(families.family like 'GH%') AND 
+(kingdoms.kingdom = 'Bacteria') AND 
+((cazymes.cazyme_name like '%β-glucosidase%') OR (cazymes.cazyme_name like '%β glucosidase%')) 
+```
+
+78 results were returned. These are stored in the .csv file `query_7_name_pdb_accessions.csv`
+
 # Retrieving the PDB accessions
 
 One limitation of how PDB accessions are stored in CAZy is that they include the chain id. Therefore, to determine the exact number of unique 
