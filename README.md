@@ -51,11 +51,58 @@ pyani -- average_nucleotide_identity.py \
 The R script `cazomevolve/scripts/tree/build_distance_tree.R` was used to build a Newick-formatted distance tree.
 
 #### 1.3. Annotate CAZomes
-  
+
+**1.3.1. Extract protein sequences from genomes**
+
+The Python script `cazomevolve/scripts/genomes/extract_gbk_proteins.py` was used to retrieve protein sequences and associated annotations from the downloaded GenBank genomic assebmlies.
+```bash
+python3 scripts/genomes/extract_gbk_proteins.py thermotogae_genomes/ thermotogae_proteins
+```
+
+XX of the genomes contained no protein annotations.
+
+**1.3.2. Annotate genomes**
+
+The XX genomes with no protein annotations were annotated using `prokka`. The predicted proteins sequences were written out to one FASTA file per parsed genome, and stored in `thermotogae_dbcan_input`.
+```bash
+```
+
+**1.3.3. Get CAZy annotated CAZymes**
+
 `cazy_webscraper` [Hobbs et al 2021] was used to build a JSON file containing the CAZy family annotation of every protein in CAZy.
 
 > Hobbs, Emma E. M.; Pritchard, Leighton; Chapman, Sean; Gloster, Tracey M. (2021): cazy_webscraper Microbiology Society Annual Conference 2021 poster. figshare. Poster. https://doi.org/10.6084/m9.figshare.14370860.v7
 
+The Python script `cazomevolve/scripts/cazymes/get_cazy_cazymes.py` was used to retrieve the CAZy family annotations of CAZy annotated CAZymes. The CAZy family annotations were written out to tab delimited list, with one CAZy family annotation on each line, and each line containing the CAZy family followed by the genomic accession of the source genome.
+
+Proteins not annotated by CAZy were written out to FASTA files, one FASTA file per species, which were written out to the `thermotogae_dbcan_input` directory.
+
+**1.3.4. Get dbCAN annotated CAZymes**
+
+The Python script `cazomevolve/scripts/cazymes/get_dbcan_cazymes.py` was used to invoke dbCAN for every FASTA file in the `thermotogae_dbcan_input` directory to predict the CAZy families of all contained proteins. The Python script also parsed the output from dbCAN and added the consensus CAZy family annotations to the same tab deliminted list from the step before (*1.3.3. Get CAZy annotated CAZymes*).
+
+To repeat the analysis, use the following command:
+```bash
+python3 ...
+```
+
+#### 1.4 Add species names
+
+All analysises up to this point identify each genome by its genomic accession. To make the data more human-readable, the tab deliminted list and pyani output were parsed, adding the organism name as a prefix to every genomic accession.
+
+This was done by using the Python script `cazomevolve/scripts/add_organisms_names.py`:
+```bash
+python3 scripts/add_organisms_names.py thermotogae_fam_acc_list sp_thermotogae_fam_acc_list ANIm.tab sp_ANIm.tab
+```
+
+#### 1.5 CAZy family co-occurence search
+
+`coinfinder` [Whelan et al., 2002] was used to identify CAZy families that co occure more often than expected from the species lineage.
+
+To repeat the analysis use the following command:
+```bash
+coinfinder -i sp_thermotogae_fam_acc_list -p sp_ANIm.tab -a
+```
 
 ### 2. Finding models for molecular replacement and comparison
 
