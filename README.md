@@ -86,6 +86,12 @@ The predicted proteins sequences were written out to one FASTA file per parsed g
 
 The Python script `cazomevolve/scripts/cazymes/get_cazy_cazymes.py` was used to retrieve the CAZy family annotations of CAZy annotated CAZymes. The CAZy family annotations were written out to tab delimited list, with one CAZy family annotation on each line, and each line containing the CAZy family followed by the genomic accession of the source genome.
 
+To repeat this analysis, use the following command:
+```bash
+python3 scripts/cazymes/get_cazy_cazymes.py thermotogae_proteins <path to JSON file created using cazy_webscraper> thermotogae_dbcan_input thermotogae_fam_acc_list -f -n
+```
+To repeat the analysis make sure the `--force` and `--nodelete` flags are used so that the data can be added to the `thermotogae_dbcan_input` directory without deteling the predicted protein sequences from `prokka`.
+
 Proteins not annotated by CAZy were written out to FASTA files, one FASTA file per species, which were written out to the `thermotogae_dbcan_input` directory.
 
 **1.3.4. Get dbCAN annotated CAZymes**
