@@ -105,6 +105,8 @@ To repeat the analysis, use the following command:
 python3 ...
 ```
 
+Combining CAZy annotated and dbCAN annotated CAZymes identified XXXX total CAZymes across all 263 genomes.
+
 #### 1.4 Add species names
 
 All analysises up to this point identify each genome by its genomic accession. To make the data more human-readable, the tab deliminted list and pyani output were parsed, adding the organism name as a prefix to every genomic accession.
