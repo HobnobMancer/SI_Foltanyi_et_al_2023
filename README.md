@@ -92,6 +92,8 @@ python3 scripts/cazymes/get_cazy_cazymes.py thermotogae_proteins <path to JSON f
 ```
 To repeat the analysis make sure the `--force` and `--nodelete` flags are used so that the data can be added to the `thermotogae_dbcan_input` directory without deteling the predicted protein sequences from `prokka`.
 
+2,555 CAZy family annotations were retrieved.
+
 Proteins not annotated by CAZy were written out to FASTA files, one FASTA file per species, which were written out to the `thermotogae_dbcan_input` directory.
 
 **1.3.4. Get dbCAN annotated CAZymes**
