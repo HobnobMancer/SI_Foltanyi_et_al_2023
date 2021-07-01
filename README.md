@@ -45,7 +45,7 @@ pyani -- average_nucleotide_identity.py \
 -i thermotogae_genomes/  \         # path to directory containing downloaded .fna files
 -o thermotogae_pyani_output/ \     # path to output directory
 -l pyani_log.log \                 # write out log file
--v --nocompress --noclobber -g --gformat pdf,png,eps
+-v -g --gformat pdf,png,eps
 ```
 
 The R script `cazomevolve/scripts/tree/build_distance_tree.R` was used to build a Newick-formatted distance tree.
