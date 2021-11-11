@@ -75,7 +75,25 @@ The output from `prodigal` are placed in the following directories:
 - The conceptural translations are placed in `genomes/proteins`
 - The GenBank formate files are placed in the `genomes/gbk` directory
 
+### Identifying Single-Copy Orthologues (SCOs)
 
+Orthologues present in the RefSeq _Thermotoga_ genomes were identified using [`orthofinder`](https://github.com/davidemms/OrthoFinder)
+
+> Emms, D.M. and Kelly, S. (2019) OrthoFinder: phylogenetic orthology inference for comparative genomics. [Genome Biology 20:238](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-019-1832-y)
+
+To reproduce the identifcation of orthologues, run the following command from the root of this repository:
+```bash
+# Change soft limit on simultaneously open files
+ulimit -n 5000
+
+# Run orthofinder
+orthofinder -f genomes/proteins \
+  -o orthologues
+```
+
+The output from `orthofinder` was written to the `orthologues/Results_Nov11/Single_Copy_Orthologue_Sequences` directory.
+
+`orthofinder` identified XXX single-copy genes.
 
 
 
