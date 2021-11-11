@@ -443,6 +443,21 @@ Univ of Tenn / Oak Ridge National Lab
 Doug Hyatt, Loren Hauser, et al.     
 -------------------------------------
 Request:  Single Genome, Phase:  Training
+Reading in the sequence(s) to train...2266449 bp seq created, 40.72 pct GC
+Locating all potential starts and stops...100818 nodes
+Looking for GC bias in different frames...frame bias scores: 2.26 0.25 0.48
+Building initial set of genes to train from...done!
+Creating coding model and scoring nodes...done!
+Examining upstream regions and training starts...done!
+-------------------------------------
+Request:  Single Genome, Phase:  Gene Finding
+Finding genes in sequence #1 (2266449 bp)...done!
+-------------------------------------
+PRODIGAL v2.6.3 [February, 2016]         
+Univ of Tenn / Oak Ridge National Lab
+Doug Hyatt, Loren Hauser, et al.     
+-------------------------------------
+Request:  Single Genome, Phase:  Training
 Reading in the sequence(s) to train...1798635 bp seq created, 46.00 pct GC
 Locating all potential starts and stops...89956 nodes
 Looking for GC bias in different frames...frame bias scores: 1.35 0.19 1.46
