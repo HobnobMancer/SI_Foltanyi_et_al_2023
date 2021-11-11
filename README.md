@@ -36,7 +36,10 @@ To reconstruct the phylogenetic tree of _Thermotoga_ genus the method presented 
 ### Download genomes
 
 RefSeq genomic assemblies retrieved from NCBI. The genomic accessions of the genomic assemblies used to 
-reconstruct the phylogenetic tree are listed in `data/ref_genomes_of_interest_acc.txt`.
+reconstruct the phylogenetic tree are listed in `data/ref_genomes_of_interest_acc.txt`. This includes the 
+RefSef genome of _Fervidobacterium changbaicum CBS-1 GCF_004117075.1, to be used as an out group in order 
+to facilitate identifying the root of the _Thermotoga_ tree. The output group was selected based upon the 
+the Thermotogae distance based tree (the method for construction is laid out further down), and was labelled as at the assembly level of chromosome or greater with genome representation labelled as 'full', in NCBI Assembly database.
 
 The genomes were downloaded from NCBI using [`ncbi-genome-download`](https://github.com/kblin/ncbi-genome-download/).
 
@@ -55,7 +58,7 @@ ncbi-genome-download \
 gunzip genomes/*.gz
 ```
 
-24 genomes were downloaded. The accession numbers of the downloaded genomes are listed in `data/downloaded_genome_acc.txt`
+25 genomes were downloaded. The accession numbers of the downloaded genomes are listed in `data/downloaded_genome_acc.txt`
 
 
 ### CDS prediction
