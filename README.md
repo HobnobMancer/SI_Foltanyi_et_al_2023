@@ -55,6 +55,8 @@ ncbi-genome-download \
 gunzip genomes/*.gz
 ```
 
+24 genomes were downloaded. The accession numbers of the downloaded genomes are listed in `data/downloaded_genome_acc.txt`
+
 
 ### CDS prediction
 
