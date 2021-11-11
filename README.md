@@ -1,12 +1,15 @@
 # Foltanyi_et_al_2022
+
 Bioinformatics work for the paper Foltanyi et al., 2022
+
+This repo contains the commands and data files necessary to repeat the study presented in Foltanyi et al., 2022.
 
 ## Requirements
 
 - POISx or Mac OS, or linux emulator
 - Python version 3.9+
 - Miniconda3 or Anaconda managed microenvironment  
-- Prokka
+- Prodigal
 - Coinfinder
 - Pyani
 
@@ -20,6 +23,40 @@ Bioinformatics work for the paper Foltanyi et al., 2022
 ## Method to reconstruct the analysis
 
 To reconstruct the analysis run all commands from this directory.
+
+The method is split into three sections:
+1. [Reconstructing the _Thermotoga_ genus phylogenetic tree](#reconstructing-the-thermotoga-genus-phylogenetic-tree)
+2. [Selecting models for molecular replacement](#selecting-models-for-molecular-replacement)
+3. [Identifying co-evolving CAZy families](#identifying-co-evolving-cazy-families)
+
+## Reconstructing the _Thermotoga_ genus phylogenetic tree
+
+To reconstruct the phylogenetic tree of _Thermotoga_ genus the method presented in [Hugouvieux-Cotte-Pattat _et al_., 2021](https://pure.strath.ac.uk/ws/portalfiles/portal/124038859/Hugouvieux_Cotte_Pattat_etal_IJSEM_2021_Proposal_for_the_creation_of_a_new_genus_Musicola_gen_nov_reclassification_of_Dickeya_paradisiaca.pdf) was used. The specific methodolgy is found in the [Hugouvieux-Cotte-Pattat _et al_. supplementary](https://widdowquinn.github.io/SI_Hugouvieux-Cotte-Pattat_2021/).
+
+### Download genomes
+
+RefSeq genomic assemblies retrieved from NCBI. The genomic accessions of the genomic assemblies used to 
+reconstruct the phylogenetic tree are listed in `data/ref_genomes_of_interest_acc.txt`.
+
+The genomes were downloaded from NCBI using [`ncbi-genome-download`](https://github.com/kblin/ncbi-genome-download/).
+
+To reproduce this download run the following command from the root of this repository:
+```bash
+# Download files
+ncbi-genome-download \
+    --assembly-accessions data/ref_genomes_of_interest_acc.txt \
+    --formats fasta \
+    --output-folder genomes \
+    --flat-output \
+    -v \
+    bacteria
+
+# Extract sequences
+gunzip genomes/*.gz
+```
+
+
+
 
 ### 1. CAZy family co-occurence
 
