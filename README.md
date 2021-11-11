@@ -56,6 +56,29 @@ gunzip genomes/*.gz
 ```
 
 
+### CDS prediction
+
+In order to ensure consistency of nomenclature and support back threading the nucleotides sequences onto 
+aligned single-copy orthologues, all downloaded RefSeq genomes were reannotated using 
+[`prodigal](https://github.com/hyattpd/Prodigal)
+
+> Hyatt D, Chen GL, Locascio PF, Land ML, Larimer FW, Hauser LJ. Prodigal: prokaryotic gene recognition and translation initiation site identification. BMC Bioinformatics. 2010 Mar 8;11:119. doi: 10.1186/1471-2105-11-119. PMID: 20211023; PMCID: PMC2848648.
+
+To reproduce the annotation of the genomes, run the `annotate_genomes_prodigal.sh` script from the root of 
+this repository.
+```bash
+scripts/reconstruct_tree/annotate_genomes_prodigal.sh
+```
+
+The output from `prodigal` are placed in the following directories:
+- The predicted CDS are placed in the `genomes/cds` directory
+- The conceptural translations are placed in `genomes/proteins`
+- The GenBank formate files are placed in the `genomes/gbk` directory
+
+
+
+
+
 
 
 ### 1. CAZy family co-occurence
