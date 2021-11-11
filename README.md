@@ -29,9 +29,11 @@ The method is split into three sections:
 2. [Selecting models for molecular replacement](#selecting-models-for-molecular-replacement)
 3. [Identifying co-evolving CAZy families](#identifying-co-evolving-cazy-families)
 
+
 ## Reconstructing the _Thermotoga_ genus phylogenetic tree
 
 To reconstruct the phylogenetic tree of _Thermotoga_ genus the method presented in [Hugouvieux-Cotte-Pattat _et al_., 2021](https://pure.strath.ac.uk/ws/portalfiles/portal/124038859/Hugouvieux_Cotte_Pattat_etal_IJSEM_2021_Proposal_for_the_creation_of_a_new_genus_Musicola_gen_nov_reclassification_of_Dickeya_paradisiaca.pdf) was used. The specific methodolgy is found in the [Hugouvieux-Cotte-Pattat _et al_. supplementary](https://widdowquinn.github.io/SI_Hugouvieux-Cotte-Pattat_2021/).
+
 
 ### Download genomes
 
@@ -82,6 +84,7 @@ The output from `prodigal` are placed in the following directories:
 
 A log of the `prodigal` terminal output was placed in `data/logs/prodigal.log`.
 
+
 ### Identifying Single-Copy Orthologues (SCOs)
 
 Orthologues present in the RefSeq _Thermotoga_ genomes were identified using [`orthofinder`](https://github.com/davidemms/OrthoFinder)
@@ -100,7 +103,9 @@ orthofinder -f genomes/proteins \
 
 The output from `orthofinder` was written to the `orthologues/Results_Nov11/Single_Copy_Orthologue_Sequences` directory.
 
-`orthofinder` identified XXX single-copy genes.
+`orthofinder` assigned 46086 genes (98.6% of total) to 2662 orthogroups. Fifty percent of all genes were in orthogroups with 25 or more genes (G50 was 25) and were contained in the largest 889 orthogroups (O50 was 889). There were 990 orthogroups with all species present and 828 of these consisted entirely of single-copy genes.
+
+`orthofinder` identified genome GCF_004117075.1 as the best out group.
 
 
 ### Multiple Sequence Alignment
@@ -113,10 +118,18 @@ Parallelization of MAFFT for large-scale multiple sequence alignments.
 
 To reproduce the MSA, run following command from the root of this repository.
 ```bash
-scripts/reconstruct_tree/align_scos.sh
+scripts/reconstruct_tree/align_scos.sh <path to dir containing SCO identified using orthofinder>
+```
+For example:
+```bash
+scripts/reconstruct_tree/align_scos.sh orthologues/Results_Nov11/Single_Copy_Orthologue_Sequences
 ```
 
 The output from `MAFFT` (the aligned files) are placed in the `sco_proteins_aligned` directory.
+
+
+### Collect Single-Copy Orthologues CDS sequences
+
 
 
 
