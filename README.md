@@ -142,6 +142,62 @@ placed in the `sco_cds` directory
 
 
 
+### Back-translate Aligned Single-Copy Orthologues
+
+The single-copy orthologue CDS sequences are threaded onto the corresponding aligned protein sequences using [`t-coffee`](http://www.tcoffee.org/Projects/tcoffee/).
+
+> T-Coffee: A novel method for multiple sequence alignments. Notredame, Higgins, Heringa, JMB, 302(205-217)2000
+
+The results can be reproduced by executing the `backtranslate.sh` script from this directory.
+
+```bash
+scripts/reconstruct_tree/backtranslate.sh
+```
+
+The backtranslated CDS sequences are placed in the `sco_cds_aligned` directory.
+
+
+### Concatenating CDS into a Multigene Alignment
+
+The threaded single-copy orthologue CDS sequences are concatenated into a single sequence per input organism using the Python script `concatenate_cds.py`. To reproduce this, execute the script from this directory with:
+
+```bash
+python scripts/reconstruct_tree/concatenate_cds.py
+```
+
+Two files are generated, a FASTA file with the concatenated multigene sequences, and a partition file allowing a different set of model parameters to be fit to each gene in phylogenetic reconstruction.
+
+
+### Phylogenetic reconstruction
+
+To reconstruct the phylogenetic tree, the bash script `raxml_ng_build_tree.sh` is used, and is 
+run from the root of this repository. This executes a series of [`raxml-ng`](https://github.com/amkozlov/raxml-ng) commands.
+
+```bash
+scripts/reconstruct_tree/raxml_ng_build_tree.sh
+```
+
+The `raxml-ng parse` command estimated memory and processor requirements as
+
+```text
+* Estimated memory requirements                : 6428 MB
+* Recommended number of threads / MPI processes: 77
+```
+
+but, as we had limited access to computing resource at the time, we had to proceed with 8 cores.
+
+All genes were considered as separate partitions in the reconstuction, 
+with parameters estimated  for the `GTR+FO+G4m+B` model (as recommended by `raxml-ng check`).
+
+Tree reconstructions are placed in the `tree` directory. The best estimate tree is `03_infer.raxml.bestTree` and the midpoint-rooted, manually-annotated/coloured tree (using [`figtree`](http://tree.bio.ed.ac.uk/software/figtree/)) is `03_infer.raxml.bestTree.annotated`
+
+> Alexey M. Kozlov, Diego Darriba, Tomáš Flouri, Benoit Morel, and Alexandros Stamatakis (2019) RAxML-NG: A fast, scalable, and user-friendly tool for maximum likelihood phylogenetic inference. Bioinformatics, btz305 [doi:10.1093/bioinformatics/btz305](https://doi.org/10.1093/bioinformatics/btz305)
+
+## Selecting models for molecular replacement
+
+## Identifying co-evolving CAZy families
+
+
 ### 1. CAZy family co-occurence
 
 `cazomevolve` was used to identify co-occurning CAZy families in the Thermotogae gnomes.
