@@ -130,7 +130,15 @@ The output from `MAFFT` (the aligned files) are placed in the `sco_proteins_alig
 
 ### Collect Single-Copy Orthologues CDS sequences
 
+The CDS sequences corresponding to each set of single-copy orthologues are identified and extracted with the Python script `extract_cds.py`. To reproduce this analysis, ensure the `PROTDIR` constant in the script is 
+directed to the correct output directory for orthofinder. The script can then be run from the current directory with:
 
+```bash
+python3 scripts/reconstruct_tree/extract_cds.py
+```
+
+The output is a set of unaligned CDS sequences corresponding to each single-copy orthologue, which are 
+placed in the `sco_cds` directory
 
 
 

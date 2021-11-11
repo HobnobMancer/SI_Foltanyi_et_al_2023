@@ -14,7 +14,7 @@ from Bio import SeqIO
 from tqdm import tqdm
 
 # PROTDIR contains the MAFFT alignments
-PROTDIR = Path("orthologues/Results_May28/Single_Copy_Orthologue_Sequences")
+PROTDIR = Path("orthologues/Results_Nov11/Single_Copy_Orthologue_Sequences")
 
 # CDSDIR contains the CDS/proteome for each genome
 CDSDIR = Path("genomes/cds")
