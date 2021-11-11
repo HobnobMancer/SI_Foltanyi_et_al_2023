@@ -103,6 +103,21 @@ The output from `orthofinder` was written to the `orthologues/Results_Nov11/Sing
 `orthofinder` identified XXX single-copy genes.
 
 
+### Multiple Sequence Alignment
+
+Each collection of single-copy orthologous was aligned using [`MAFFT`](https://mafft.cbrc.jp/alignment/software/).
+
+> Nakamura, Yamada, Tomii, Katoh 2018 (Bioinformatics 34:2490–2492)
+Parallelization of MAFFT for large-scale multiple sequence alignments.
+(describes MPI parallelization of accurate progressive options) 
+
+To reproduce the MSA, run following command from the root of this repository.
+```bash
+scripts/reconstruct_tree/align_scos.sh
+```
+
+The output from `MAFFT` (the aligned files) are placed in the `sco_proteins_aligned` directory.
+
 
 
 
