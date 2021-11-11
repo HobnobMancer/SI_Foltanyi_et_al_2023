@@ -77,6 +77,8 @@ The output from `prodigal` are placed in the following directories:
 - The conceptural translations are placed in `genomes/proteins`
 - The GenBank formate files are placed in the `genomes/gbk` directory
 
+A log of the `prodigal` terminal output was placed in `data/logs/prodigal.log`.
+
 ### Identifying Single-Copy Orthologues (SCOs)
 
 Orthologues present in the RefSeq _Thermotoga_ genomes were identified using [`orthofinder`](https://github.com/davidemms/OrthoFinder)
