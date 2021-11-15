@@ -39,7 +39,7 @@ To reconstruct the phylogenetic tree of _Thermotoga_ genus the method presented 
 
 RefSeq genomic assemblies retrieved from NCBI. The genomic accessions of the genomic assemblies used to 
 reconstruct the phylogenetic tree are listed in `data/ref_genomes_of_interest_acc.txt`. This includes the 
-RefSef genome of _Fervidobacterium changbaicum CBS-1 GCF_004117075.1, to be used as an out group in order 
+RefSef genome of _Fervidobacterium changbaicum_ CBS-1 GCF_004117075.1, to be used as an out group in order 
 to facilitate identifying the root of the _Thermotoga_ tree. The output group was selected based upon the 
 the Thermotogae distance based tree (the method for construction is laid out further down), and was labelled as at the assembly level of chromosome or greater with genome representation labelled as 'full', in NCBI Assembly database.
 
@@ -188,6 +188,8 @@ but, as we had limited access to computing resource at the time, we had to proce
 
 All genes were considered as separate partitions in the reconstuction, 
 with parameters estimated  for the `GTR+FO+G4m+B` model (as recommended by `raxml-ng check`).
+
+The log files from `raxml-ng` are stored in `data/raxmlng_tree_reconstruction`.
 
 Tree reconstructions are placed in the `tree` directory. The best estimate tree is `03_infer.raxml.bestTree` and the midpoint-rooted, manually-annotated/coloured tree (using [`figtree`](http://tree.bio.ed.ac.uk/software/figtree/)) is `03_infer.raxml.bestTree.annotated`
 
