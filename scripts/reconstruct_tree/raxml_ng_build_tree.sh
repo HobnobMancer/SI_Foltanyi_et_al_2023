@@ -5,6 +5,8 @@
 # Build maximum parsimony tree using raxml-ng, with
 # bootstrap support
 
+mkdir tree
+
 raxml-ng --check \
   --msa concatenated_cds/concatenated.fasta \
   --model concatenated_cds/concatenated.part \
