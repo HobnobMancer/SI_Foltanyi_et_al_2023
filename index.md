@@ -49,17 +49,54 @@ The method is split into four sections:
 > Hobbs, Emma E. M.; Pritchard, Leighton; Chapman, Sean; Gloster, Tracey M. (2021): cazy_webscraper Microbiology Society Annual Conference 2021 poster. figshare. Poster. https://doi.org/10.6084/m9.figshare.14370860.v7
 
 To reconstruct the database to repeat the analysis, use the following command from the root of this repository:
-```
+```bash
 cazy_webscraper <user_email> --kingdoms bacteria --db_output cazy_database.db
 ```
 
 The CAZy database was downloaded on 2022-01-28.
 
+Data from UniProt was retrieved for proteins in the local CAZyme database, and added to the datbase. The following data was retrieved:
+- UniProt accession
+- Protein name
+- PDB accessions
+- EC numbers
+
+The retreival of data was limited to proteins from the following families of interest:
+- GH1
+- GH2
+- GH3
+- GH11
+- GH26
+- GH30
+- GH43
+- GH51
+- GH52
+- GH54
+- GH116
+- GH120
+- CE1
+- CE2
+- CE3
+- CE4
+- CE5
+- CE6
+- CE7
+- CE12
+- CE16
+
+The retreival of the data can be repeated using the following command:
+```bash
+cw_get_uniprot_data cazy_database.db \
+  --families GH1,GH2,GH3,GH11,GH26,GH30,GH43,GH51,GH52,GH54,GH116,GH120,CE1,CE2,CE3,CE4,CE5,CE6,CE7,CE12,CE16
+  --ec \
+  -- pdb
+```
+
 ## Reconstructing the _Thermotoga_ genus phylogenetic tree
 
 To reconstruct the phylogenetic tree of _Thermotoga_ genus the method presented in [Hugouvieux-Cotte-Pattat _et al_., 2021](https://pure.strath.ac.uk/ws/portalfiles/portal/124038859/Hugouvieux_Cotte_Pattat_etal_IJSEM_2021_Proposal_for_the_creation_of_a_new_genus_Musicola_gen_nov_reclassification_of_Dickeya_paradisiaca.pdf) was used. The specific methodolgy is found in the [Hugouvieux-Cotte-Pattat _et al_. supplementary](https://widdowquinn.github.io/SI_Hugouvieux-Cotte-Pattat_2021/).
 
-### Download genomes
+### 1. Download genomes
 
 RefSeq genomic assemblies were retrieved from NCBI. The genomic accessions of the genomic assemblies used to 
 reconstruct the phylogenetic tree are listed in `data/ref_genomes_of_interest_acc.txt`. This includes the 
@@ -80,7 +117,7 @@ scripts ncbi/download_genomes.sh \
 25 genomes were downloaded and stored in the directory `ml_tree_genomes`. The accession numbers of the downloaded genomes are listed in `data/downloaded_genome_acc.txt`
 
 
-### CDS prediction
+### 2. CDS prediction
 
 In order to ensure consistency of nomenclature and support back threading the nucleotides sequences onto 
 aligned single-copy orthologues, all downloaded RefSeq genomes were reannotated using 
@@ -103,7 +140,7 @@ The output from `prodigal` are placed in the following directories:
 A log of the `prodigal` terminal output was placed in `data/logs/prodigal.log`.
 
 
-### Identifying Single-Copy Orthologues (SCOs)
+### 3. Identifying Single-Copy Orthologues (SCOs)
 
 Orthologues present in the RefSeq _Thermotoga_ genomes were identified using [`orthofinder`](https://github.com/davidemms/OrthoFinder)
 
@@ -126,7 +163,7 @@ The output from `orthofinder` was written to the `orthologues/Results_Nov11/Sing
 `orthofinder` identified genome GCF_004117075.1 as the best out group.
 
 
-### Multiple Sequence Alignment
+### 4. Multiple Sequence Alignment
 
 Each collection of single-copy orthologous was aligned using [`MAFFT`](https://mafft.cbrc.jp/alignment/software/).
 
@@ -143,7 +180,7 @@ scripts/reconstruct_tree/ml_tree/align_scos.sh \
 The output from `MAFFT` (the aligned files) are placed in the `sco_proteins_aligned` directory.
 
 
-### Collect Single-Copy Orthologues CDS sequences
+### 5. Collect Single-Copy Orthologues CDS sequences
 
 The CDS sequences corresponding to each set of single-copy orthologues are identified and extracted with the Python script `extract_cds.py`. To reproduce this analysis, ensure the `PROTDIR` constant in the script is 
 directed to the correct output directory for orthofinder. The script can then be run from the current directory with:
@@ -156,7 +193,7 @@ The output is a set of unaligned CDS sequences corresponding to each single-copy
 placed in the `sco_cds` directory
 
 
-### Back-translate Aligned Single-Copy Orthologues
+### 6. Back-translate Aligned Single-Copy Orthologues
 
 The single-copy orthologue CDS sequences are threaded onto the corresponding aligned protein sequences using [`t-coffee`](http://www.tcoffee.org/Projects/tcoffee/).
 
@@ -173,7 +210,7 @@ scripts/reconstruct_tree/ml_tree/backtranslate.sh \
 The backtranslated CDS sequences are placed in the `sco_cds_aligned` directory.
 
 
-### Concatenating CDS into a Multigene Alignment
+### 7. Concatenating CDS into a Multigene Alignment
 
 The threaded single-copy orthologue CDS sequences are concatenated into a single sequence per input organism using the Python script `concatenate_cds.py`. To reproduce this, execute the script from this directory with:
 
@@ -184,7 +221,7 @@ python scripts/reconstruct_tree/concatenate_cds.py
 Two files are generated, a FASTA file with the concatenated multigene sequences, and a partition file allowing a different set of model parameters to be fit to each gene in phylogenetic reconstruction.
 
 
-### Phylogenetic reconstruction
+### 8. Phylogenetic reconstruction
 
 To reconstruct the phylogenetic tree, the bash script `raxml_ng_build_tree.sh` is used, and is 
 run from the root of this repository. This executes a series of [`raxml-ng`](https://github.com/amkozlov/raxml-ng) commands.
@@ -217,9 +254,13 @@ Tree reconstructions are placed in the `tree` directory. The best estimate tree 
 Via SQL and an SQL database browser, the local CAZyme database was queried to retrieve the records of proteins that:
 - From the bacteria phylum Thermotogae
 - From any of the following CAZy families
-- Annotated with at least one of the following EC numbers
+- Annotated with the EC number EC3.2.1.37 AND/OR contained any of the following in their protein name retrieved from UniProt:
+  - β-glucosidase
+  - β glucosidase
+  - beta-glucosidase
+  - beta glucosidase
 
-...
+A list of all SQL queries performed and the output is presented [here](https://hobnobmancer.github.io/Foltanyi_et_al_2022/sql_queries/).
 
 ## Identification of neighbouring genes
 
