@@ -5,6 +5,13 @@ presented in the paper Foltanyi _et al._, 2022.
 
 This repo contains the commands and data files necessary to repeat the study presented in the paper.
 
+## Contributors
+
+- Emma E. M. Hobbs, PhD candidate, University of St Andrews, James Hutton Institute and University of Strathclyde
+- Dr Leighton Pritchard, University of Strathclyde
+- Flora Foltanyi, PhD candidate, University of St Andrews
+- Dr Tracey M. Gloster, University of St Andrews
+
 ## Requirements
 
 - POISx or Mac OS, or linux emulator
