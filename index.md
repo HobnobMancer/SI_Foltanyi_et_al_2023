@@ -1,8 +1,9 @@
 # Foltanyi_et_al_2022
 
-Bioinformatics work for the paper Foltanyi et al., 2022
+Welcome to the repository containing all scripts, commands and methods used in the bioinformatic analysis
+presented in the paper Foltanyi _et al._, 2022.
 
-This repo contains the commands and data files necessary to repeat the study presented in Foltanyi et al., 2022.
+This repo contains the commands and data files necessary to repeat the study presented in the paper.
 
 ## Requirements
 
