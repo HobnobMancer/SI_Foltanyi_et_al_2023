@@ -7,8 +7,8 @@ This repo contains the commands and data files necessary to repeat the study pre
 
 ## Contributors
 
-- Emma E. M. Hobbs, PhD candidate, University of St Andrews, James Hutton Institute and University of Strathclyde
-- Dr Leighton Pritchard, University of Strathclyde
+- [Emma E. M. Hobbs](https://github.com/HobnobMancer), PhD candidate, University of St Andrews, James Hutton Institute and University of Strathclyde
+- [Dr Leighton Pritchard](https://github.com/widdowquinn), University of Strathclyde
 - Flora Foltanyi, PhD candidate, University of St Andrews
 - Dr Tracey M. Gloster, University of St Andrews
 
