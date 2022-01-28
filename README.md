@@ -12,6 +12,9 @@ This repo contains the commands and data files necessary to repeat the study pre
 - Prodigal
 - Coinfinder
 - Pyani
+- cazy_webscraper
+- Cazomevolve
+- get-ncbi-genomes
 
 ### Python packages
 - tqdm
@@ -24,43 +27,49 @@ This repo contains the commands and data files necessary to repeat the study pre
 
 To reconstruct the analysis run all commands from this directory.
 
-The method is split into three sections:
-1. [Reconstructing the _Thermotoga_ genus phylogenetic tree](#reconstructing-the-thermotoga-genus-phylogenetic-tree)
-2. [Selecting models for molecular replacement](#selecting-models-for-molecular-replacement)
-3. [Identifying co-evolving CAZy families](#identifying-co-evolving-cazy-families)
+The method is split into four sections:
+1. [Construct a local CAZyme database](#construct-a-local-cazyme-database)
+2. [Reconstructing the _Thermotoga_ genus phylogenetic tree](#reconstructing-the-thermotoga-genus-phylogenetic-tree)
+3. [Selecting models for molecular replacement](#selecting-models-for-molecular-replacement)
+4. [Identifying co-evolving CAZy families](#identifying-co-evolving-cazy-families)
 
+
+## Construct a local CAZyme database
+
+`cazy_webscraper` [Hobbs et al., 2021] (DOI:) was used to construct a local CAZyme database.
+
+> Hobbs, Emma E. M.; Pritchard, Leighton; Chapman, Sean; Gloster, Tracey M. (2021): cazy_webscraper Microbiology Society Annual Conference 2021 poster. figshare. Poster. https://doi.org/10.6084/m9.figshare.14370860.v7
+
+To reconstruct the database to repeat the analysis, use the following command from the root of this repository:
+```
+cazy_webscraper <user_email> --kingdoms bacteria --db_output cazy_database.db
+```
+
+The CAZy database was downloaded on 2022-01-28.
 
 ## Reconstructing the _Thermotoga_ genus phylogenetic tree
 
 To reconstruct the phylogenetic tree of _Thermotoga_ genus the method presented in [Hugouvieux-Cotte-Pattat _et al_., 2021](https://pure.strath.ac.uk/ws/portalfiles/portal/124038859/Hugouvieux_Cotte_Pattat_etal_IJSEM_2021_Proposal_for_the_creation_of_a_new_genus_Musicola_gen_nov_reclassification_of_Dickeya_paradisiaca.pdf) was used. The specific methodolgy is found in the [Hugouvieux-Cotte-Pattat _et al_. supplementary](https://widdowquinn.github.io/SI_Hugouvieux-Cotte-Pattat_2021/).
 
-
 ### Download genomes
 
-RefSeq genomic assemblies retrieved from NCBI. The genomic accessions of the genomic assemblies used to 
+RefSeq genomic assemblies were retrieved from NCBI. The genomic accessions of the genomic assemblies used to 
 reconstruct the phylogenetic tree are listed in `data/ref_genomes_of_interest_acc.txt`. This includes the 
-RefSef genome of **_Fervidobacterium changbaicum_ CBS-1 GCF_004117075.1 as an out group** in order 
-to facilitate identifying the root of the _Thermotoga_ tree. The output group was selected based upon the 
-the Thermotogae distance based tree (the method for construction is laid out further down), and was labelled as at the assembly level of chromosome or greater with genome representation labelled as 'full', in NCBI Assembly database.
+RefSef genome of **_Fervidobacterium changbaicum_ CBS-1 GCF_004117075.1 as an out group**, to facilitate 
+identifying the root of the _Thermotoga_ tree. The output group was selected based upon the 
+the Thermotogae distance based tree (the method for construction is laid out further down), and was 
+labelled with an assembly level of 'chromosome or greater' and genome representation labelled as 'full', in NCBI Assembly database.
 
 The genomes were downloaded from NCBI using [`ncbi-genome-download`](https://github.com/kblin/ncbi-genome-download/).
 
 To reproduce this download run the following command from the root of this repository:
 ```bash
-# Download files
-ncbi-genome-download \
-    --assembly-accessions data/ref_genomes_of_interest_acc.txt \
-    --formats fasta \
-    --output-folder genomes \
-    --flat-output \
-    -v \
-    bacteria
-
-# Extract sequences
-gunzip genomes/*.gz
+scripts ncbi/download_genomes.sh \
+  data/ref_genomes_of_interest_acc.txt
+  ml_tree_genomes
 ```
 
-25 genomes were downloaded. The accession numbers of the downloaded genomes are listed in `data/downloaded_genome_acc.txt`
+25 genomes were downloaded and stored in the directory `ml_tree_genomes`. The accession numbers of the downloaded genomes are listed in `data/downloaded_genome_acc.txt`
 
 
 ### CDS prediction
@@ -74,8 +83,9 @@ aligned single-copy orthologues, all downloaded RefSeq genomes were reannotated 
 To reproduce the annotation of the genomes, run the `annotate_genomes_prodigal.sh` script from the root of 
 this repository.
 ```bash
-scripts/reconstruct_tree/annotate_genomes_prodigal.sh
+scripts/reconstruct_tree/ml_tree/annotate_genomes_prodigal.sh ml_tree_genomes
 ```
+Only one argument is provided: the path to the directory containing the downloaded genomes.
 
 The output from `prodigal` are placed in the following directories:
 - The predicted CDS are placed in the `genomes/cds` directory
@@ -93,13 +103,13 @@ Orthologues present in the RefSeq _Thermotoga_ genomes were identified using [`o
 
 To reproduce the identifcation of orthologues, run the following command from the root of this repository:
 ```bash
-# Change soft limit on simultaneously open files
-ulimit -n 5000
-
-# Run orthofinder
-orthofinder -f genomes/proteins \
-  -o orthologues
+scripts/reconstruct_tree/ml_tree/get_scos.sh \
+  ml_tree_genomes/proteins \
+  orthologues
 ```
+To arguments are provided:
+1. The path to the directory containing the FASTA files of predicted protein sequences from `prodigal`
+2. A path to an output directory
 
 The output from `orthofinder` was written to the `orthologues/Results_Nov11/Single_Copy_Orthologue_Sequences` directory.
 
@@ -118,11 +128,8 @@ Parallelization of MAFFT for large-scale multiple sequence alignments.
 
 To reproduce the MSA, run following command from the root of this repository.
 ```bash
-scripts/reconstruct_tree/align_scos.sh <path to dir containing SCO identified using orthofinder>
-```
-For example:
-```bash
-scripts/reconstruct_tree/align_scos.sh orthologues/Results_Nov11/Single_Copy_Orthologue_Sequences
+scripts/reconstruct_tree/ml_tree/align_scos.sh \
+  orthologues/Results_Nov11/Single_Copy_Orthologue_Sequences
 ```
 
 The output from `MAFFT` (the aligned files) are placed in the `sco_proteins_aligned` directory.
@@ -134,12 +141,11 @@ The CDS sequences corresponding to each set of single-copy orthologues are ident
 directed to the correct output directory for orthofinder. The script can then be run from the current directory with:
 
 ```bash
-python3 scripts/reconstruct_tree/extract_cds.py
+python3 scripts/reconstruct_tree/ml_tree/extract_cds.py
 ```
 
 The output is a set of unaligned CDS sequences corresponding to each single-copy orthologue, which are 
 placed in the `sco_cds` directory
-
 
 
 ### Back-translate Aligned Single-Copy Orthologues
@@ -151,7 +157,9 @@ The single-copy orthologue CDS sequences are threaded onto the corresponding ali
 The results can be reproduced by executing the `backtranslate.sh` script from this directory.
 
 ```bash
-scripts/reconstruct_tree/backtranslate.sh
+scripts/reconstruct_tree/ml_tree/backtranslate.sh \
+  sco_proteins_aligned \
+  sco_cds_aligned
 ```
 
 The backtranslated CDS sequences are placed in the `sco_cds_aligned` directory.
@@ -174,7 +182,8 @@ To reconstruct the phylogenetic tree, the bash script `raxml_ng_build_tree.sh` i
 run from the root of this repository. This executes a series of [`raxml-ng`](https://github.com/amkozlov/raxml-ng) commands.
 
 ```bash
-scripts/reconstruct_tree/raxml_ng_build_tree.sh
+scripts/reconstruct_tree/raxml_ng_build_tree.sh \
+  concatenated_cds
 ```
 
 The `raxml-ng parse` command estimated memory and processor requirements as
@@ -197,8 +206,15 @@ Tree reconstructions are placed in the `tree` directory. The best estimate tree 
 
 ## Selecting models for molecular replacement
 
-## Identifying co-evolving CAZy families
+Via SQL and an SQL database browser, the local CAZyme database was queried to retrieve the records of proteins that:
+- From the bacteria phylum Thermotogae
+- From any of the following CAZy families
+- Annotated with at least one of the following EC numbers
 
+...
+
+
+## Identifying co-evolving CAZy families
 
 ### 1. CAZy family co-occurence
 
@@ -206,10 +222,16 @@ Tree reconstructions are placed in the `tree` directory. The best estimate tree 
 
 #### 1.1. Download genomes  
 
-To download genomes from NCBI GenBank, the Python script `cazomevolve/scripts/genomes/download_genomes.py` was used, and called using the following command:
+To download genomes from NCBI GenBank, the Python script from `cazomevolve` `cazomevolve/scripts/genomes/download_genomes.py` was used, and called from the root of the `cazomevolve` repo, using the following command:
 ```bash
-python3 scripts/genomes/download_genomes.py <user_email_address> Thermotogae gbff,fna thermotogae_genomes --gbk
+python3 scripts/genomes/download_genomes.py \
+  <user_email_address> \
+  Thermotogae \
+  gbff,fna \
+  thermotogae_genomes \
+  --gbk
 ```
+
 Genomes were downloaded into both GenBank flat file and FASTA format and writte out the directory `thermotogae_genomes`. Assemblies from all assembly levels were retrieved.
 
 #### 1.2. Reconstruct phylogenetic tree
@@ -220,14 +242,13 @@ To reconstruct the distance-based phylogenetic tree, `pyani` [Pritchard et al., 
 
 To repeat this analysis use the following command from this directory:
 ```bash
-pyani -- average_nucleotide_identity.py \
--i thermotogae_genomes/  \         # path to directory containing downloaded .fna files
--o thermotogae_pyani_output/ \     # path to output directory
--l pyani_log.log \                 # write out log file
--v -g --gformat pdf,png,eps
+scripts/reconstruct_tree/distance_tree/pyani_ani.sh \
+  thermotogae_genomes/  \         # path to directory containing downloaded .fna files
+  thermotogae_pyani_output/ \     # path to output directory
+  pyani_log.log                  # write out log file
 ```
 
-The R script `cazomevolve/scripts/tree/build_distance_tree.R` was used to build a Newick-formatted distance tree.
+From `cazomevolve`, the R script `cazomevolve/scripts/tree/build_distance_tree.R` was used to build a Newick-formatted distance tree.
 
 #### 1.3. Annotate CAZomes
 
@@ -235,7 +256,9 @@ The R script `cazomevolve/scripts/tree/build_distance_tree.R` was used to build 
 
 The Python script `cazomevolve/scripts/genomes/extract_gbk_proteins.py` was used to retrieve protein sequences and associated annotations from the downloaded GenBank genomic assebmlies.
 ```bash
-python3 scripts/genomes/extract_gbk_proteins.py thermotogae_genomes/ thermotogae_proteins
+python3 scripts/genomes/extract_gbk_proteins.py \
+  thermotogae_genomes/ \
+  thermotogae_proteins
 ```
 
 XX of the genomes contained no protein annotations.
@@ -259,17 +282,22 @@ The predicted proteins sequences were written out to one FASTA file per parsed g
 
 **1.3.3. Get CAZy annotated CAZymes**
 
-`cazy_webscraper` [Hobbs et al 2021] was used to build a JSON file containing the CAZy family annotation of every protein in CAZy.
+From `cazomevolve`, Python script `cazomevolve/scripts/cazymes/get_cazy_cazymes.py` was used to retrieve the CAZy family annotations from the local CAZyme database (created using `cazy_webscraper`) for proteins extracted from 
+the genomic assemblies. 
 
-> Hobbs, Emma E. M.; Pritchard, Leighton; Chapman, Sean; Gloster, Tracey M. (2021): cazy_webscraper Microbiology Society Annual Conference 2021 poster. figshare. Poster. https://doi.org/10.6084/m9.figshare.14370860.v7
-
-The Python script `cazomevolve/scripts/cazymes/get_cazy_cazymes.py` was used to retrieve the CAZy family annotations of CAZy annotated CAZymes. The CAZy family annotations were written out to tab delimited list, with one CAZy family annotation on each line, and each line containing the CAZy family followed by the genomic accession of the source genome.
+The CAZy family annotations were written out to tab delimited list, with one CAZy family annotation on each line, and each line containing the CAZy family followed by the genomic accession of the source genome.
 
 To repeat this analysis, use the following command:
 ```bash
-python3 scripts/cazymes/get_cazy_cazymes.py thermotogae_proteins <path to JSON file created using cazy_webscraper> thermotogae_dbcan_input thermotogae_fam_acc_list -f -n
+python3 scripts/cazymes/get_cazy_cazymes.py \
+thermotogae_proteins \
+cazy_database.db \
+thermotogae_dbcan_input \
+thermotogae_fam_acc_list \
+-f \
+-n 
 ```
-To repeat the analysis make sure the `--force` and `--nodelete` flags are used so that the data can be added to the `thermotogae_dbcan_input` directory without deteling the predicted protein sequences from `prokka`.
+To repeat the analysis make sure the `--force` (`-f`) and `--nodelete` (`-n`) flags are used so that the data can be added to the `thermotogae_dbcan_input` directory without deteling the predicted protein sequences from `prokka`.
 
 2,555 CAZy family annotations were retrieved.
 
@@ -277,7 +305,9 @@ Proteins not annotated by CAZy were written out to FASTA files, one FASTA file p
 
 **1.3.4. Get dbCAN annotated CAZymes**
 
-The Python script `cazomevolve/scripts/cazymes/get_dbcan_cazymes.py` was used to invoke dbCAN for every FASTA file in the `thermotogae_dbcan_input` directory to predict the CAZy families of all contained proteins. The Python script also parsed the output from dbCAN and added the consensus CAZy family annotations to the same tab deliminted list from the step before (*1.3.3. Get CAZy annotated CAZymes*).
+From `cazomevolve` the Python script `cazomevolve/scripts/cazymes/get_dbcan_cazymes.py` was used to invoke dbCAN for every FASTA file in the `thermotogae_dbcan_input` directory to predict the CAZy families of all contained proteins. 
+
+The Python script also parsed the output from dbCAN and added the consensus CAZy family annotations to the same tab deliminted list from the step before (*1.3.3. Get CAZy annotated CAZymes*).
 
 To repeat the analysis, use the following command:
 ```bash
@@ -301,8 +331,16 @@ python3 scripts/add_organisms_names.py thermotogae_fam_acc_list sp_thermotogae_f
 
 To repeat the analysis use the following command:
 ```bash
-coinfinder -i sp_thermotogae_fam_acc_list -p sp_ANIm.tab -a
+coinfinder \
+  -i sp_thermotogae_fam_acc_list 
+  -p sp_ANIm.tab \
+  -a
 ```
+
+To produce the circular phylogenetic tree and heatmap, with the coloured annotations, a modified version of the 
+R script `aasd` from `coinfinder` was used. A copy of the modified R script is stored in `scripts/R/...`. Use 
+this modified file instead of the original R file to recreate the analysis. Additional modifications to the script 
+maybe required if a different data set is used.
 
 ### 2. Finding models for molecular replacement and comparison
 
@@ -316,15 +354,3 @@ coinfinder -i sp_thermotogae_fam_acc_list -p sp_ANIm.tab -a
 ```bash
 cazy_webscraper --database_dir Foltany_et_al_2022_cazyme_db --classes GH,CE
 ```
-
-#### 2.2. Find potential proteins of interest
-
-Via SQL and an SQL database browser, the local CAZyme database was queried to retrieve the records of proteins that:
-- From the bacteria phylum Thermotogae
-- From any of the following CAZy families
-- Annotated with at least one of the following EC numbers
-
-...
-
-### 3. Phylogenetic tree re-construction
-...
