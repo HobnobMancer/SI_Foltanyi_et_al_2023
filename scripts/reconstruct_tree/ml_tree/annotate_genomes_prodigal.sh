@@ -4,17 +4,19 @@
 #
 # Annotate genomes using prodigal
 
+$1  # directory containing downloaded genomes
+
 # Create output directories
-mkdir genomes/proteins
-mkdir genomes/cds
-mkdir genomes/gbk
+mkdir $1/proteins
+mkdir $1/cds
+mkdir $1/gbk
 
 # Annotate genomes
-for fname in genomes/*.fna
+for fname in $1/*.fna
 do
     prodigal \
-      -a genomes/proteins/`basename ${fname%%fna}`faa \
-      -d genomes/cds/`basename ${fname%%fna}`fasta \
+      -a $1/proteins/`basename ${fname%%fna}`faa \
+      -d $1/cds/`basename ${fname%%fna}`fasta \
       -i ${fname} \
-      -o genomes/gbk/`basename ${fname%%fna}`gbk
+      -o $1/gbk/`basename ${fname%%fna}`gbk
 done
