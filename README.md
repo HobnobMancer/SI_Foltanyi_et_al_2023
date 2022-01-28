@@ -1,12 +1,15 @@
 # Foltanyi_et_al_2022
+
 Bioinformatics work for the paper Foltanyi et al., 2022
+
+This repo contains the commands and data files necessary to repeat the study presented in Foltanyi et al., 2022.
 
 ## Requirements
 
 - POISx or Mac OS, or linux emulator
 - Python version 3.9+
 - Miniconda3 or Anaconda managed microenvironment  
-- Prokka
+- Prodigal
 - Coinfinder
 - Pyani
 
@@ -20,6 +23,182 @@ Bioinformatics work for the paper Foltanyi et al., 2022
 ## Method to reconstruct the analysis
 
 To reconstruct the analysis run all commands from this directory.
+
+The method is split into three sections:
+1. [Reconstructing the _Thermotoga_ genus phylogenetic tree](#reconstructing-the-thermotoga-genus-phylogenetic-tree)
+2. [Selecting models for molecular replacement](#selecting-models-for-molecular-replacement)
+3. [Identifying co-evolving CAZy families](#identifying-co-evolving-cazy-families)
+
+
+## Reconstructing the _Thermotoga_ genus phylogenetic tree
+
+To reconstruct the phylogenetic tree of _Thermotoga_ genus the method presented in [Hugouvieux-Cotte-Pattat _et al_., 2021](https://pure.strath.ac.uk/ws/portalfiles/portal/124038859/Hugouvieux_Cotte_Pattat_etal_IJSEM_2021_Proposal_for_the_creation_of_a_new_genus_Musicola_gen_nov_reclassification_of_Dickeya_paradisiaca.pdf) was used. The specific methodolgy is found in the [Hugouvieux-Cotte-Pattat _et al_. supplementary](https://widdowquinn.github.io/SI_Hugouvieux-Cotte-Pattat_2021/).
+
+
+### Download genomes
+
+RefSeq genomic assemblies retrieved from NCBI. The genomic accessions of the genomic assemblies used to 
+reconstruct the phylogenetic tree are listed in `data/ref_genomes_of_interest_acc.txt`. This includes the 
+RefSef genome of **_Fervidobacterium changbaicum_ CBS-1 GCF_004117075.1 as an out group** in order 
+to facilitate identifying the root of the _Thermotoga_ tree. The output group was selected based upon the 
+the Thermotogae distance based tree (the method for construction is laid out further down), and was labelled as at the assembly level of chromosome or greater with genome representation labelled as 'full', in NCBI Assembly database.
+
+The genomes were downloaded from NCBI using [`ncbi-genome-download`](https://github.com/kblin/ncbi-genome-download/).
+
+To reproduce this download run the following command from the root of this repository:
+```bash
+# Download files
+ncbi-genome-download \
+    --assembly-accessions data/ref_genomes_of_interest_acc.txt \
+    --formats fasta \
+    --output-folder genomes \
+    --flat-output \
+    -v \
+    bacteria
+
+# Extract sequences
+gunzip genomes/*.gz
+```
+
+25 genomes were downloaded. The accession numbers of the downloaded genomes are listed in `data/downloaded_genome_acc.txt`
+
+
+### CDS prediction
+
+In order to ensure consistency of nomenclature and support back threading the nucleotides sequences onto 
+aligned single-copy orthologues, all downloaded RefSeq genomes were reannotated using 
+[`prodigal](https://github.com/hyattpd/Prodigal)
+
+> Hyatt D, Chen GL, Locascio PF, Land ML, Larimer FW, Hauser LJ. Prodigal: prokaryotic gene recognition and translation initiation site identification. BMC Bioinformatics. 2010 Mar 8;11:119. doi: 10.1186/1471-2105-11-119. PMID: 20211023; PMCID: PMC2848648.
+
+To reproduce the annotation of the genomes, run the `annotate_genomes_prodigal.sh` script from the root of 
+this repository.
+```bash
+scripts/reconstruct_tree/annotate_genomes_prodigal.sh
+```
+
+The output from `prodigal` are placed in the following directories:
+- The predicted CDS are placed in the `genomes/cds` directory
+- The conceptural translations are placed in `genomes/proteins`
+- The GenBank formate files are placed in the `genomes/gbk` directory
+
+A log of the `prodigal` terminal output was placed in `data/logs/prodigal.log`.
+
+
+### Identifying Single-Copy Orthologues (SCOs)
+
+Orthologues present in the RefSeq _Thermotoga_ genomes were identified using [`orthofinder`](https://github.com/davidemms/OrthoFinder)
+
+> Emms, D.M. and Kelly, S. (2019) OrthoFinder: phylogenetic orthology inference for comparative genomics. [Genome Biology 20:238](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-019-1832-y)
+
+To reproduce the identifcation of orthologues, run the following command from the root of this repository:
+```bash
+# Change soft limit on simultaneously open files
+ulimit -n 5000
+
+# Run orthofinder
+orthofinder -f genomes/proteins \
+  -o orthologues
+```
+
+The output from `orthofinder` was written to the `orthologues/Results_Nov11/Single_Copy_Orthologue_Sequences` directory.
+
+`orthofinder` assigned 46086 genes (98.6% of total) to 2662 orthogroups. Fifty percent of all genes were in orthogroups with 25 or more genes (G50 was 25) and were contained in the largest 889 orthogroups (O50 was 889). There were 990 orthogroups with all species present and 828 of these consisted entirely of single-copy genes.
+
+`orthofinder` identified genome GCF_004117075.1 as the best out group.
+
+
+### Multiple Sequence Alignment
+
+Each collection of single-copy orthologous was aligned using [`MAFFT`](https://mafft.cbrc.jp/alignment/software/).
+
+> Nakamura, Yamada, Tomii, Katoh 2018 (Bioinformatics 34:2490–2492)
+Parallelization of MAFFT for large-scale multiple sequence alignments.
+(describes MPI parallelization of accurate progressive options) 
+
+To reproduce the MSA, run following command from the root of this repository.
+```bash
+scripts/reconstruct_tree/align_scos.sh <path to dir containing SCO identified using orthofinder>
+```
+For example:
+```bash
+scripts/reconstruct_tree/align_scos.sh orthologues/Results_Nov11/Single_Copy_Orthologue_Sequences
+```
+
+The output from `MAFFT` (the aligned files) are placed in the `sco_proteins_aligned` directory.
+
+
+### Collect Single-Copy Orthologues CDS sequences
+
+The CDS sequences corresponding to each set of single-copy orthologues are identified and extracted with the Python script `extract_cds.py`. To reproduce this analysis, ensure the `PROTDIR` constant in the script is 
+directed to the correct output directory for orthofinder. The script can then be run from the current directory with:
+
+```bash
+python3 scripts/reconstruct_tree/extract_cds.py
+```
+
+The output is a set of unaligned CDS sequences corresponding to each single-copy orthologue, which are 
+placed in the `sco_cds` directory
+
+
+
+### Back-translate Aligned Single-Copy Orthologues
+
+The single-copy orthologue CDS sequences are threaded onto the corresponding aligned protein sequences using [`t-coffee`](http://www.tcoffee.org/Projects/tcoffee/).
+
+> T-Coffee: A novel method for multiple sequence alignments. Notredame, Higgins, Heringa, JMB, 302(205-217)2000
+
+The results can be reproduced by executing the `backtranslate.sh` script from this directory.
+
+```bash
+scripts/reconstruct_tree/backtranslate.sh
+```
+
+The backtranslated CDS sequences are placed in the `sco_cds_aligned` directory.
+
+
+### Concatenating CDS into a Multigene Alignment
+
+The threaded single-copy orthologue CDS sequences are concatenated into a single sequence per input organism using the Python script `concatenate_cds.py`. To reproduce this, execute the script from this directory with:
+
+```bash
+python scripts/reconstruct_tree/concatenate_cds.py
+```
+
+Two files are generated, a FASTA file with the concatenated multigene sequences, and a partition file allowing a different set of model parameters to be fit to each gene in phylogenetic reconstruction.
+
+
+### Phylogenetic reconstruction
+
+To reconstruct the phylogenetic tree, the bash script `raxml_ng_build_tree.sh` is used, and is 
+run from the root of this repository. This executes a series of [`raxml-ng`](https://github.com/amkozlov/raxml-ng) commands.
+
+```bash
+scripts/reconstruct_tree/raxml_ng_build_tree.sh
+```
+
+The `raxml-ng parse` command estimated memory and processor requirements as
+
+```text
+* Estimated memory requirements                : 6428 MB
+* Recommended number of threads / MPI processes: 77
+```
+
+but, as we had limited access to computing resource at the time, we had to proceed with 8 cores.
+
+All genes were considered as separate partitions in the reconstuction, 
+with parameters estimated  for the `GTR+FO+G4m+B` model (as recommended by `raxml-ng check`).
+
+The log files from `raxml-ng` are stored in `data/raxmlng_tree_reconstruction`.
+
+Tree reconstructions are placed in the `tree` directory. The best estimate tree is `03_infer.raxml.bestTree` and the midpoint-rooted, manually-annotated/coloured tree (using [`figtree`](http://tree.bio.ed.ac.uk/software/figtree/)) is `03_infer.raxml.bestTree.annotated`
+
+> Alexey M. Kozlov, Diego Darriba, Tomáš Flouri, Benoit Morel, and Alexandros Stamatakis (2019) RAxML-NG: A fast, scalable, and user-friendly tool for maximum likelihood phylogenetic inference. Bioinformatics, btz305 [doi:10.1093/bioinformatics/btz305](https://doi.org/10.1093/bioinformatics/btz305)
+
+## Selecting models for molecular replacement
+
+## Identifying co-evolving CAZy families
+
 
 ### 1. CAZy family co-occurence
 

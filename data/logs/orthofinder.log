@@ -1,0 +1,164 @@
+OrthoFinder version 2.5.4 Copyright (C) 2014 David Emms
+
+2021-11-11 10:49:20 : Starting OrthoFinder 2.5.4
+8 thread(s) for highly parallel tasks (BLAST searches etc.)
+1 thread(s) for OrthoFinder algorithm
+
+Checking required programs are installed
+----------------------------------------
+Test can run "mcl -h" - ok
+Test can run "fastme -i orthologues/Results_Nov11/WorkingDirectory/SimpleTest.phy -o orthologues/Results_Nov11/WorkingDirectory/SimpleTest.tre" - ok
+
+Dividing up work for BLAST for parallel processing
+--------------------------------------------------
+2021-11-11 10:49:21 : Creating diamond database 1 of 25
+2021-11-11 10:49:21 : Creating diamond database 2 of 25
+2021-11-11 10:49:21 : Creating diamond database 3 of 25
+2021-11-11 10:49:21 : Creating diamond database 4 of 25
+2021-11-11 10:49:21 : Creating diamond database 5 of 25
+2021-11-11 10:49:21 : Creating diamond database 6 of 25
+2021-11-11 10:49:21 : Creating diamond database 7 of 25
+2021-11-11 10:49:21 : Creating diamond database 8 of 25
+2021-11-11 10:49:21 : Creating diamond database 9 of 25
+2021-11-11 10:49:21 : Creating diamond database 10 of 25
+2021-11-11 10:49:21 : Creating diamond database 11 of 25
+2021-11-11 10:49:21 : Creating diamond database 12 of 25
+2021-11-11 10:49:21 : Creating diamond database 13 of 25
+2021-11-11 10:49:21 : Creating diamond database 14 of 25
+2021-11-11 10:49:21 : Creating diamond database 15 of 25
+2021-11-11 10:49:21 : Creating diamond database 16 of 25
+2021-11-11 10:49:21 : Creating diamond database 17 of 25
+2021-11-11 10:49:21 : Creating diamond database 18 of 25
+2021-11-11 10:49:21 : Creating diamond database 19 of 25
+2021-11-11 10:49:21 : Creating diamond database 20 of 25
+2021-11-11 10:49:21 : Creating diamond database 21 of 25
+2021-11-11 10:49:21 : Creating diamond database 22 of 25
+2021-11-11 10:49:21 : Creating diamond database 23 of 25
+2021-11-11 10:49:21 : Creating diamond database 24 of 25
+2021-11-11 10:49:21 : Creating diamond database 25 of 25
+
+Running diamond all-versus-all
+------------------------------
+Using 8 thread(s)
+2021-11-11 10:49:21 : This may take some time....
+2021-11-11 10:49:21 : Done 0 of 625
+2021-11-11 10:50:52 : Done 100 of 625
+2021-11-11 10:52:27 : Done 200 of 625
+2021-11-11 10:54:36 : Done 300 of 625
+2021-11-11 10:57:02 : Done 400 of 625
+2021-11-11 10:59:22 : Done 500 of 625
+2021-11-11 11:01:34 : Done 600 of 625
+2021-11-11 11:02:03 : Done all-versus-all sequence search
+
+Running OrthoFinder algorithm
+-----------------------------
+2021-11-11 11:02:03 : Initial processing of each species
+2021-11-11 11:02:05 : Initial processing of species 0 complete
+2021-11-11 11:02:07 : Initial processing of species 1 complete
+2021-11-11 11:02:08 : Initial processing of species 2 complete
+2021-11-11 11:02:10 : Initial processing of species 3 complete
+2021-11-11 11:02:11 : Initial processing of species 4 complete
+2021-11-11 11:02:12 : Initial processing of species 5 complete
+2021-11-11 11:02:14 : Initial processing of species 6 complete
+2021-11-11 11:02:16 : Initial processing of species 7 complete
+2021-11-11 11:02:17 : Initial processing of species 8 complete
+2021-11-11 11:02:18 : Initial processing of species 9 complete
+2021-11-11 11:02:19 : Initial processing of species 10 complete
+2021-11-11 11:02:21 : Initial processing of species 11 complete
+2021-11-11 11:02:22 : Initial processing of species 12 complete
+2021-11-11 11:02:23 : Initial processing of species 13 complete
+2021-11-11 11:02:25 : Initial processing of species 14 complete
+2021-11-11 11:02:27 : Initial processing of species 15 complete
+2021-11-11 11:02:28 : Initial processing of species 16 complete
+2021-11-11 11:02:29 : Initial processing of species 17 complete
+2021-11-11 11:02:31 : Initial processing of species 18 complete
+2021-11-11 11:02:32 : Initial processing of species 19 complete
+2021-11-11 11:02:34 : Initial processing of species 20 complete
+2021-11-11 11:02:35 : Initial processing of species 21 complete
+2021-11-11 11:02:36 : Initial processing of species 22 complete
+2021-11-11 11:02:38 : Initial processing of species 23 complete
+2021-11-11 11:02:39 : Initial processing of species 24 complete
+2021-11-11 11:02:44 : Connected putative homologues
+2021-11-11 11:02:45 : Written final scores for species 0 to graph file
+2021-11-11 11:02:45 : Written final scores for species 1 to graph file
+2021-11-11 11:02:46 : Written final scores for species 2 to graph file
+2021-11-11 11:02:46 : Written final scores for species 3 to graph file
+2021-11-11 11:02:47 : Written final scores for species 4 to graph file
+2021-11-11 11:02:47 : Written final scores for species 5 to graph file
+2021-11-11 11:02:48 : Written final scores for species 6 to graph file
+2021-11-11 11:02:49 : Written final scores for species 7 to graph file
+2021-11-11 11:02:49 : Written final scores for species 8 to graph file
+2021-11-11 11:02:50 : Written final scores for species 9 to graph file
+2021-11-11 11:02:50 : Written final scores for species 10 to graph file
+2021-11-11 11:02:51 : Written final scores for species 11 to graph file
+2021-11-11 11:02:52 : Written final scores for species 12 to graph file
+2021-11-11 11:02:52 : Written final scores for species 13 to graph file
+2021-11-11 11:02:53 : Written final scores for species 14 to graph file
+2021-11-11 11:02:53 : Written final scores for species 15 to graph file
+2021-11-11 11:02:54 : Written final scores for species 16 to graph file
+2021-11-11 11:02:54 : Written final scores for species 17 to graph file
+2021-11-11 11:02:55 : Written final scores for species 18 to graph file
+2021-11-11 11:02:55 : Written final scores for species 19 to graph file
+2021-11-11 11:02:56 : Written final scores for species 20 to graph file
+2021-11-11 11:02:57 : Written final scores for species 21 to graph file
+2021-11-11 11:02:57 : Written final scores for species 22 to graph file
+2021-11-11 11:02:58 : Written final scores for species 23 to graph file
+2021-11-11 11:02:58 : Written final scores for species 24 to graph file
+2021-11-11 11:03:03 : Ran MCL
+
+Writing orthogroups to file
+---------------------------
+OrthoFinder assigned 46086 genes (98.6% of total) to 2662 orthogroups. Fifty percent of all genes were in orthogroups with 25 or more genes (G50 was 25) and were contained in the largest 889 orthogroups (O50 was 889). There were 990 orthogroups with all species present and 828 of these consisted entirely of single-copy genes.
+
+2021-11-11 11:03:04 : Done orthogroups
+
+Analysing Orthogroups
+=====================
+
+Calculating gene distances
+--------------------------
+2021-11-11 11:03:39 : Done
+
+Inferring gene and species trees
+--------------------------------
+2021-11-11 11:03:40 : Done 0 of 2142
+2021-11-11 11:03:40 : Done 1000 of 2142
+2021-11-11 11:03:41 : Done 2000 of 2142
+
+990 trees had all species present and will be used by STAG to infer the species tree
+
+Best outgroup(s) for species tree
+---------------------------------
+2021-11-11 11:03:50 : Starting STRIDE
+2021-11-11 11:03:51 : Done STRIDE
+Observed 18 well-supported, non-terminal duplications. 17 support the best roots and 1 contradict them.
+Best outgroups for species tree:
+  GCF_004117075.1_ASM411707v1_genomic
+  GCF_000828675.1_ASM82867v1_genomic, GCF_000828655.1_ASM82865v1_genomic, GCF_004117075.1_ASM411707v1_genomic, GCF_011057685.1_ASM1105768v1_genomic
+
+WARNING: Multiple potential species tree roots were identified, only one will be analyed.
+
+Reconciling gene trees and species tree
+---------------------------------------
+Outgroup: GCF_004117075.1_ASM411707v1_genomic
+2021-11-11 11:03:51 : Starting Recon and orthologues
+2021-11-11 11:03:51 : Starting OF Orthologues
+2021-11-11 11:03:51 : Done 0 of 2142
+2021-11-11 11:04:03 : Done 1000 of 2142
+2021-11-11 11:04:11 : Done 2000 of 2142
+2021-11-11 11:04:11 : Done OF Orthologues
+
+Writing results files
+=====================
+2021-11-11 11:04:11 : Done orthologues
+
+Results:
+    orthologues/Results_Nov11/
+
+CITATION:
+ When publishing work that uses OrthoFinder please cite:
+ Emms D.M. & Kelly S. (2019), Genome Biology 20:238
+
+ If you use the species tree in your work then please also cite:
+ Emms D.M. & Kelly S. (2017), MBE 34(12): 3267-3278
+ Emms D.M. & Kelly S. (2018), bioRxiv https://doi.org/10.1101/267914
