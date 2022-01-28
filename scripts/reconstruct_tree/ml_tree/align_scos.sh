@@ -1,7 +1,4 @@
 #!/usr/bin/env bash
-#
-
-#!/usr/bin/env bash
 
 # (c) University of St Andrews 2020-2021
 # (c) University of Strathclyde 2020-2021
@@ -42,23 +39,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# backtranslate.sh
+# align_scos.sh
 #
-# Backtranslate CDS sequences onto aligned proteins using T-Coffee
+# Align single-copy orthologue sequences using MAFFT
 
-$1  # path to directory containing aligned SCO protein sequences
-$2  # output directory
+$1  # directory containing output from orthofinder, e.g. orthologues/Results_Nov11/Single_Copy_Orthologue_Sequences
 
-# Prepare output directory
-mkdir -p $2
+# Create output directory
+mkdir -p sco_proteins_aligned
 
-# Backtranslate each single-copy orthologue set
-for fname in sco_cds/*.fasta
+# Align each set of SCOs
+for fname in $1/*.fa
 do
-  t_coffee -other_pg seq_reformat \
-    -in ${fname} \
-    -in2 $1/`basename ${fname%%.fasta}_aligned.fasta` \
-    -action +thread_dna_on_prot_aln \
-    -output fasta \
-    > $2/`basename ${fname%%.fasta}_aligned.fasta`
+    mafft --thread 12 ${fname} > sco_proteins_aligned/`basename ${fname%%.fa}`_aligned.fasta
 done
