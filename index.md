@@ -221,6 +221,9 @@ Via SQL and an SQL database browser, the local CAZyme database was queried to re
 
 ...
 
+## Identification of neighbouring genes
+
+...
 
 ## Identifying co-evolving CAZy families
 
