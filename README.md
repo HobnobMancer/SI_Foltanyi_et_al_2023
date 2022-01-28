@@ -253,7 +253,28 @@ Tree reconstructions are placed in the `tree` directory. The best estimate tree 
 
 Via SQL and an SQL database browser, the local CAZyme database was queried to retrieve the records of proteins that:
 - From the bacteria phylum Thermotogae
-- From any of the following CAZy families
+- From any of the following CAZy families:
+  - GH1
+  - GH2
+  - GH3
+  - GH11
+  - GH26
+  - GH30
+  - GH43
+  - GH51
+  - GH52
+  - GH54
+  - GH116
+  - GH120
+  - CE1
+  - CE2
+  - CE3
+  - CE4
+  - CE5
+  - CE6
+  - CE7
+  - CE12
+  - CE16
 - Annotated with the EC number EC3.2.1.37 AND/OR contained any of the following in their protein name retrieved from UniProt:
   - β-glucosidase
   - β glucosidase
