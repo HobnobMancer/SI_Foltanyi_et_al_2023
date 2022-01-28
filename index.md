@@ -259,6 +259,12 @@ scripts/reconstruct_tree/distance_tree/pyani_ani.sh \
   pyani_log.log                  # write out log file
 ```
 
+The tabular data from `pyani` is stored in the [supplementary dir](https://github.com/HobnobMancer/Foltanyi_et_al_2022/tree/master/supplementary) of this repository.
+The graphical output is stored in the same directory, as well as being viewable here:  
+- [Alignment coverage](https://hobnobmancer.github.io/Foltanyi_et_al_2022/supplementary/pyani_output/ANIm_alignment_coverage.pdf)
+- [Percentage identity](https://hobnobmancer.github.io/Foltanyi_et_al_2022/supplementary/pyani_output/ANIm_percentage_identity.pdf)
+- [Alignment lengths](https://hobnobmancer.github.io/Foltanyi_et_al_2022/supplementary/pyani_output/ANIm_alignment_lengths.pdf)
+
 From `cazomevolve`, the R script `cazomevolve/scripts/tree/build_distance_tree.R` was used to build a Newick-formatted distance tree.
 
 #### 1.3. Annotate CAZomes
@@ -283,10 +289,10 @@ The XX genomes with no protein annotations were annotated using `prokka`  [Seema
 The bash script `cazomevolve/scripts/genomes/predict_cds_prokka.sh` was used to automate invoking `prokka` for all genomes retrieved from NCBI, and which did not contain any CDS features.
 ```bash
 scripts/genomes/predict_cds_prokka.sh \
-thermotogae_prokka_input \      # path to dir containing genomes that contain no CDS features
-thermotogae_prokka_output \     # path to output dir to write prokka output to
-thermotogae_dbcan_input \       # path to dir containing protein sequences to be parsed by dbCAN
-| tee prokka_log_file.log       # write out a log file
+  thermotogae_prokka_input \      # path to dir containing genomes that contain no CDS features
+  thermotogae_prokka_output \     # path to output dir to write prokka output to
+  thermotogae_dbcan_input \       # path to dir containing protein sequences to be parsed by dbCAN
+  | tee prokka_log_file.log       # write out a log file
 ```
 
 The predicted proteins sequences were written out to one FASTA file per parsed genome, and stored in `thermotogae_dbcan_input`.
@@ -301,12 +307,12 @@ The CAZy family annotations were written out to tab delimited list, with one CAZ
 To repeat this analysis, use the following command:
 ```bash
 python3 scripts/cazymes/get_cazy_cazymes.py \
-thermotogae_proteins \
-cazy_database.db \
-thermotogae_dbcan_input \
-thermotogae_fam_acc_list \
--f \
--n 
+  thermotogae_proteins \
+  cazy_database.db \
+  thermotogae_dbcan_input \
+  thermotogae_fam_acc_list \
+  -f \
+  -n 
 ```
 To repeat the analysis make sure the `--force` (`-f`) and `--nodelete` (`-n`) flags are used so that the data can be added to the `thermotogae_dbcan_input` directory without deteling the predicted protein sequences from `prokka`.
 
