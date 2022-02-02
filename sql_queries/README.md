@@ -297,4 +297,4 @@ LEFT JOIN Name_Query ON Genbanks.genbank_accession = Name_Query.name_gbk_acc
 WHERE (Genbanks.genbank_accession NOT IN Ec_Query) AND (Genbanks.genbank_accession NOT IN Name_Query) AND (CazyFamilies.family = 'GH3')
 ```
 
-This retrieved **39,935 unique GenBank accessions**.
+This retrieved **39,935 unique GenBank accessions**. The list of these GenBank accessions can be found [here](https://github.com/HobnobMancer/Foltanyi_et_al_2022/blob/master/data/remaining_gh3.txt).
