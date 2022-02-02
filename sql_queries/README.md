@@ -265,3 +265,36 @@ WHERE (Genbanks.genbank_accession IN Ec_Query) AND (Genbanks.genbank_accession I
 This retrieved **65 unique GenBank accessions**.
 
 In total **220 unique GenBank accessions** were retrieved. The final list of GenBank accessions can be found [here](https://github.com/HobnobMancer/Foltanyi_et_al_2022/blob/master/data/ec_name_genbank_accessions.txt).
+
+The GenBank accessions of the remaining GH3 proteins not included in the list of 220 EC number and/or named identified proteins were retrieved using the following command:
+
+```sql
+WITH Ec_Query (ec_gbk_acc) AS (
+	SELECT DISTINCT Genbanks.genbank_accession
+	FROM Genbanks
+	INNER JOIN Genbanks_Ecs ON Genbanks.genbank_id = Genbanks_Ecs.genbank_id
+	INNER JOIN Ecs ON Genbanks_Ecs.ec_id = Ecs.ec_id
+	WHERE Ecs.ec_number = '3.2.1.37'
+), Name_Query (name_gbk_acc) AS (
+	SELECT DISTINCT Genbanks.genbank_accession
+	FROM Genbanks
+	INNER JOIN Uniprots ON Genbanks.genbank_id = Uniprots.genbank_id
+	WHERE Uniprots.uniprot_name LIKE '%beta-xylosidase%' OR
+	  Uniprots.uniprot_name LIKE '%Beta-xylosidase%' OR
+	  Uniprots.uniprot_name LIKE '%beta-D-xylosidase%' OR
+	  Uniprots.uniprot_name LIKE '%Beta-D-xylosidase%' OR
+	  Uniprots.uniprot_name LIKE '%beta xylosidase%' OR
+	  Uniprots.uniprot_name LIKE '%Beta xylosidase%' OR
+	  Uniprots.uniprot_name LIKE '%beta D-xylosidase%' OR
+	  Uniprots.uniprot_name LIKE '%Beta D-xylosidase%'
+)
+SELECT DISTINCT Genbanks.genbank_accession
+FROM Genbanks
+INNER JOIN Genbanks_CazyFamilies ON Genbanks.genbank_id = Genbanks_CazyFamilies.genbank_id
+INNER JOIN CazyFamilies ON Genbanks_CazyFamilies.family_id = CazyFamilies.family_id
+LEFT JOIN Ec_Query ON Genbanks.genbank_accession = Ec_Query.ec_gbk_acc
+LEFT JOIN Name_Query ON Genbanks.genbank_accession = Name_Query.name_gbk_acc
+WHERE (Genbanks.genbank_accession NOT IN Ec_Query) AND (Genbanks.genbank_accession NOT IN Name_Query) AND (CazyFamilies.family = 'GH3')
+```
+
+This retrieved **39,935 unique GenBank accessions**.
