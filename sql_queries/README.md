@@ -199,3 +199,69 @@ WHERE Ecs.ec_number = '3.2.1.37' AND (
 This returned 65 proteins, the results of which can be found [here](https://github.com/HobnobMancer/Foltanyi_et_al_2022/blob/master/sql_queries/query_6_name_ec.csv).
 
 Therefore, 10 proteins annotated with the EC number 3.2.1.37 do not contain any variation of the term 'beta-xylosidase' in their protein name retrieved from UniProt. Also, 80 proteins containing a variation of the term 'beta-xylosidase' in their protein name are not annotated with the EC number 3.2.1.37. This does not take into account proteins annotated with an incomplete EC number which then later maybe completed to 3.2.1.37, i.e. their may currently be annotated with the EC number 3.2.1.-.
+
+7. GenBank accessions with EC number and/or Name
+
+The following SQL command was used to retrieve the GenBank accession of all proteins in the local bacterial CAZyme database with the EC number 3.2.1.37 *or* whose name contained any variation of the term 'beta-xylosidase':
+
+```sql
+WITH Ec_Query (ec_gbk_acc) AS (
+	SELECT DISTINCT Genbanks.genbank_accession
+	FROM Genbanks
+	INNER JOIN Genbanks_Ecs ON Genbanks.genbank_id = Genbanks_Ecs.genbank_id
+	INNER JOIN Ecs ON Genbanks_Ecs.ec_id = Ecs.ec_id
+	WHERE Ecs.ec_number = '3.2.1.37'
+), Name_Query (name_gbk_acc) AS (
+	SELECT DISTINCT Genbanks.genbank_accession
+	FROM Genbanks
+	INNER JOIN Uniprots ON Genbanks.genbank_id = Uniprots.genbank_id
+	WHERE Uniprots.uniprot_name LIKE '%beta-xylosidase%' OR
+	  Uniprots.uniprot_name LIKE '%Beta-xylosidase%' OR
+	  Uniprots.uniprot_name LIKE '%beta-D-xylosidase%' OR
+	  Uniprots.uniprot_name LIKE '%Beta-D-xylosidase%' OR
+	  Uniprots.uniprot_name LIKE '%beta xylosidase%' OR
+	  Uniprots.uniprot_name LIKE '%Beta xylosidase%' OR
+	  Uniprots.uniprot_name LIKE '%beta D-xylosidase%' OR
+	  Uniprots.uniprot_name LIKE '%Beta D-xylosidase%'
+)
+SELECT DISTINCT Genbanks.genbank_accession
+FROM Genbanks
+LEFT JOIN Ec_Query ON Genbanks.genbank_accession = Ec_Query.ec_gbk_acc
+LEFT JOIN Name_Query ON Genbanks.genbank_accession = Name_Query.name_gbk_acc
+WHERE (Genbanks.genbank_accession IN Ec_Query) OR (Genbanks.genbank_accession IN Name_Query)
+```
+
+This retrieved **155 unique GenBank accessions**.
+
+The following command was used to retrieve the GenBank accession of all proteins in the local bacterial CAZyme database with the EC number 3.2.1.37 *and* whose name contained any variation of the term 'beta-xylosidase':
+
+```sql
+WITH Ec_Query (ec_gbk_acc) AS (
+	SELECT DISTINCT Genbanks.genbank_accession
+	FROM Genbanks
+	INNER JOIN Genbanks_Ecs ON Genbanks.genbank_id = Genbanks_Ecs.genbank_id
+	INNER JOIN Ecs ON Genbanks_Ecs.ec_id = Ecs.ec_id
+	WHERE Ecs.ec_number = '3.2.1.37'
+), Name_Query (name_gbk_acc) AS (
+	SELECT DISTINCT Genbanks.genbank_accession
+	FROM Genbanks
+	INNER JOIN Uniprots ON Genbanks.genbank_id = Uniprots.genbank_id
+	WHERE Uniprots.uniprot_name LIKE '%beta-xylosidase%' OR
+	  Uniprots.uniprot_name LIKE '%Beta-xylosidase%' OR
+	  Uniprots.uniprot_name LIKE '%beta-D-xylosidase%' OR
+	  Uniprots.uniprot_name LIKE '%Beta-D-xylosidase%' OR
+	  Uniprots.uniprot_name LIKE '%beta xylosidase%' OR
+	  Uniprots.uniprot_name LIKE '%Beta xylosidase%' OR
+	  Uniprots.uniprot_name LIKE '%beta D-xylosidase%' OR
+	  Uniprots.uniprot_name LIKE '%Beta D-xylosidase%'
+)
+SELECT DISTINCT Genbanks.genbank_accession
+FROM Genbanks
+LEFT JOIN Ec_Query ON Genbanks.genbank_accession = Ec_Query.ec_gbk_acc
+LEFT JOIN Name_Query ON Genbanks.genbank_accession = Name_Query.name_gbk_acc
+WHERE (Genbanks.genbank_accession IN Ec_Query) AND (Genbanks.genbank_accession IN Name_Query)
+```
+
+This retrieved **65 unique GenBank accessions**.
+
+In total **220 unique GenBank accessions** were retrieved. The final list of GenBank accessions can be found [here](https://github.com/HobnobMancer/Foltanyi_et_al_2022/blob/master/data/ec_name_genbank_accessions.txt).
