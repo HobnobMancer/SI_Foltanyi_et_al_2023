@@ -2,229 +2,200 @@
 
 This docs logs the queries made in SQL to a local CAZyme database, in the search for suitable model CAZymes.
 
-## Query 1, search only with the EC number EC 3.2.1.37
+## 1. Number of bacterial proteins in GH3
+
+**There are 40090 bacterial proteins in GH3.**
+
+This query was performed against a local CAZyme database containing only proteins derived from bacteria.
 
 ```sql
-SELECT DISTINCT genbanks.genbank_accession, families.family, ecs.ec_number, taxs.genus, taxs.species
-FROM genbanks
-INNER JOIN cazymes_genbanks ON genbanks.genbank_id = cazymes_genbanks.genbank_id
-INNER JOIN cazymes ON cazymes_genbanks.cazyme_id = cazymes.cazyme_id
-
-INNER JOIN cazymes_families ON cazymes.cazyme_id = cazymes_families.cazyme_id
-INNER JOIN families ON cazymes_families.family_id = families.family_id
-
-INNER JOIN taxs ON cazymes.taxonomy_id = taxs.taxonomy_id
-
-INNER JOIN cazymes_ecs ON cazymes.cazyme_id = cazymes_ecs.cazyme_id
-INNER JOIN ecs ON cazymes_ecs.ec_id = ecs.ec_id
-
-WHERE (ecs.ec_number = '3.2.1.37')
+SELECT COUNT(Genbanks.genbank_id)
+FROM Genbanks
+INNER JOIN Genbanks_CazyFamilies ON Genbanks.genbank_id = Genbanks_CazyFamilies.genbank_id
+INNER JOIN CazyFamilies ON Genbanks_CazyFamilies.family_id = CazyFamilies.family_id
+WHERE CazyFamilies.family = 'GH3'
 ```
 
-This returned 343 rows, but included proteins from Eukaryotes.
-Need to add 'bacteria' filter
-
-## Query 2, search for CAZymes from bacteria with the EC number EC3.2.1.37
+To make the same query against a local CAZyme database with proteins derived from different taxonomic kingdoms, use the following query.
 
 ```sql
-SELECT DISTINCT genbanks.genbank_accession, families.family, ecs.ec_number, taxs.genus, taxs.species
-FROM genbanks
-INNER JOIN cazymes_genbanks ON genbanks.genbank_id = cazymes_genbanks.genbank_id
-INNER JOIN cazymes ON cazymes_genbanks.cazyme_id = cazymes.cazyme_id
-
-INNER JOIN cazymes_families ON cazymes.cazyme_id = cazymes_families.cazyme_id
-INNER JOIN families ON cazymes_families.family_id = families.family_id
-
-INNER JOIN taxs ON cazymes.taxonomy_id = taxs.taxonomy_id
-
-INNER JOIN kingdoms ON taxs.kingdom_id = kingdoms.kingdom_id
-
-INNER JOIN cazymes_ecs ON cazymes.cazyme_id = cazymes_ecs.cazyme_id
-INNER JOIN ecs ON cazymes_ecs.ec_id = ecs.ec_id
-
-WHERE (ecs.ec_number = '3.2.1.37') AND (kingdoms.kingdom = 'Bacteria')
+SELECT COUNT(Genbanks.genbank_id)
+FROM Genbanks
+INNER JOIN Genbanks_CazyFamilies ON Genbanks.genbank_id = Genbanks_CazyFamilies.genbank_id
+INNER JOIN CazyFamilies ON Genbanks_CazyFamilies.family_id = CazyFamilies.family_id
+INNER JOIN Taxs ON Genbanks.taxonomy_id = Taxs.taxonomy_id
+INNER JOIN Kingdoms ON Taxs.kingdom_id = Kingdoms.kingdom_id
+WHERE CazyFamilies.family = 'GH3' AND
+	Kingdoms.kingdom = 'Bacteria'
 ```
 
-This returned 194 CAZymes. Many of which had no GenBank accession, likely becuase they are sourced from patents.
-
-The activity of EC3.2.1.37 is xylosidase, which is a GH activity. Some of the families retrieved are not GH families and 
-thees are potentially additional modules predicted to be present in the CAZymes of interest.
-
-## Query 3, search for CAZymes from bacteria with the EC number EC3.2.1.37 and return the PDB
-
-The aim of this work is to find appropriate structural models for comparison and molecular replacement, therefore, 
-query 2 was repeated with the addition of filtering out proteins without a PDB record. Additionally, multiple GenBank 
-accessions may be returned for each CAZyme because some CAZymes have multiple GenBank accessions. Therefore, the results 
-were further filtered to retrieve only the primary GenBank accession for each CAZyme.
+From here on, we presume a local CAZyme database containing only bacterial proteins is used. If not, add the following lines to the command:
 
 ```sql
-SELECT DISTINCT genbanks.genbank_accession, cazymes.cazyme_id, families.family, ecs.ec_number, taxs.genus, taxs.species
-FROM genbanks
-INNER JOIN cazymes_genbanks ON genbanks.genbank_id = cazymes_genbanks.genbank_id
-INNER JOIN cazymes ON cazymes_genbanks.cazyme_id = cazymes.cazyme_id
-
-INNER JOIN cazymes_families ON cazymes.cazyme_id = cazymes_families.cazyme_id
-INNER JOIN families ON cazymes_families.family_id = families.family_id
-
-INNER JOIN taxs ON cazymes.taxonomy_id = taxs.taxonomy_id
-
-INNER JOIN kingdoms ON taxs.kingdom_id = kingdoms.kingdom_id
-
-INNER JOIN cazymes_ecs ON cazymes.cazyme_id = cazymes_ecs.cazyme_id
-INNER JOIN ecs ON cazymes_ecs.ec_id = ecs.ec_id
-
-INNER JOIN cazymes_pdbs ON cazymes.cazyme_id = cazymes_pdbs.cazyme_id
-INNER JOIN pdbs ON cazymes_pdbs.pdb_id = pdbs.pdb_id
-
-WHERE (ecs.ec_number = '3.2.1.37') AND (kingdoms.kingdom = 'Bacteria') AND (pdbs.pdb_accession is not null) AND (cazymes_genbanks.'primary' = 1)
+INNER JOIN Taxs ON Genbanks.taxonomy_id = Taxs.taxonomy_id
+INNER JOIN Kingdoms ON Taxs.kingdom_id = Kingdoms.kingdom_id
+WHERE Kingdoms.kingdom = 'Bacteria'
 ```
 
-The results of thi query are stored in this directory, in the file `query_3_species.csv`.
-
-## Query 4, retrieve PDB accessions
-
-This query repeats query 3 but includes the PDB accessions.
-
-Many of the proteins that met the criteria have no GenBank accession, therefore, the primary PDB accession was also retrieved. Only the primary UniProt accession was retrieved. An additionally, CAZy class 
-filter was applied. Xylosidase is a GH class function, therefore, only CAZymes from families in GH were retrieved, in an attempt in retrieving proteins with some 
-functional similarity.
+## 2. Number of proteins annotated with the EC number EC 3.2.1.37
 
 ```sql
-SELECT DISTINCT genbanks.genbank_accession, cazymes.cazyme_id, families.family, ecs.ec_number, taxs.genus, taxs.species, pdbs.pdb_accession
-FROM genbanks
-INNER JOIN cazymes_genbanks ON genbanks.genbank_id = cazymes_genbanks.genbank_id
-INNER JOIN cazymes ON cazymes_genbanks.cazyme_id = cazymes.cazyme_id
-
-INNER JOIN cazymes_families ON cazymes.cazyme_id = cazymes_families.cazyme_id
-INNER JOIN families ON cazymes_families.family_id = families.family_id
-
-INNER JOIN taxs ON cazymes.taxonomy_id = taxs.taxonomy_id
-
-INNER JOIN kingdoms ON taxs.kingdom_id = kingdoms.kingdom_id
-
-INNER JOIN cazymes_ecs ON cazymes.cazyme_id = cazymes_ecs.cazyme_id
-INNER JOIN ecs ON cazymes_ecs.ec_id = ecs.ec_id
-
-INNER JOIN cazymes_pdbs ON cazymes.cazyme_id = cazymes_pdbs.cazyme_id
-INNER JOIN pdbs ON cazymes_pdbs.pdb_id = pdbs.pdb_id
-
-INNER JOIN cazymes_uniprots ON cazymes_uniprots.cazyme_id = cazymes.cazyme_id
-INNER JOIN uniprots ON uniprots.uniprot_id = cazymes_uniprots.uniprot_id
-
-WHERE (ecs.ec_number = '3.2.1.37') AND 
-(kingdoms.kingdom = 'Bacteria') AND 
-(pdbs.pdb_accession is not null) AND 
-(cazymes_genbanks.'primary' = 1) AND 
-(uniprots.'primary' = 1) AND 
-(families.family like 'GH%')
+SELECT COUNT(DISTINCT Genbanks.genbank_accession)
+FROM Genbanks
+INNER JOIN Genbanks_Ecs ON Genbanks.genbank_id = Genbanks_Ecs.genbank_id
+INNER JOIN Ecs ON Genbanks_Ecs.ec_id = Ecs.ec_id
+WHERE Ecs.ec_number = '3.2.1.37'
 ```
 
-The results of this query are stored in this directory, in the file `query_4_ec_pdb_accessions.csv`.
+This identified CAZy contained **75** bacterial proteins annotated with the EC number 3.2.1.37.
 
-## Query 5, apply genus filter
-
-The main focus on the study is xylosidases from the bacterial phylum Thermotogae. Therefore, query 4 was repeated, filtering for only CAZymes from this phylum.
+The following command was used to identify the CAZy families to which these proteins belonged.
 
 ```sql
-SELECT DISTINCT genbanks.genbank_accession, cazymes.cazyme_id, families.family, ecs.ec_number, taxs.genus, taxs.species, pdbs.pdb_accession
-FROM genbanks
-INNER JOIN cazymes_genbanks ON genbanks.genbank_id = cazymes_genbanks.genbank_id
-INNER JOIN cazymes ON cazymes_genbanks.cazyme_id = cazymes.cazyme_id
-
-INNER JOIN cazymes_families ON cazymes.cazyme_id = cazymes_families.cazyme_id
-INNER JOIN families ON cazymes_families.family_id = families.family_id
-
-INNER JOIN taxs ON cazymes.taxonomy_id = taxs.taxonomy_id
-
-INNER JOIN kingdoms ON taxs.kingdom_id = kingdoms.kingdom_id
-
-INNER JOIN cazymes_ecs ON cazymes.cazyme_id = cazymes_ecs.cazyme_id
-INNER JOIN ecs ON cazymes_ecs.ec_id = ecs.ec_id
-
-INNER JOIN cazymes_pdbs ON cazymes.cazyme_id = cazymes_pdbs.cazyme_id
-INNER JOIN pdbs ON cazymes_pdbs.pdb_id = pdbs.pdb_id
-
-WHERE (ecs.ec_number = '3.2.1.37') AND (pdbs.pdb_accession is not null) AND (cazymes_genbanks.'primary' = 1) AND
-(taxs.genus = 'Kosmotoga') AND (taxs.genus = 'Mesotoga') AND (taxs.genus = 'Athalassotoga') AND (taxs.genus = 'Mesoaciditoga') AND
-(taxs.genus = 'Defluviitoga') AND (taxs.genus = 'Geotoga') AND (taxs.genus = 'Marinitoga') AND (taxs.genus = 'Oceanotoga') AND
-(taxs.genus = 'Petrotoga') AND (taxs.genus = 'Tepiditoga') AND (taxs.genus = 'Fervidobacterium') AND (taxs.genus = 'Thermosipho') AND
-(taxs.genus = 'Pseudothermotoga') AND (taxs.genus = 'Thermopallium') AND (taxs.genus = 'Thermotoga') AND (taxs.genus = 'Thermotogales')
+SELECT DISTINCT Genbanks.genbank_accession, CazyFamilies.family
+FROM Genbanks
+INNER JOIN Genbanks_Ecs ON Genbanks.genbank_id = Genbanks_Ecs.genbank_id
+INNER JOIN Ecs ON Genbanks_Ecs.ec_id = Ecs.ec_id
+INNER JOIN Genbanks_CazyFamilies ON Genbanks.genbank_id = Genbanks_CazyFamilies.genbank_id
+INNER JOIN CazyFamilies ON Genbanks_CazyFamilies.family_id = CazyFamilies.family_id
+WHERE Ecs.ec_number = '3.2.1.37'
 ```
 
-No results were returned.
+The output from this query can be found [here](https://github.com/HobnobMancer/Foltanyi_et_al_2022/blob/master/sql_queries/query_2_ec_3-2-1-37_families.csv).
 
-## Query 6, remove EC number filter
+All these proteins belonged to CAZy family GH3. Some proteins contained an additional CBM6 domain.
 
-One issue with relying on EC number annotation is that computationally predicted 4 digit EC numbers are not often very accuracte, 
-and the minority of CAZymes are annotated with an EC number. Therefore, query 5 was repeated, without the EC number filter. An additionally, CAZy class 
-filter was applied. Xylosidase is a GH class function, therefore, only CAZymes from families in GH were retrieved, in an attempt in retrieving proteins with some 
-functional similarity.
+## 3. Get PDB accessions
+
+The following command was used to retrieved the PDB accessions of all proteins annotated with the EC number 3.2.1.37.
 
 ```sql
-SELECT DISTINCT genbanks.genbank_accession, cazymes.cazyme_id, families.family, taxs.genus, taxs.species, pdbs.pdb_accession
-FROM genbanks
-INNER JOIN cazymes_genbanks ON genbanks.genbank_id = cazymes_genbanks.genbank_id
-INNER JOIN cazymes ON cazymes_genbanks.cazyme_id = cazymes.cazyme_id
-
-INNER JOIN cazymes_families ON cazymes.cazyme_id = cazymes_families.cazyme_id
-INNER JOIN families ON cazymes_families.family_id = families.family_id
-
-INNER JOIN taxs ON cazymes.taxonomy_id = taxs.taxonomy_id
-
-INNER JOIN kingdoms ON taxs.kingdom_id = kingdoms.kingdom_id
-
-INNER JOIN cazymes_ecs ON cazymes.cazyme_id = cazymes_ecs.cazyme_id
-INNER JOIN ecs ON cazymes_ecs.ec_id = ecs.ec_id
-
-INNER JOIN cazymes_pdbs ON cazymes.cazyme_id = cazymes_pdbs.cazyme_id
-INNER JOIN pdbs ON cazymes_pdbs.pdb_id = pdbs.pdb_id
-
-WHERE (pdbs.pdb_accession is not null) AND (cazymes_genbanks.'primary' = 1) AND (
-(taxs.genus = 'Kosmotoga') OR (taxs.genus = 'Mesotoga') OR (taxs.genus = 'Athalassotoga') OR (taxs.genus = 'Mesoaciditoga') OR
-(taxs.genus = 'Defluviitoga') OR (taxs.genus = 'Geotoga') OR (taxs.genus = 'Marinitoga') OR (taxs.genus = 'Oceanotoga') OR
-(taxs.genus = 'Petrotoga') OR (taxs.genus = 'Tepiditoga') OR (taxs.genus = 'Fervidobacterium') OR (taxs.genus = 'Thermosipho') OR
-(taxs.genus = 'Pseudothermotoga') OR (taxs.genus = 'Thermopallium') OR (taxs.genus = 'Thermotoga') OR (taxs.genus = 'Thermotogales')) AND 
-(families.family like 'GH%')
+SELECT DISTINCT Genbanks.genbank_accession, CazyFamilies.family, Pdbs.pdb_accession
+FROM Genbanks
+INNER JOIN Genbanks_Ecs ON Genbanks.genbank_id = Genbanks_Ecs.genbank_id
+INNER JOIN Ecs ON Genbanks_Ecs.ec_id = Ecs.ec_id
+INNER JOIN Genbanks_CazyFamilies ON Genbanks.genbank_id = Genbanks_CazyFamilies.genbank_id
+INNER JOIN CazyFamilies ON Genbanks_CazyFamilies.family_id = CazyFamilies.family_id
+INNER JOIN Pdbs ON Genbanks.genbank_id = Pdbs.genbank_id
+WHERE Ecs.ec_number = '3.2.1.37'
 ```
 
-201 results were returned. These results are stored in this directory, in the file `query_6_thermotogae_pdb_accessions.csv`
+However, this returned 0 rows from the database. No bacterial proteins with the EC number 3.2.1.37 were associated with a PDB accession in UniProt.
 
-## Query 7, CAZyme name query
-
-Many CAZymes are not annotated with an EC number, but they are frequently given a named based upon their activity. Therefore, the CAZyme database was queried for CAZymes 
-with the phrase '' in their name.
+Similarly, the following command was used to retrieve the PDB accessions of all proteins in GH3.
 
 ```sql
-SELECT DISTINCT genbanks.genbank_accession, cazymes.cazyme_id, cazymes.cazyme_name, families.family, taxs.genus, taxs.species, pdbs.pdb_accession
-FROM genbanks
-INNER JOIN cazymes_genbanks ON genbanks.genbank_id = cazymes_genbanks.genbank_id
-INNER JOIN cazymes ON cazymes_genbanks.cazyme_id = cazymes.cazyme_id
-
-INNER JOIN cazymes_families ON cazymes.cazyme_id = cazymes_families.cazyme_id
-INNER JOIN families ON cazymes_families.family_id = families.family_id
-
-INNER JOIN taxs ON cazymes.taxonomy_id = taxs.taxonomy_id
-
-INNER JOIN kingdoms ON taxs.kingdom_id = kingdoms.kingdom_id
-
-INNER JOIN cazymes_pdbs ON cazymes.cazyme_id = cazymes_pdbs.cazyme_id
-INNER JOIN pdbs ON cazymes_pdbs.pdb_id = pdbs.pdb_id
-
-WHERE (pdbs.pdb_accession is not null) AND 
-(cazymes_genbanks.'primary' = 1) AND 
-(families.family like 'GH%') AND 
-(kingdoms.kingdom = 'Bacteria') AND 
-((cazymes.cazyme_name like '%β-glucosidase%') OR (cazymes.cazyme_name like '%β glucosidase%')) 
+SELECT DISTINCT Genbanks.genbank_accession, CazyFamilies.family, Pdbs.pdb_accession
+FROM Genbanks
+INNER JOIN Genbanks_CazyFamilies ON Genbanks.genbank_id = Genbanks_CazyFamilies.genbank_id
+INNER JOIN CazyFamilies ON Genbanks_CazyFamilies.family_id = CazyFamilies.family_id
+INNER JOIN Pdbs ON Genbanks.genbank_id = Pdbs.genbank_id
+WHERE CazyFamilies.family = 'GH3'
 ```
 
-78 results were returned. These are stored in the .csv file `query_7_name_pdb_accessions.csv`
+This returned **26 bacterial proteins** with PDB accessions listed in UniProt.
 
-# Retrieving the PDB accessions
+## 4. Protein name
 
-One limitation of how PDB accessions are stored in CAZy is that they include the chain id. Therefore, to determine the exact number of unique 
-CAZymes retrieved from queries 4 (EC number filter) and 6 (genus filter), the jupyter notebook `parse_sql_query_output.ipynb` was used to parse the 
-dataframes created from queries 4 and 6. The output dataframes from the notebook stored in this directory and are called 
-`ec_pdb_accessions.csv` and `gh_thermotogae_pdb_accessions.csv`, respectively.
+Many CAZymes are not annotated with an EC number, but they are frequently given a named based upon their activity. Therefore, the local CAZyme database was queried for CAZymes 
+containing any of the following phrases in their names:
+- 'beta-xylosidase'
+- 'Beta-xylosidase'
+- 'beta-D-xylosidase'
+- 'Beta-D-xylosidase'
+- 'beta xylosidase'
+- 'Beta xylosidase'
+- 'beta D-xylosidase'
+- 'Beta D-xylosidase'
 
-`ec_pdb_accessions.csv` contains XX unique CAZymes with a total 303 PDB structure file accessions.
-`gh_thermotogae_pdb_accessions.csv` contains 31 unique CAZymes with a total 130 PDB structure file accessions.
+This was achieved using the following command:
+
+```sql
+SELECT COUNT(DISTINCT Genbanks.genbank_accession)
+FROM Genbanks
+INNER JOIN Uniprots ON Genbanks.genbank_id = Uniprots.genbank_id
+WHERE Uniprots.uniprot_name LIKE '%beta-xylosidase%' OR
+  Uniprots.uniprot_name LIKE '%beta-xylosidase%' OR
+  Uniprots.uniprot_name LIKE '%Beta-xylosidase%' OR
+  Uniprots.uniprot_name LIKE '%beta-D-xylosidase%' OR
+  Uniprots.uniprot_name LIKE '%Beta-D-xylosidase%' OR
+  Uniprots.uniprot_name LIKE '%beta xylosidase%' OR
+  Uniprots.uniprot_name LIKE '%Beta xylosidase%' OR
+  Uniprots.uniprot_name LIKE '%beta D-xylosidase%' OR
+  Uniprots.uniprot_name LIKE '%Beta D-xylosidase%'
+```
+
+This identified **145 bacterial proteins** in the database contained a variation of beta-xylosidase in their protein name.
+
+The CAZy families of these proteins were identified using the following command:
+
+```sql
+SELECT DISTINCT Genbanks.genbank_accession, CazyFamilies.family
+FROM Genbanks
+INNER JOIN Uniprots ON Genbanks.genbank_id = Uniprots.genbank_id
+INNER JOIN Genbanks_CazyFamilies ON Genbanks.genbank_id = Genbanks_CazyFamilies.genbank_id
+INNER JOIN CazyFamilies ON Genbanks_CazyFamilies.family_id = CazyFamilies.family_id
+WHERE Uniprots.uniprot_name LIKE '%beta-xylosidase%' OR
+  Uniprots.uniprot_name LIKE '%beta-xylosidase%' OR
+  Uniprots.uniprot_name LIKE '%Beta-xylosidase%' OR
+  Uniprots.uniprot_name LIKE '%beta-D-xylosidase%' OR
+  Uniprots.uniprot_name LIKE '%Beta-D-xylosidase%' OR
+  Uniprots.uniprot_name LIKE '%beta xylosidase%' OR
+  Uniprots.uniprot_name LIKE '%Beta xylosidase%' OR
+  Uniprots.uniprot_name LIKE '%beta D-xylosidase%' OR
+  Uniprots.uniprot_name LIKE '%Beta D-xylosidase%'
+```
+
+The output from this query can be found [here](https://github.com/HobnobMancer/Foltanyi_et_al_2022/blob/master/sql_queries/query_3_protein_names.csv).
+
+All these proteins belonged to CAZy family GH3. Some proteins contained an additional CBM6 domain.
+
+## 5. PDB accessions of beta-xylosidases
+
+The following command was used to identify which proteins with a variation of the term 'beta-xylosidase' in their name were associated with PDB accessions in UniProt.
+
+```sql
+SELECT DISTINCT Genbanks.genbank_accession, CazyFamilies.family, Pdbs.pdb_accession
+FROM Genbanks
+INNER JOIN Uniprots ON Genbanks.genbank_id = Uniprots.genbank_id
+INNER JOIN Genbanks_CazyFamilies ON Genbanks.genbank_id = Genbanks_CazyFamilies.genbank_id
+INNER JOIN CazyFamilies ON Genbanks_CazyFamilies.family_id = CazyFamilies.family_id
+INNER JOIN Pdbs ON Genbanks.genbank_id = Pdbs.genbank_id
+WHERE Uniprots.uniprot_name LIKE '%beta-xylosidase%' OR
+  Uniprots.uniprot_name LIKE '%beta-xylosidase%' OR
+  Uniprots.uniprot_name LIKE '%Beta-xylosidase%' OR
+  Uniprots.uniprot_name LIKE '%beta-D-xylosidase%' OR
+  Uniprots.uniprot_name LIKE '%Beta-D-xylosidase%' OR
+  Uniprots.uniprot_name LIKE '%beta xylosidase%' OR
+  Uniprots.uniprot_name LIKE '%Beta xylosidase%' OR
+  Uniprots.uniprot_name LIKE '%beta D-xylosidase%' OR
+  Uniprots.uniprot_name LIKE '%Beta D-xylosidase%'
+```
+
+This returned 0 proteins.
+
+## 6. EC and protein name overlap
+
+The following command was used to identify which proteins were annotated with the EC number 3.2.1.37 *and* contained a variation of the term 'beta-xylosidase' in their protein name.
+
+```sql
+SELECT DISTINCT Genbanks.genbank_accession, Uniprots.uniprot_name, Ecs.ec_number
+FROM Genbanks
+INNER JOIN Genbanks_Ecs ON Genbanks.genbank_id = Genbanks_Ecs.genbank_id
+INNER JOIN Ecs ON Genbanks_Ecs.ec_id = Ecs.ec_id
+INNER JOIN Uniprots ON Genbanks.genbank_id = Uniprots.genbank_id
+WHERE Ecs.ec_number = '3.2.1.37' AND (
+  Uniprots.uniprot_name LIKE '%beta-xylosidase%' OR
+  Uniprots.uniprot_name LIKE '%Beta-xylosidase%' OR
+  Uniprots.uniprot_name LIKE '%beta-D-xylosidase%' OR
+  Uniprots.uniprot_name LIKE '%Beta-D-xylosidase%' OR
+  Uniprots.uniprot_name LIKE '%beta xylosidase%' OR
+  Uniprots.uniprot_name LIKE '%Beta xylosidase%' OR
+  Uniprots.uniprot_name LIKE '%beta D-xylosidase%' OR
+  Uniprots.uniprot_name LIKE '%Beta D-xylosidase%'
+)
+```
+
+This returned 65 proteins, the results of which can be found [here](https://github.com/HobnobMancer/Foltanyi_et_al_2022/blob/master/sql_queries/query_6_name_ec.csv).
+
+Therefore, 10 proteins annotated with the EC number 3.2.1.37 do not contain any variation of the term 'beta-xylosidase' in their protein name retrieved from UniProt. Also, 80 proteins containing a variation of the term 'beta-xylosidase' in their protein name are not annotated with the EC number 3.2.1.37. This does not take into account proteins annotated with an incomplete EC number which then later maybe completed to 3.2.1.37, i.e. their may currently be annotated with the EC number 3.2.1.-.
