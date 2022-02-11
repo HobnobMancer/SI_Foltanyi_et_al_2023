@@ -2,6 +2,8 @@
 
 This docs logs the queries made in SQL to a local CAZyme database, in the search for suitable model CAZymes.
 
+The local CAZyme database was created uing [`cazy_webscraper`](https://hobnobmancer.github.io/cazy_webscraper/). All bacterial proteins were retrieved from CAZy, and protein data (IDs, names, EC numbers and PDBs) were retrieved from UniProt for the following CAZy families: GH1, GH2, GH3, GH11, GH26, GH30, GH43, GH51, GH52, GH54, GH116, and GH120.
+
 ## 1. Number of bacterial proteins in GH3
 
 **There are 40090 bacterial proteins in GH3.**
@@ -47,7 +49,7 @@ INNER JOIN Ecs ON Genbanks_Ecs.ec_id = Ecs.ec_id
 WHERE Ecs.ec_number = '3.2.1.37'
 ```
 
-This identified CAZy contained **75** bacterial proteins annotated with the EC number 3.2.1.37.
+This identified CAZy contained **560** bacterial proteins annotated with the EC number 3.2.1.37.
 
 The following command was used to identify the CAZy families to which these proteins belonged.
 
@@ -61,9 +63,27 @@ INNER JOIN CazyFamilies ON Genbanks_CazyFamilies.family_id = CazyFamilies.family
 WHERE Ecs.ec_number = '3.2.1.37'
 ```
 
-The output from this query can be found [here](https://github.com/HobnobMancer/Foltanyi_et_al_2022/blob/master/sql_queries/query_2_ec_3-2-1-37_families.csv).
+**75** of the protein belonged to GH3.
 
-All these proteins belonged to CAZy family GH3. Some proteins contained an additional CBM6 domain.
+All EC 3.2.1.37 proteins were included across 13 families:  
+**GHs:**  
+- GH3
+- GH5
+- GH43
+- GH51
+- GH52
+- GH54
+- GH120  
+
+**CMBs:**
+- CBM2
+- CBM5
+- CBM6
+- CBM13
+- CBM22
+- CBM42
+
+The output from this query can be found [here](https://github.com/HobnobMancer/Foltanyi_et_al_2022/blob/master/sql_queries/query_2_ec_3-2-1-37_families.csv).
 
 ## 3. Get PDB accessions
 
@@ -82,7 +102,7 @@ WHERE Ecs.ec_number = '3.2.1.37'
 
 However, this returned 0 rows from the database. No bacterial proteins with the EC number 3.2.1.37 were associated with a PDB accession in UniProt.
 
-Similarly, the following command was used to retrieve the PDB accessions of all proteins in GH3.
+Similarly, the following command was used to retrieve the PDB accessions of all proteins in The families containing proteins with the EC number 3.2.1.37.
 
 ```sql
 SELECT DISTINCT Genbanks.genbank_accession, CazyFamilies.family, Pdbs.pdb_accession
@@ -90,10 +110,16 @@ FROM Genbanks
 INNER JOIN Genbanks_CazyFamilies ON Genbanks.genbank_id = Genbanks_CazyFamilies.genbank_id
 INNER JOIN CazyFamilies ON Genbanks_CazyFamilies.family_id = CazyFamilies.family_id
 INNER JOIN Pdbs ON Genbanks.genbank_id = Pdbs.genbank_id
-WHERE CazyFamilies.family = 'GH3'
+WHERE CazyFamilies.family = 'GH3' OR 
+	CazyFamilies.family = 'GH5' OR
+	CazyFamilies.family = 'GH43' OR
+	CazyFamilies.family = 'GH51' OR
+	CazyFamilies.family = 'GH52' OR
+	CazyFamilies.family = 'GH54' OR
+	CazyFamilies.family = 'GH120'
 ```
 
-This returned **26 bacterial proteins** with PDB accessions listed in UniProt.
+This returned **26 bacterial proteins** with PDB accessions listed in UniProt, all of which belonged ot GH3.
 
 ## 4. Protein name
 
