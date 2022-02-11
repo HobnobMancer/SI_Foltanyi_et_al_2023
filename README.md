@@ -251,37 +251,15 @@ Tree reconstructions are placed in the `tree` directory. The best estimate tree 
 
 ## Selecting models for molecular replacement
 
-Via SQL and an SQL database browser, the local CAZyme database was queried to retrieve the records of proteins that:
-- From the bacteria phylum Thermotogae
-- From any of the following CAZy families:
-  - GH1
-  - GH2
-  - GH3
-  - GH11
-  - GH26
-  - GH30
-  - GH43
-  - GH51
-  - GH52
-  - GH54
-  - GH116
-  - GH120
-  - CE1
-  - CE2
-  - CE3
-  - CE4
-  - CE5
-  - CE6
-  - CE7
-  - CE12
-  - CE16
-- Annotated with the EC number EC3.2.1.37 AND/OR contained any of the following in their protein name retrieved from UniProt:
-  - β-glucosidase
-  - β glucosidase
-  - beta-glucosidase
-  - beta glucosidase
+Via SQL and an SQL database browser, the local CAZyme database was queried with the aim to retrieve functionally relevant proteins, to generate an MSA of functional relevant proteins for molecular modeling. 
 
 A list of all SQL queries performed and the output is presented [here](https://hobnobmancer.github.io/Foltanyi_et_al_2022/sql_queries/).
+
+In summary, from the CAZy families of interest, 560 proteins were annotated with the EC number 3.2.1.37, indicating they potentially had the function of interest.
+
+`cazy_webscraper` was used to retrieve the GenBank protein sequences for these 560 proteins.
+
+[`MMSeq2`](https://github.com/soedinglab/MMseqs2) was used to cluster the proteins with a percentage identity and coverage cut-off of 80%. This produced XX clusters.
 
 ## Identification of neighbouring genes
 
