@@ -126,3 +126,7 @@ blastp.plot.static <- get_static_plot(rep_seq_blastp.parsed)
 
 blastp.plot.interactive
 ```
+
+The cluster CBK69950.1 contained 33 protein sequences, QJR11213.1	28 protein sequences, CDG29680.1 17 protein sequences, and AGE22437.1	contaiend 13 protein sequences.  
+
+The BSR infer that the two smaller clusters (CDG29680.1 and AGE22437.1) could potentially be combined to create a large cluster. The proteins in this new combined clusters could then be aligned to create an multisequence alignment (MSA) of functionally relevant proteins for molecular modeling. Conversely, the BSR inferred the two larger clusters should be kept separate ( and not combined) to create a high quality MSA (i.e. minimal gaps and readily identifiable consensus sequences) of the proteins within each cluster.
