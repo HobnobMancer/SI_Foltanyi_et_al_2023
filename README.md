@@ -249,6 +249,8 @@ Tree reconstructions are placed in the `tree` directory. The best estimate tree 
 
 > Alexey M. Kozlov, Diego Darriba, Tomáš Flouri, Benoit Morel, and Alexandros Stamatakis (2019) RAxML-NG: A fast, scalable, and user-friendly tool for maximum likelihood phylogenetic inference. Bioinformatics, btz305 [doi:10.1093/bioinformatics/btz305](https://doi.org/10.1093/bioinformatics/btz305)
 
+
+
 ## Selecting models for molecular replacement
 
 Via SQL and an SQL database browser, the local CAZyme database was queried with the aim to retrieve functionally relevant proteins, to generate an MSA of functional relevant proteins for molecular modeling. 
@@ -259,11 +261,88 @@ In summary, from the CAZy families of interest, 560 proteins were annotated with
 
 `cazy_webscraper` was used to retrieve the GenBank protein sequences for these 560 proteins.
 
-[`MMSeq2`](https://github.com/soedinglab/MMseqs2) was used to cluster the proteins with a percentage identity and coverage cut-off of 80%. This produced XX clusters.
+[`MMSeq2`](https://github.com/soedinglab/MMseqs2) was used to cluster the proteins with a percentage identity and coverage cut-off of 80%.
+
+To repeat this analysis, run the following code from the root of the repository, using a fasta file called ec_proteins_seqs.fasta
+which contains all bacterial proteins retieved with the EC number of interest. This analysis also uses the Python script `get_clusters.py`, which 
+parses the MMseq output to create a `csv` file with the size of each cluster, and a `JSON` file containing the GenBank accessions for each cluster.
+
+```bash
+# make an output directory
+mkdir mmseq_cluster_80
+
+# create the db
+mmseqs createdb ec_proteins_seqs.fasta mmseq_cluster_80/mmseq_db_80
+
+# cluster the proteins
+mmseqs cluster mmseq_cluster_80/mmseq_db_80 \
+  mmseq_cluster_80/mmseq_db_80_output \
+  mmseq_cluster_80/mmseq_db_80/tmp \
+  --min-seq-id 0.8 -c 0.8
+
+# create tsv
+mmseqs createtsv \
+  cluster mmseq_cluster_80/mmseq_db_80 \
+  cluster mmseq_cluster_80/mmseq_db_80 \
+  mmseq_cluster_80/mmseq_db_80_output \
+  mmseq_cluster_80/mmseq_db_80_output.tsv
+
+# get summary
+python3 get_clusters.py \
+  mmseq_cluster_80/mmseq_db_80_output.tsv \
+  mmseq_cluster_80/mmseq_cluster_summary.csv \
+  mmseq_cluster_80/mmseq_clusters.json
+```
+
+This produced 420 clusters. Only 2 clusters contained more than 10 proteins, each contained 17 proteins sequences. All remaining clusters contained less than 10 proteins, 366 clusters contained only 1 proteins.
+
+`MMSeq2` was used to cluster the protein again, but with a percentage identity and coverage cut-off of 70% with the aim to increase the cluster sizes.
+
+To repeat this analysis, run the following code from the root of the repository, using a fasta file called ec_proteins_seqs.fasta
+which contains all bacterial proteins retieved with the EC number of interest.
+
+```bash
+# make an output directory
+mkdir mmseq_cluster_70
+
+# create the db
+mmseqs createdb ec_proteins_seqs.fasta mmseq_cluster_70/mmseq_db_70
+
+# cluster the proteins
+mmseqs cluster mmseq_cluster_70/mmseq_db_70 \
+  mmseq_cluster_70/mmseq_db_70_output \
+  mmseq_cluster_70/mmseq_db_70/tmp \
+  --min-seq-id 0.7 -c 0.7
+
+# create tsv
+mmseqs createtsv \
+  cluster mmseq_cluster_70/mmseq_db_70 \
+  cluster mmseq_cluster_70/mmseq_db_70 \
+  mmseq_cluster_70/mmseq_db_70_output \
+  mmseq_cluster_70/mmseq_db_70_output.tsv
+
+# get summary
+python3 get_clusters.py \
+  mmseq_cluster_70/mmseq_db_70_output.tsv \
+  mmseq_cluster_70/mmseq_cluster_summary.csv \
+  mmseq_cluster_70/mmseq_clusters.json
+```
+
+This produced 346 clusters. The 4 largest clusters contained 33, 28, 17 and 13 proteins each. All remaining clusters contained less than 10 proteins, 227 of which contained only 1 protein.
+
+A representative sequence from each of the 4 largest clusters from this second clustering were compared using BLASTP all-versus-all, using the Python script `run_blastp.py` from the Python package [`pyrewton` DOI:10.5281/zenodo.3876218)](https://github.com/HobnobMancer/pyrewton).
+
+The R notebook `cluster_analysis.Rmd` was used to parse and analyse the results. This notebook can be viewed [here](https://hobnobmancer.github.io/Foltanyi_et_al_2022/supplementary/cluster_analysis.html).
+
+
+
+
 
 ## Identification of neighbouring genes
 
 ...
+
+
 
 ## Identifying co-evolving CAZy families
 
