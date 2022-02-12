@@ -1,0 +1,128 @@
+---
+title: "Exploration of the Ec3.2.1.37 Bacterial Protein Clusters From CAZy"
+author: "Emma E. M. Hobbs"
+date: "Feb 2022"
+output: 
+  bookdown::html_document2:
+    toc: true
+    toc_float:
+      toc_collapsed: false
+    number_sections: true
+    theme: lumen
+---
+
+# Intro and Method
+
+This notebook contains all code for parsing and analysis the protein clusters generated using [`MMSeq2`](https://github.com/soedinglab/MMseqs2).
+
+```{r setup, include=FALSE}
+# imports
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+library('kableExtra')
+library(data.table)
+library('ggplot2')
+library("dplyr")
+library("GGally")
+library(knitr)
+library(tidyverse)
+library(RColorBrewer)
+library(cowplot)
+library(viridis)
+library(plotly)
+```
+
+```{r loadData, include=FALSE}
+# import the data
+rep_seq_blastp <- read.csv("cluster_rep_blastp.tsv", header=FALSE, sep="\t")
+```
+
+# Analysing the BLASTP all-versus-all results
+
+A representative sequence from each of the 4 largest clusters compiled using `MMSeq2` (with a percentage identity and coverage of cut-off of 70%) was extracted from a local CAZyme database using `cazy_webscraper`.
+
+Each representative sequence was identified by using the GenBank accession assigned as the name of the cluster by `MMSeq2`.
+
+The 4 representative sequences were analysed using BLASTP. The Python script `run_blastp.py` from the Python package [`pyrewton` DOI:10.5281/zenodo.3876218)](https://github.com/HobnobMancer/pyrewton) was used to run the BLASTP all-versus-all analysis.
+
+The table compiled by BLASTP contains the following columns:
+- qseqid
+- sseqid
+- pident
+- length
+- mismatch
+- gapopen
+- qstart
+- qend
+- sstart
+- send
+- evalue
+- bitscore
+
+In order to compare each of the pair-wise-alignment we need to calculate the Blast Score Ratio (SCR) to normalise for length.  
+
+The bitscore reported by BLAST is the sum of the qualities of the aligned symbols over the whole alignment. This is an accurate measure of the alignment strength, but long sequences tend to have higher bitscores than short sequences, even when the matches are of about the same quality. To correct for this length effect, we can calculate a normalised bitscore where:
+
+normalised bitscore = bitscore / query length  
+
+```{r blastpAnalysis, include=FALSE}
+parse_data <- function(df){
+  # change column names
+  setnames(
+    df,
+    old = c('V1','V2','V3','V4','V5','V6','V7','V8','V9'),
+    new = c('qseqid','sseqid','pident','cov','qlen','slen','alen','bitscore','evalue')
+  )
+  # calculate the BSR
+  df$bsr = df$bitscore/df$qlen
+  
+  return(df)
+}
+
+get_interactive_plot <- function(df) {
+  data <- df %>%
+    mutate(text = paste0("Query seq ID: ", qseqid, "\n", "Ref seq ID: ", sseqid, "\n", "BSR: ",round(bsr,3)))
+  
+  p <- ggplot(data, aes(qseqid, sseqid, fill= bsr, text=text)) + 
+    geom_tile() +
+    scale_fill_viridis(discrete=FALSE) +
+    xlab("Query seq ID") + 
+    ylab("Ref seq ID") +
+    theme(axis.text.x = element_text(angle=90, vjust=.5, hjust=1))
+  p <- ggplotly(p, tooltip="text")
+  return(p)
+}
+
+get_static_plot <- function(df) {
+  p <- ggplot(df, aes(qseqid, sseqid, fill= bsr)) + 
+    geom_tile() +
+    scale_fill_viridis(discrete=FALSE) +
+    xlab("Query seq ID") + 
+    ylab("Ref seq ID") +
+    theme(axis.text.x = element_text(angle=90, vjust=.5, hjust=1))
+  
+  return(p)
+}
+```
+
+Table \@ref(tab:blastpDF) presents the raw output from BLASTP as well as the BSR from the all-verus-all BLASTP analysis of the representative sequences from the 4 largest clusters compiled by `MMSeq2`.
+
+```{r blastpDF, echo=FALSE, fig.cap="Summary statistics of CAZyme classifiers performances of binary CAZyme/non-CAZyme prediction. Data collected is the mean of call calculated statistical parameters across all test sets, plus and minus the standard devliation. All figures are rounded to 4 decimal places."}
+rep_seq_blastp.parsed <- parse_data(rep_seq_blastp)
+
+kable(rep_seq_blastp.parsed, caption="Output from BLASTP all-vs-all analysis of the representative sequences from the 4 larges protein clusters", align='c') %>% kable_styling(full_width = F)
+```
+
+Figure \@ref(fig:blastpFIG) is an interactive plot presenting the BSR from the all-verus-all BLASTP analysis of the representative sequences from the 4 largest clusters compiled by `MMSeq2`.
+
+To view the specific BSR for each comparison, hover over the plot and a tooltip will appear and will present the GenBank accessions of the corresponding proteins as well as the specific BSR value (to 3dp).
+
+```{r blastpFIG, echo=FALSE, fig.cap="One-dimensional scatter plot of specificity scores of CAZyme and non-CAZyme predictions per test set, overlaying box plot of standard deviation."}
+blastp.plot.interactive <- get_interactive_plot(rep_seq_blastp.parsed)
+
+# htmlwidgets::saveWidget(blastp.plot.interactive, "cluster_rep_results.html")
+
+blastp.plot.static <- get_static_plot(rep_seq_blastp.parsed)
+# pdf(blastp.plot.static, file="pl_cluster_analysis/xp_003719456/xp_003719456.static.pdf", width=10, height=8)
+
+blastp.plot.interactive
+```
