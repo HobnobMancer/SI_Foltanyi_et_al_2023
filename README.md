@@ -351,14 +351,11 @@ cw_extract_db_sequences cazy_database.db genbank CDG29680_1.txt --fasta_file CDG
 cw_extract_db_sequences cazy_database.db genbank QJR11213_1.txt --fasta_file QJR11213_1.fasta -f -n
 ```
 
-The Python script `run_blastp.py` from [`pyrewton` DOI:10.5281/zenodo.3876218)](https://github.com/HobnobMancer/pyrewton) was used to run a BLASTP all-vs-all analysis for each cluster. The results of which can be viewed [here]().
+The Python script `run_blastp.py` from [`pyrewton` DOI:10.5281/zenodo.3876218)](https://github.com/HobnobMancer/pyrewton) was used to run a BLASTP all-vs-all analysis for each cluster. The results of which can be viewed [here](https://hobnobmancer.github.io/Foltanyi_et_al_2022/supplementary/cluster_data/cluster_analysis.html#4_Sequence_divergence_in_individual_clusters).
 
-`MMSeq2` was also used to align the protein sequences of each cluster, then [`trimAl`](http://trimal.cgenomics.org/) was used to trim the resulting MSAs. Each resulting, trimmed, MSA can be located at the following: [LINKS TO BE ADDED]
-- [AGE22437_1]()
-- [CBK6950_1]()
-- [CDG29680_1]()
-- [QJR11213_1]()
+The BLASTP all-versus-all of the representative proteins from each cluster inferred the AGE224371.1 and CDG296801.1 clusters had relatively low sequence diveregence across all proteins from the two clusters. To futher explore this, a BLASTP all-versus-all of all proteins in the two clusters was performed, and demonstrated high sequence similarity across the two clusters. The BLAST score ratios of the BLASTP analysis can be found [here](https://hobnobmancer.github.io/Foltanyi_et_al_2022/supplementary/cluster_data/cluster_analysis.html#51_AGE224371_and_CDG296801).
 
+The sequence diveregence when pooling all proteins from the 4 clusters was also explored, and demonstrated a relatively high sequence similarity across the entire protein pool. The BLAST score ratios of the BLASTP analysis can be found [here](https://hobnobmancer.github.io/Foltanyi_et_al_2022/supplementary/cluster_data/cluster_analysis.html#52_Sequence_divergence_across_all_4_clusters).
 
 
 
