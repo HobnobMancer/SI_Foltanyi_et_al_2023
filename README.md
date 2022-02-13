@@ -42,6 +42,14 @@ The method is split into four sections:
 4. [Identifying co-evolving CAZy families](#identifying-co-evolving-cazy-families)
 
 
+## Data, supplementary and scripts
+
+All **scripts** used in this analysis are stored in the `scripts` directory in the repo.  
+
+**Input data** for the analysis, such as FASTA files, are stored in the `data` directory.  
+
+**Output** data from this analysis, such as R markdown notebooks and MSA files, are stored in the `supplementary` directory.
+
 ## Construct a local CAZyme database
 
 `cazy_webscraper` [Hobbs et al., 2021] (DOI:) was used to construct a local CAZyme database.
@@ -357,7 +365,58 @@ The BLASTP all-versus-all of the representative proteins from each cluster infer
 
 The sequence diveregence when pooling all proteins from the 4 clusters was also explored, and demonstrated a relatively high sequence similarity across the entire protein pool. The BLAST score ratios of the BLASTP analysis can be found [here](https://hobnobmancer.github.io/Foltanyi_et_al_2022/supplementary/cluster_data/cluster_analysis.html#52_Sequence_divergence_across_all_4_clusters).
 
+Owing to the overall high sequence similarity across the entire protein pool, all 91 protein sequences were aligned using `MAFFT`.
 
+The total number of proteins in across all 4 clusters was 91. This included 0 proteins with PDB accessions listed in UniProt. The following SQL command was used to retrive the results:
+
+```sql
+WITH Ec_Query (ec_gbk_acc) AS (
+	SELECT DISTINCT Genbanks.genbank_accession
+	FROM Genbanks
+	INNER JOIN Genbanks_Ecs ON Genbanks.genbank_id = Genbanks_Ecs.genbank_id
+	INNER JOIN Ecs ON Genbanks_Ecs.ec_id = Ecs.ec_id
+	WHERE Ecs.ec_number = '3.2.1.37'
+)
+SELECT DISTINCT Genbanks.genbank_accession, Pdbs.pdb_accession
+FROM Genbanks
+INNER JOIN Pdbs ON Genbanks.genbank_id = Pdbs.genbank_id
+LEFT JOIN Ec_Query ON Genbanks.genbank_accession = Ec_Query.ec_gbk_acc
+WHERE (Genbanks.genbank_accession IN Ec_Query)
+```
+
+To further expand the pool of potentially functionally relevant proteins, the proteins from the CAZy families of interest (listed below) which were not included in the clusters were BLASTP queries against the members of the 4 clusters. Specifically:
+
+1. `cazy_webscraper` was used to extract the GenBank protein sequences for all proteins in the Glycoside Hydrolase families of interest:
+```bash
+cw_extract_db_sequences \
+  cazy_database.db \
+  genbank \
+  --families GH1,GH2,GH3,GH11,GH26,GH30,GH43,GH51,GH52,GH54,GH116,GH120 \
+  --fasta_file all_fam_seqs.fasta \
+  -f -n
+```
+
+2. The Python script `remove_duplicate_seqs.py` was run from the root of the repository and used to remove proteins from the `all_fam_seqs.fasta` file (containing protein sequences for the GH CAZy families of interest) that were already in the one of the 4 clusters of interest.
+```bash
+python3 scripts/molecular_modeling/remove_duplicate_seqs.py \
+  data/molecular_modeling/all_fam_seqs.fasta
+```
+
+3. The Python script `run_blastp_search.py` was run from the root of the repository to query the remaining proteins sequences from the GH CAZy families of interset against the 91 proteins pooled from the 4 `MMSeq2` clusters of interest.
+
+4. The R note [`cluster_analysis.Rmd`]() was used to parse, analyse and filter the results.
+
+A cut-off of 70% percentage identity was applied. Only protein sequences with a 70% percentage identity against the majoirty of protein sequences pooled from the 4 `MMSeq2` clusters of interest were added to the protein pool. These were:
+- QFT14636.1
+- VDR25565.1
+- VDZ67166.1
+- VED48126.1
+- VEI47712.1
+- VTO17894.1
+- VTP66272.1
+- VTP66274.1
+
+`MAFFT` was then used to align the new protein pool of 99 proteins. The resulting MSA in fasta and clustal format are located in the [supplementary]().
 
 ## Identification of neighbouring genes
 
