@@ -41,6 +41,7 @@ CDG29680_1_blastp <- read.csv("cluster_sequences/CDG29680_1_blastp.tsv", header=
 QJR11213_1_blastp <- read.csv("cluster_sequences/QJR11213_1_blastp.tsv", header=FALSE, sep="\t")
 AGE22437_1_CDG29680_1_blastp <- read.csv("cluster_sequences/AGE22437_1_CDG29680_1_blastp.tsv", header=FALSE, sep="\t")
 all_clusters_blastp <- read.csv("cluster_sequences/all_clusters_blastp.tsv", header=FALSE, sep="\t")
+remaining_fam_seqs_blastp <- read.csv("cluster_sequences/remaining_fam_seqs_blastp.tsv", header=FALSE, sep="\t")
 ```
 
 # Method
@@ -83,13 +84,13 @@ parse_data <- function(df){
 
 get_interactive_plot <- function(df) {
   data <- df %>%
-    mutate(text = paste0("Query seq ID: ", qseqid, "\n", "Ref seq ID: ", sseqid, "\n", "BSR: ",round(bsr,3)))
+    mutate(text = paste0("Query seq ID: ", qseqid, "\n", "Subject seq ID: ", sseqid, "\n", "BSR: ",round(bsr,3)))
   
   p <- ggplot(data, aes(qseqid, sseqid, fill= bsr, text=text)) + 
     geom_tile() +
     scale_fill_viridis(discrete=FALSE) +
     xlab("Query seq ID") + 
-    ylab("Ref seq ID") +
+    ylab("Subject seq ID") +
     theme(axis.text.x = element_text(angle=90, vjust=.5, hjust=1))
   p <- ggplotly(p, tooltip="text")
   return(p)
@@ -100,7 +101,7 @@ get_static_plot <- function(df) {
     geom_tile() +
     scale_fill_viridis(discrete=FALSE) +
     xlab("Query seq ID") + 
-    ylab("Ref seq ID") +
+    ylab("Subject seq ID") +
     theme(axis.text.x = element_text(angle=90, vjust=.5, hjust=1))
   
   return(p)
@@ -212,3 +213,72 @@ all_clusters_blastp.plot.interactive <- get_interactive_plot(all_clusters_blastp
 all_clusters_blastp.plot.interactive
 ```
 
+# Remaining family proteins against the clusters
+
+The total number of proteins in across all 4 clusters was 91. This included 0 proteins with PDB accessions listed in UniProt. The following SQL command was used to retrive the results:
+
+```{r, eval=FALSE}
+WITH Ec_Query (ec_gbk_acc) AS (
+	SELECT DISTINCT Genbanks.genbank_accession
+	FROM Genbanks
+	INNER JOIN Genbanks_Ecs ON Genbanks.genbank_id = Genbanks_Ecs.genbank_id
+	INNER JOIN Ecs ON Genbanks_Ecs.ec_id = Ecs.ec_id
+	WHERE Ecs.ec_number = '3.2.1.37'
+)
+SELECT DISTINCT Genbanks.genbank_accession, Pdbs.pdb_accession
+FROM Genbanks
+INNER JOIN Pdbs ON Genbanks.genbank_id = Pdbs.genbank_id
+LEFT JOIN Ec_Query ON Genbanks.genbank_accession = Ec_Query.ec_gbk_acc
+WHERE (Genbanks.genbank_accession IN Ec_Query)
+```
+
+To further expand the pool of potentially functionally relevant proteins, the proteins from the CAZy families of interest (listed below) which were not included in the clusters were BLASTP queries against the members of the 4 clusters.
+
+**Glycoside Hydrolase CAZy families of interest:**
+- GH1
+- GH2
+- GH3
+- GH11
+- GH26
+- GH30
+- GH43
+- GH51
+- GH52
+- GH54
+- GH116
+- GH120
+
+A percentage identity cut-off of 70% was applied, similar to the clustering cut-off applied by `MMSeq2`. The BSR was the calculated and a heatmap plotted, which is presented in figure \@ref{fig:remainingFamsBlastp}.
+
+```{r remainingFamsBlastp, echo=FALSE, fig.cap="Heatmap of BSR between GH proteins with a percentage identitity of greater than or equal to 70% against proteins from the 4 largest `MMSeq2` protein clusters of proteins annotated with the EC number 3.2.1.37"}
+remaining_fam_seqs_blastp.parse <- parse_data(remaining_fam_seqs_blastp)
+
+# filter for pair-wise alignments of >= 70%
+subset_blastp <- remaining_fam_seqs_blastp.parse[which(remaining_fam_seqs_blastp.parse$pident >= 70), ]
+
+data <- subset_blastp %>%
+  mutate(text = paste0("Query seq ID: ", qseqid, "\n", "Subject seq ID: ", sseqid, "\n", "BSR: ",round(bsr,3)))
+
+subset_blastp.p <- ggplot(data, aes(qseqid, sseqid, fill= bsr, text=text)) + 
+  geom_tile() +
+  scale_fill_viridis(discrete=FALSE) +
+  xlab("Query seq ID") + 
+  ylab("Subject seq ID") +
+  theme(axis.text.x = element_text(angle=90, vjust=.5, hjust=1))
+subset_blastp.p <- ggplotly(subset_blastp.p, tooltip="text")
+subset_blastp.p
+```
+
+After filtering for a percentage identity of greater than or equal to 70%, the BSR was plotted for the remaining proteins. The majority of the remaining proteins produced a BSR of less than 1. However, the following query proteins produced a high BSR (of 1.5-1.9) against the the majority of the proteins in the protein clusters:
+- QFT14636.1
+- VDR25565.1
+- VDZ67166.1
+- VED48126.1
+- VEI47712.1
+- VTO17894.1
+- VTP66272.1
+- VTP66274.1
+
+Where no data is presented in the figure \@ref{fig:remainingFamsBlastp} the specific pairwise alignment between the query and subject protein sequences did not have a percentage identity of greater than or equal to 70%. In order to produce a MSA with a clear consensus sequence for molecular modeling, proteins including in the MSA need to have have sequence identity with the majority of other proteins in the MSA. Therefore, proteins from the BLASTP search of the remaining proteins from the CAZy families of interest against the 4 largest clusters from `MMSeq2` which did **not** have a percentage identity of greater than or equal to 70% against the majority of proteins from the 4 largest `MMSeq2` clusters were **not** added to the collection of proteins to be included in the MSA.
+
+The proteins which did have a percentage identity of greater than or equal to 70% against high BSR (of 1.5-1.9) against the the majority of the proteins in the protein clusters the majority of proteins from the 4 largest `MMSeq2` clusters were included in the collection of proteins to be included in the MSA. These were the 8 proteins with a high BSR (of 1.5-1.9) against the the majority of the proteins in the protein clusters. None of these proteins were linked to any PDB accessions in UniProt.
