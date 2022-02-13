@@ -366,6 +366,12 @@ The BLASTP all-versus-all of the representative proteins from each cluster infer
 The sequence diveregence when pooling all proteins from the 4 clusters was also explored, and demonstrated a relatively high sequence similarity across the entire protein pool. The BLAST score ratios of the BLASTP analysis can be found [here](https://hobnobmancer.github.io/Foltanyi_et_al_2022/supplementary/cluster_data/cluster_analysis.html#52_Sequence_divergence_across_all_4_clusters).
 
 Owing to the overall high sequence similarity across the entire protein pool, all 91 protein sequences were aligned using `MAFFT`.
+```bash
+# FASTA output
+mafft --thread 12 mafft --thread 12 data/cluster_data/all_clusters.fasta > supplementary/cluster_data/all_clusters_aligned.fasta
+# CLUSTAL output
+mafft --thread 12 --clustalout data/cluster_data/all_clusters.fasta > supplementary/cluster_data/all_clusters_aligned.clustal
+```
 
 The total number of proteins in across all 4 clusters was 91. This included 0 proteins with PDB accessions listed in UniProt. The following SQL command was used to retrive the results:
 
@@ -416,7 +422,16 @@ A cut-off of 70% percentage identity was applied. Only protein sequences with a 
 - VTP66272.1
 - VTP66274.1
 
+The new protein pool was stored in the FASTA file [`expanded_protein_pool.fasta`]().
+
 `MAFFT` was then used to align the new protein pool of 99 proteins. The resulting MSA in fasta and clustal format are located in the [supplementary]().
+```bash
+# FASTA output
+mafft --thread 12 mafft --thread 12 data/cluster_data/expanded_protein_pool.fasta > supplementary/cluster_data/expanded_protein_pool_aligned.fasta
+# CLUSTAL output
+mafft --thread 12 --clustalout data/cluster_data/expanded_protein_pool.fasta > supplementary/cluster_data/expanded_protein_pool_aligned.clustal
+```
+
 
 ## Identification of neighbouring genes
 
