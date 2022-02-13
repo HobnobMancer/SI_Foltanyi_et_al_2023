@@ -11,7 +11,7 @@ output:
     theme: lumen
 ---
 
-# Intro and Method
+# Introduction
 
 This notebook contains all code for parsing and analysis the protein clusters generated using [`MMSeq2`](https://github.com/soedinglab/MMseqs2).
 
@@ -34,15 +34,18 @@ library(plotly)
 ```{r loadData, include=FALSE}
 # import the data
 rep_seq_blastp <- read.csv("cluster_rep_blastp.tsv", header=FALSE, sep="\t")
+
+AGE22437_1_blastp <- read.csv("cluster_sequences/AGE22437_1_blastp.tsv", header=FALSE, sep="\t")
+CBK6950_1_blastp <- read.csv("cluster_sequences/CBK6950_1_blastp.tsv", header=FALSE, sep="\t")
+CDG29680_1_blastp <- read.csv("cluster_sequences/CDG29680_1_blastp.tsv", header=FALSE, sep="\t")
+QJR11213_1_blastp <- read.csv("cluster_sequences/QJR11213_1_blastp.tsv", header=FALSE, sep="\t")
+AGE22437_1_CDG29680_1_blastp <- read.csv("cluster_sequences/AGE22437_1_CDG29680_1_blastp.tsv", header=FALSE, sep="\t")
+all_clusters_blastp <- read.csv("cluster_sequences/all_clusters_blastp.tsv", header=FALSE, sep="\t")
 ```
 
-# Analysing the BLASTP all-versus-all results
+# Method
 
-A representative sequence from each of the 4 largest clusters compiled using `MMSeq2` (with a percentage identity and coverage of cut-off of 70%) was extracted from a local CAZyme database using `cazy_webscraper`.
-
-Each representative sequence was identified by using the GenBank accession assigned as the name of the cluster by `MMSeq2`.
-
-The 4 representative sequences were analysed using BLASTP. The Python script `run_blastp.py` from the Python package [`pyrewton` DOI:10.5281/zenodo.3876218)](https://github.com/HobnobMancer/pyrewton) was used to run the BLASTP all-versus-all analysis.
+To explore the degree of sequence divergencen and similarity in each of the clusters created by `MMSeq2`, all-versus-all BLASTP analysis was performed. In every instance, the script `run_blastp.py` from the Python package [`pyrewton` DOI:10.5281/zenodo.3876218)](https://github.com/HobnobMancer/pyrewton) was used to run the BLASTP all-versus-all analysis.
 
 The table compiled by BLASTP contains the following columns:
 - qseqid
@@ -58,7 +61,7 @@ The table compiled by BLASTP contains the following columns:
 - evalue
 - bitscore
 
-In order to compare each of the pair-wise-alignment we need to calculate the Blast Score Ratio (SCR) to normalise for length.  
+In order to compare each of the pair-wise-alignment we need to calculate the Blast Score Ratio (SCR) to normalise for length. This was first presented by [Rasko _et al._, 2005](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-6-2).  
 
 The bitscore reported by BLAST is the sum of the qualities of the aligned symbols over the whole alignment. This is an accurate measure of the alignment strength, but long sequences tend to have higher bitscores than short sequences, even when the matches are of about the same quality. To correct for this length effect, we can calculate a normalised bitscore where:
 
@@ -104,6 +107,13 @@ get_static_plot <- function(df) {
 }
 ```
 
+
+# Preliminary comparison between clusters
+
+A representative sequence from each of the 4 largest clusters compiled using `MMSeq2` (with a percentage identity and coverage of cut-off of 70%) was extracted from a local CAZyme database using `cazy_webscraper`.
+
+Each representative sequence was identified by using the GenBank accession assigned as the name of the cluster by `MMSeq2`.
+
 Table \@ref(tab:blastpDF) presents the raw output from BLASTP as well as the BSR from the all-verus-all BLASTP analysis of the representative sequences from the 4 largest clusters compiled by `MMSeq2`.
 
 ```{r blastpDF, echo=FALSE, fig.cap="Summary statistics of CAZyme classifiers performances of binary CAZyme/non-CAZyme prediction. Data collected is the mean of call calculated statistical parameters across all test sets, plus and minus the standard devliation. All figures are rounded to 4 decimal places."}
@@ -130,3 +140,75 @@ blastp.plot.interactive
 The cluster CBK69950.1 contained 33 protein sequences, QJR11213.1	28 protein sequences, CDG29680.1 17 protein sequences, and AGE22437.1	contaiend 13 protein sequences.  
 
 The BSR infer that the two smaller clusters (CDG29680.1 and AGE22437.1) could potentially be combined to create a large cluster. The proteins in this new combined clusters could then be aligned to create an multisequence alignment (MSA) of functionally relevant proteins for molecular modeling. Conversely, the BSR inferred the two larger clusters should be kept separate ( and not combined) to create a high quality MSA (i.e. minimal gaps and readily identifiable consensus sequences) of the proteins within each cluster.
+
+# Sequence divergence in individual clusters
+
+To explore the sequence divergence in each of the 4 largest clusters created by `MMSeq2`, for each cluster the protein sequences were retrieved using `cazy_webscraper` and were written to a FASTA file. The protein sequences were then compared to one another in a BLASTP all-versus-all analysis.
+
+## AGE22437.1
+
+Figure \@ref(fig:AGE22437) presents the heatmap of the all-versus-all BLASTP analysis of the 13 protein sequences in the AGE22437.1 cluster. The sequence BAM46395.1 has the least sequence similarity to all other members of the cluster. Overall, the cluster has a relatively similar sequence as inferred from the BSR.
+
+```{r AGE22437, echo=FALSE, fig.cap="Heatmap of all-versus-all BLASTP of the AGE22437.1 cluster"}
+AGE22437_1_blastp.parse <- parse_data(AGE22437_1_blastp)
+AGE22437_1.blastp.plot.interactive <- get_interactive_plot(AGE22437_1_blastp.parse)
+AGE22437_1.blastp.plot.interactive
+```
+
+## CBK6950.1
+
+Figure \@ref(fig:CBK6950) presents the heatmap of the all-versus-all BLASTP analysis of the 33 protein sequences in the CBK6950.1 cluster. Except for 2 instances, every pair-wise alignment produced a BSR of greater than 1.3 with many with a BRS greater than 1.5. This infers a strong sequence similarity across all proteins in the cluster. However,  
+- CBL10126.1 against VEI47713.1
+- CBL13352.1 against VEI47713.1
+- VEI47713.1 against CBL10126.1
+- VEI47713.1 against CBL13352.1
+produced BRS of 0.04. 
+
+```{r CBK6950, echo=FALSE, fig.cap="Heatmap of all-versus-all BLASTP of the CBK6950.1 cluster"}
+CBK6950_1_blastp.parse <- parse_data(CBK6950_1_blastp)
+CBK6950_1_blastp.plot.interactive <- get_interactive_plot(CBK6950_1_blastp.parse)
+CBK6950_1_blastp.plot.interactive
+```
+
+## CDG29680.1
+
+Figure \@ref(fig:CDG29680) presents the heatmap of the all-versus-all BLASTP analysis of the 17 protein sequences in the CDG29680.1 cluster. As with CBK6950.1, overall all proteins in the cluster have a similar protein sequence to one another as inferred from the high (greater than 1.4) BSR. However, there are a few instances of pairwise alignments with BSRs of less than 0.5.
+
+```{r CDG29680, echo=FALSE, fig.cap="Heatmap of all-versus-all BLASTP of the CDG29680.1 cluster"}
+CDG29680_1_blastp.parse <- parse_data(CDG29680_1_blastp)
+CDG29680_1_blastp.plot.interactive <- get_interactive_plot(CDG29680_1_blastp.parse)
+CDG29680_1_blastp.plot.interactive
+```
+
+## QJR11213.1
+
+Figure \@ref(fig:QJR11213) presents the heatmap of the all-versus-all BLASTP analysis of the 28 protein sequences in the QJR11213.1 cluster. The heatmap shows clusters of proteins with high sequence similarity, as inferred from the high (greater than 1.8) BSR. AK102785.1, QJR11213.1 and QJR15254.1 both relatively lower BSRs of approximately 1.4 against all other proteins in the cluster. However, a BSR of 1.4 is still a relatively high BSR, therefore, there is relatively little protein sequence variation in this cluster.
+
+```{r QJR11213, echo=FALSE, fig.cap="Heatmap of all-versus-all BLASTP of the QJR11213.1 cluster"}
+QJR11213_1_blastp.parse <- parse_data(QJR11213_1_blastp)
+QJR11213_1_blastp.plot.interactive <- get_interactive_plot(QJR11213_1_blastp.parse)
+QJR11213_1_blastp.plot.interactive
+```
+
+# Combining clusters
+
+## AGE22437.1 and CDG29680.1
+
+Figure \@ref(fig:AGE22437) inferred that the clusters AGE22437.1 and CDG29680.1 could potentially be combined. To further explore this the a BLASTP all-versus-all analysis of all proteins in both clusters was performed. The BSRs from this analysis are presented in figure \@ref(fig:AGE22437CDG29680}, and the plot demonstrates that the vast majoirty of pair-wise alignements produced a BSR of greater than 1.4. This infers relatively sequence divergence between all proteins across the two clusters, and therefore, the two clusters can be combined.
+
+```{r AGE22437CDG29680, echo=FALSE, fig.cap="Heatmap of all-versus-all BLASTP of the proteins from both AGE22437.1 and CDG29680.1 clusters"}
+AGE22437_1_CDG29680_1_blastp.parse <- parse_data(AGE22437_1_CDG29680_1_blastp)
+AGE22437_1_CDG29680_1_blastp.plot.interactive <- get_interactive_plot(AGE22437_1_CDG29680_1_blastp.parse)
+AGE22437_1_CDG29680_1_blastp.plot.interactive
+```
+
+## Sequence divergence across all 4 clusters
+
+To explore the possibility of creating a MSA with a consensus across the majority of proteins when aligning proteins from all 4 clusters (AGE22437.1, CBK6950.1, CDG29680.1 and QJR11213.1), a all-versus-all BLASTP analysis of all proteins in all 4 clusters was performed. The BSR of all pairwise alignments are presented in figure \@ref(allClustersBlastp). Clear clusters of proteins with high BSRs (greater than 1.5) were observed, and these clusters included proteins from across multiple clusters. The majority of pairwise alignments scores a BSR of 1 and greater. Consequently, it was hypothesised that all 4 clusters could be combined to generate a MSA of functionally relevant proteins for molecular modeling.
+
+```{r allClustersBlastp, echo=FALSE, fig.cap="Heatmap of all-versus-all BLASTP of the proteins from both AGE22437.1, CBK6950.1, CDG29680.1 and QJR11213.1 clusters"}
+all_clusters_blastp.parse <- parse_data(all_clusters_blastp)
+all_clusters_blastp.plot.interactive <- get_interactive_plot(all_clusters_blastp.parse)
+all_clusters_blastp.plot.interactive
+```
+
