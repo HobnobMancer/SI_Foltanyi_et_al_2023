@@ -330,10 +330,34 @@ python3 get_clusters.py \
 
 This produced 346 clusters. The 4 largest clusters contained 33, 28, 17 and 13 proteins each. All remaining clusters contained less than 10 proteins, 227 of which contained only 1 protein.
 
+The JSON file containing the GenBank accessions of each cluster compiled by `MMSeq2` can be found [here](https://github.com/HobnobMancer/Foltanyi_et_al_2022/blob/master/supplementary/cluster_data/clusters_70.json).
+
 A representative sequence from each of the 4 largest clusters from this second clustering were compared using BLASTP all-versus-all, using the Python script `run_blastp.py` from the Python package [`pyrewton` DOI:10.5281/zenodo.3876218)](https://github.com/HobnobMancer/pyrewton).
 
-The R notebook `cluster_analysis.Rmd` was used to parse and analyse the results. This notebook can be viewed [here](https://hobnobmancer.github.io/Foltanyi_et_al_2022/supplementary/cluster_analysis.html).
+The R notebook `cluster_analysis.Rmd` was used to parse and analyse the results. This notebook can be viewed [here](https://hobnobmancer.github.io/Foltanyi_et_al_2022/supplementary/cluster_data/cluster_analysis.html) and found [here](https://github.com/HobnobMancer/Foltanyi_et_al_2022/tree/master/supplementary/cluster_data).
 
+The GenBank accessions for each of the 4 largest clusters were extracted to plain text files, with one unique GenBank accession per row. These files can be found here:
+- [AGE22437_1.txt](https://github.com/HobnobMancer/Foltanyi_et_al_2022/blob/master/supplementary/cluster_data/AGE22437_1.txt)
+- [CBK6950_1.txt](https://github.com/HobnobMancer/Foltanyi_et_al_2022/blob/master/supplementary/cluster_data/CBK6950_1.txt)
+- [CDG29680_1.txt](https://github.com/HobnobMancer/Foltanyi_et_al_2022/blob/master/supplementary/cluster_data/CDG29680_1.txt)
+- [QJR11213_1.txt](https://github.com/HobnobMancer/Foltanyi_et_al_2022/blob/master/supplementary/cluster_data/QJR11213_1.txt)
+
+These text files were parsed by `cazy_webscraper` in order to extract the GenBank protein sequences of all proteins in each cluster, and write the protein sequences to a FASTA file. One FASTA file per cluster was compiled.
+
+```bash
+cw_extract_db_sequences cazy_database.db genbank AGE22437_1.txt --fasta_file AGE22437_1.fasta -f -n
+cw_extract_db_sequences cazy_database.db genbank CBK6950_1.txt --fasta_file CBK6950_1.fasta -f -n
+cw_extract_db_sequences cazy_database.db genbank CDG29680_1.txt --fasta_file CDG29680_1.fasta -f -n
+cw_extract_db_sequences cazy_database.db genbank QJR11213_1.txt --fasta_file QJR11213_1.fasta -f -n
+```
+
+The Python script `run_blastp.py` from [`pyrewton` DOI:10.5281/zenodo.3876218)](https://github.com/HobnobMancer/pyrewton) was used to run a BLASTP all-vs-all analysis for each cluster. The results of which can be viewed [here]().
+
+`MMSeq2` was also used to align the protein sequences of each cluster, then [`trimAl`](http://trimal.cgenomics.org/) was used to trim the resulting MSAs. Each resulting, trimmed, MSA can be located at the following: [LINKS TO BE ADDED]
+- [AGE22437_1]()
+- [CBK6950_1]()
+- [CDG29680_1]()
+- [QJR11213_1]()
 
 
 
