@@ -431,13 +431,39 @@ By default [`HMMERSearch`](https://academic.oup.com/nar/article/41/12/e121/10259
 
 > Mistry, J., Finn, R. D., Eddy, S. R., Bateman, A., Punta, M. (2013) 'Challenges in Homology Search: HMMER3 and Convergent Evolution of Coiled-Coil Regions', Nucleic Acids Research, 41, pp. e121
 
-The 'noise cut-off' (NC) bitscore was calculated by querying a set of proteins known negatives, in this case proteins that do not have ability to catalyse the reaction represented by the EC number 3.2.1.37.
+The **'noise cut-off' (NC)** bitscore was calculated by querying a set of proteins known negatives, in this case proteins that do not have ability to catalyse the reaction represented by the EC number 3.2.1.37. Bacterial protein sequences from the Glycosidetransferase (GT) family GT10 were selected as known negatives for calculating the NC. This was because all GT CAZymes are involved the synthesis of oligo- and polysaccharides, and do not posses functions related to the degradation of polysaccharides, which the catalytic reaction represented by the EC number 3.2.1.37 is associated with. The GT10 protein sequences were retrieved from NCBI, added to the local CAZyme database and extracted from the local CAZyme database using `cazy_webscraper`.
 ```bash
+cw_get_genbank_seqs \
+	data/cazy_database.db <email_address> --families GT10
+cw_extract_db_sequences \
+	datacazy_database.db genbank \
+	--families GT10 \
+	--fasta_file data/cluster_data/gt10_protein_seqs.fasta
 ```
+The CAZy family GT10 contained **727** GenBank accessions for bacterial proteins, and **727** protein sequences were retrieved from NCBI GenBank.
 
-The 'gathering cutoff' (GC) bitscore was calculated by quering the pHMM against the training set of proteins used to construct the model.
-```bash
+`Hmmsearch` was then used to query the GT10 bacterial protein sequences against the constructed pHMM.
 ```
+hmmsearch \
+	-o supplementary/cluster_data/ec_hmm_search_nc_results \
+	-A supplementary/cluster_data/ec_hmm_search_nc_alignment \
+	--tblout supplementary/cluster_data/ec_hmm_search_nc_tab \
+	supplementary/cluster_data/ec_cluster_phmm \
+	data/cluster_data/gt10_protein_seqs.fasta
+```
+The NC was defined as the largest valued returned from `HMMER`, which was **a**.
+
+The **'gathering cutoff' (GC)** bitscore was calculated by quering the pHMM against the training set of proteins used to construct the model.
+```bash
+hmmsearch \
+	-o supplementary/cluster_data/ec_hmm_search_gc_results \
+	-A supplementary/cluster_data/ec_hmm_search_gc_alignment \
+	--tblout supplementary/cluster_data/ec_hmm_search_gc_tab \
+	supplementary/cluster_data/ec_cluster_phmm \
+	data/cluster_data/all_clusters.fasta
+```
+The GC was defined as the smallest valued returned from `HMMER`, which was **606.8**.  
+All output files are stored in the `supplementary/cluster_data` directory of the repository.
 
 4. [`HMMERSearch`](https://academic.oup.com/nar/article/41/12/e121/1025950?login=false) (Mistry _et al.,_ 2013) was used to query the proteins from the GH CAZy families of interest against the constructed pHMM, using default search parameters.
 
