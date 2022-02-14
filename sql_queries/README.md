@@ -4,7 +4,7 @@ This docs logs the queries made in SQL to a local CAZyme database, in the search
 
 The local CAZyme database was created uing [`cazy_webscraper`](https://hobnobmancer.github.io/cazy_webscraper/). All bacterial proteins were retrieved from CAZy, and protein data (IDs, names, EC numbers and PDBs) were retrieved from UniProt for the following CAZy families: GH1, GH2, GH3, GH11, GH26, GH30, GH43, GH51, GH52, GH54, GH116, and GH120.
 
-## 1. Number of bacterial proteins in GH3
+## 1. Number of bacterial proteins in specific CAZy families
 
 **There are 40090 bacterial proteins in GH3.**
 
@@ -38,6 +38,27 @@ INNER JOIN Taxs ON Genbanks.taxonomy_id = Taxs.taxonomy_id
 INNER JOIN Kingdoms ON Taxs.kingdom_id = Kingdoms.kingdom_id
 WHERE Kingdoms.kingdom = 'Bacteria'
 ```
+
+To number of bacterial proteins across all CAZy families of interest was retrieved using the following command:
+```sql
+SELECT COUNT(DISTINCT Genbanks.genbank_accession)
+FROM Genbanks
+INNER JOIN Genbanks_CazyFamilies ON Genbanks.genbank_id = Genbanks_CazyFamilies.genbank_id
+INNER JOIN CazyFamilies ON Genbanks_CazyFamilies.family_id = CazyFamilies.family_id
+WHERE CazyFamilies.family = 'GH1' OR
+CazyFamilies.family = 'GH2' OR
+CazyFamilies.family = 'GH3' OR
+CazyFamilies.family = 'GH11' OR
+CazyFamilies.family = 'GH26' OR
+CazyFamilies.family = 'GH30' OR
+CazyFamilies.family = 'GH43' OR
+CazyFamilies.family = 'GH51' OR
+CazyFamilies.family = 'GH52' OR
+CazyFamilies.family = 'GH54' OR
+CazyFamilies.family = 'GH116' OR
+CazyFamilies.family = 'GH120'
+```
+This identified **a** bacterial proteins as belonging to at least on of the CAZy families of interest.
 
 ## 2. Number of proteins annotated with the EC number EC 3.2.1.37
 
