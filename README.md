@@ -18,6 +18,7 @@ This repo contains the commands and data files necessary to repeat the study pre
 - Python version 3.9+
 - Miniconda3 or Anaconda managed microenvironment  
 - Prodigal
+- HMMER >= 3.3
 - Coinfinder
 - Pyani
 - cazy_webscraper
@@ -408,9 +409,59 @@ python3 scripts/molecular_modeling/remove_duplicate_seqs.py \
   data/molecular_modeling/all_fam_seqs.fasta
 ```
 
-3. The Python script `run_blastp_search.py` was run from the root of the repository to query the remaining proteins sequences from the GH CAZy families of interset against the 91 proteins pooled from the 4 `MMSeq2` clusters of interest.
+3. A HMM model of the protein sequences across all 4 protein clusters of interest was constructed using [`HMMBuild`](http://rothlab.ucdavis.edu/genhelp/hmmerbuild.html) (Eddy, 2008) using default parameters.
 
-4. The R note [`cluster_analysis.Rmd`]() was used to parse, analyse and filter the results.
+> Eddy, S. R. (2008) 'A Probabilistic Model of Local Sequence Alignment that Simplifies Statistical Significance Estimation', _PloS Comput. Biol._, 4, pp. e1000069.
+
+To rerun this analysis, run the following command in the root of this repository:
+```bash
+hmmbuild \
+	-n supplementary/cluster_data/ec_cluster_hmm \
+	supplementary/cluster_data/-o ec_cluster_hmm_summary \
+	-O supplementary/cluster_data/ec_cluster_msa \
+	--amino \
+	supplementary/cluster_data/ec_cluster_phmm \
+	supplementary/cluster_data/all_clusters_aligned.fasta
+```
+This produces a HMM profile, called `ec_cluster_phmm`
+
+4. Determine the bitscore cut-offs for using the pHMM to identify potentially functionally relevant proteins.
+
+By default [`HMMERSearch`](https://academic.oup.com/nar/article/41/12/e121/1025950?login=false) (Mistry _et al.,_ 2013) uses a E-value threshold to identify candidates of interest. However, the E-value is database size dependent and is a measure of the significance of the hit against the size of the database. The bitscore is a measure of the statistical significance of the alignment.
+
+> Mistry, J., Finn, R. D., Eddy, S. R., Bateman, A., Punta, M. (2013) 'Challenges in Homology Search: HMMER3 and Convergent Evolution of Coiled-Coil Regions', Nucleic Acids Research, 41, pp. e121
+
+The 'noise cut-off' (NC) bitscore was calculated by querying a set of proteins known negatives, in this case proteins that do not have ability to catalyse the reaction represented by the EC number 3.2.1.37.
+```bash
+```
+
+The 'gathering cutoff' (GC) bitscore was calculated by quering the pHMM against the training set of proteins used to construct the model.
+```bash
+```
+
+4. [`HMMERSearch`](https://academic.oup.com/nar/article/41/12/e121/1025950?login=false) (Mistry _et al.,_ 2013) was used to query the proteins from the GH CAZy families of interest against the constructed pHMM, using default search parameters.
+
+
+To repeat this analysis, run the following command in the `./supplementary/cluster_data/` directory:
+```bash
+# build a HMMER sequence db to be used as the reference/subject of the protein sequences
+# from the 4 clusters of interest
+
+
+# query GH CAZy fam proteins against the 4 clusters of interest
+hmmsearch \
+	-o ec_hmm_search_results\
+	-A ec_hmm_search_alignment \
+	--tblout ec_hmm_search_tab \
+	supplementary/cluster_data/ec_cluster_phmm \
+	data/cluster_data/remaining_fam_seqs.fasta
+```
+
+5. Add hits to protein pool compiled from the 4 clusters of interset
+
+6. The Python script `run_blastp_search.py` was run from the root of the repository to run a all-vs-all BLASTP of all proteins in the expanded protein sequence pool to measure the degree of sequence diversity across the sequence pool.
+
+4. The R note [`cluster_analysis.Rmd`]() was used to parse, analyse and present the results of the all-vs-all BLASTP analysis.
 
 A cut-off of 70% percentage identity was applied. Only protein sequences with a 70% percentage identity against the majoirty of protein sequences pooled from the 4 `MMSeq2` clusters of interest were added to the protein pool. These were:
 - QFT14636.1
