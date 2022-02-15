@@ -41,34 +41,53 @@
 """Remove protein sequences that appaer in both FASTAs, and retain the seqs in only one FASTA"""
 
 
+import logging
+
+from typing import List, Optional
+
 from Bio import SeqIO
+from saintBioutils.utilities.file_io import make_output_directory
+from tqdm import tqdm
 
 
-FAMILY_FASTA = "data/cluster_data/all_fam_seqs.fasta"
-CLUSTERS_FASTA = "data/cluster_data/all_clusters.fasta"
-REMAINING_FASTA = "data/cluster_data/remaining_fam_seqs.fasta"
+HMMER_OUTPUT = "supplementary/cluster_data/ec_hmm_search_tab"
+CLUSTERS_FASTA = "data/cluster_data/all_clusters.fasta"  # FASTA file containing protein sequences from clusters of interest
+REMAINING_FASTA = "data/cluster_data/remaining_fam_seqs.fasta"  # protein sequences from CAZy fams of interest
+OUTPUT_FASTA = "data/cluster_data/expanded_protein_pool.fasta"
 
 
 def main():
+    # load in protein sequence records
+    cluster_proteins, family_seqs = load_seqs()
+
+    # load HMMSearch output
     
-    clustal_protein_accessions = set()
-    for record in SeqIO.parse(CLUSTERS_FASTA, "fasta"):
-        clustal_protein_accessions.add(record.id)
-    print(f"Loaded {len(clustal_protein_accessions)} sequences from: {CLUSTERS_FASTA}")
 
     protein_records = []
-    i = 0
-    for record in SeqIO.parse(FAMILY_FASTA, "fasta"):
-        i += 1
-        if record.id not in clustal_protein_accessions:
-            protein_records.append(record)
-    print(
-        f"{FAMILY_FASTA} contained {i} proteins sequences\n"
-        f"{len(protein_records)} of which are not already in the clusters"
-    )
+    for acc in tqdm(family_seqs, desc="Getting protein records"):
+        if acc not in clustal_protein_accessions:
+            protein_records.append(family_seqs[acc])
 
     print(f"Writing {len(protein_records)} to {REMAINING_FASTA}")
     SeqIO.write(protein_records, REMAINING_FASTA, "fasta")
+
+
+def load_seqs():
+    """Load in sequences into  set and dicts {acc: seq record}."""
+    # load in protein sequences from the clusters of interest
+    cluster_proteins = set()
+    for record in SeqIO.parse(CLUSTERS_FASTA, "fasta"):
+        cluster_proteins.add(record)
+    print(f"Loaded {len(cluster_proteins)} sequences from: {CLUSTERS_FASTA}")
+
+    # load in protein sequences from fams of interest
+    family_seqs = {}  # {acc: record}
+    for record in SeqIO.parse(REMAINING_FASTA, "fasta"):
+        family_seqs[record.id] = record
+    print(f"Loaded {len(list(family_seqs.keys()))} sequences from: {REMAINING_FASTA}")
+
+    return cluster_proteins, family_seqs
+
 
 
 if __name__ == "__main__":

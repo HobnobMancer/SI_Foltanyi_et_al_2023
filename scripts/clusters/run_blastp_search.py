@@ -42,13 +42,12 @@
 
 from Bio.Blast.Applications import NcbiblastpCommandline
 
-QUERY_FASTA = "data/cluster_data/remaining_fam_seqs.fasta"
-SUBJECT_FASTA = "data/cluster_data/all_clusters.fasta"
-OUTPUT = "supplementary/cluster_data/remaining_fam_seqs_blastp.tsv"
+FINAL_FASTA = "data/cluster_data/expanded_protein_pool.fasta"
+OUTPUT = "supplementary/cluster_data/expanded_protein_pool_blastp.tsv"
 
 all_v_all_blastp = NcbiblastpCommandline(
-    query=QUERY_FASTA,
-    subject=SUBJECT_FASTA,
+    query=FINAL_FASTA,
+    subject=FINAL_FASTA,
     out=OUTPUT,
     outfmt="6 qseqid sseqid pident qcovs qlen slen length bitscore evalue",
 )
