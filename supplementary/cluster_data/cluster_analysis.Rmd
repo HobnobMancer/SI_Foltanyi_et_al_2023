@@ -1,5 +1,5 @@
 ---
-title: "Exploration of the Ec3.2.1.37 Bacterial Protein Clusters From CAZy"
+title: "Exploration of the EC 3.2.1.37 Bacterial Protein Clusters From CAZy"
 author: "Emma E. M. Hobbs"
 date: "Feb 2022"
 output: 
@@ -35,13 +35,13 @@ library(plotly)
 # import the data
 rep_seq_blastp <- read.csv("cluster_rep_blastp.tsv", header=FALSE, sep="\t")
 
-AGE22437_1_blastp <- read.csv("cluster_sequences/AGE22437_1_blastp.tsv", header=FALSE, sep="\t")
-CBK6950_1_blastp <- read.csv("cluster_sequences/CBK6950_1_blastp.tsv", header=FALSE, sep="\t")
-CDG29680_1_blastp <- read.csv("cluster_sequences/CDG29680_1_blastp.tsv", header=FALSE, sep="\t")
-QJR11213_1_blastp <- read.csv("cluster_sequences/QJR11213_1_blastp.tsv", header=FALSE, sep="\t")
-AGE22437_1_CDG29680_1_blastp <- read.csv("cluster_sequences/AGE22437_1_CDG29680_1_blastp.tsv", header=FALSE, sep="\t")
-all_clusters_blastp <- read.csv("cluster_sequences/all_clusters_blastp.tsv", header=FALSE, sep="\t")
-remaining_fam_seqs_blastp <- read.csv("cluster_sequences/remaining_fam_seqs_blastp.tsv", header=FALSE, sep="\t")
+AGE22437_1_blastp <- read.csv("AGE22437_1_blastp.tsv", header=FALSE, sep="\t")
+CBK6950_1_blastp <- read.csv("CBK6950_1_blastp.tsv", header=FALSE, sep="\t")
+CDG29680_1_blastp <- read.csv("CDG29680_1_blastp.tsv", header=FALSE, sep="\t")
+QJR11213_1_blastp <- read.csv("QJR11213_1_blastp.tsv", header=FALSE, sep="\t")
+AGE22437_1_CDG29680_1_blastp <- read.csv("AGE22437_1_CDG29680_1_blastp.tsv", header=FALSE, sep="\t")
+all_clusters_blastp <- read.csv("all_clusters_blastp.tsv", header=FALSE, sep="\t")
+expanded_protein_pool_blastp <- read.csv("expanded_protein_pool_blastp.tsv", header=FALSE, sep="\t")
 ```
 
 # Method
@@ -213,7 +213,7 @@ all_clusters_blastp.plot.interactive <- get_interactive_plot(all_clusters_blastp
 all_clusters_blastp.plot.interactive
 ```
 
-# Remaining family proteins against the clusters
+# Sequnce divergence in the expanded protein pool
 
 The total number of proteins in across all 4 clusters was 91. This included 0 proteins with PDB accessions listed in UniProt. The following SQL command was used to retrive the results:
 
@@ -248,37 +248,14 @@ To further expand the pool of potentially functionally relevant proteins, the pr
 - GH116
 - GH120
 
-A percentage identity cut-off of 70% was applied, similar to the clustering cut-off applied by `MMSeq2`. The BSR was the calculated and a heatmap plotted, which is presented in figure \@ref{fig:remainingFamsBlastp}.
+From `HMMER3`, `hmmbuild` was used to construct a pHMM model of representing the 91 protein sequences from the 4 clusters of interest. The protein sequences from the CAZy families of interest that were no in the 4 clusters of interset were queried against the pHMM model to find additional potentially functionally relevant proteins.
 
-```{r remainingFamsBlastp, echo=FALSE, fig.cap="Heatmap of BSR between GH proteins with a percentage identitity of greater than or equal to 70% against proteins from the 4 largest `MMSeq2` protein clusters of proteins annotated with the EC number 3.2.1.37"}
-remaining_fam_seqs_blastp.parse <- parse_data(remaining_fam_seqs_blastp)
+59 protein sequences were found and added to the protein pool of 91 protein sequences from the 4 clusters of interest, creating an expanded protein pool of 150 protein sequences. A BLASTP all-vs-all analysis was performed to explore the sequence diversity across the expanded protein sequence pool. The output of this is shown in figure \@ref{fig:expandedPool}.
 
-# filter for pair-wise alignments of >= 70%
-subset_blastp <- remaining_fam_seqs_blastp.parse[which(remaining_fam_seqs_blastp.parse$pident >= 70), ]
-
-data <- subset_blastp %>%
-  mutate(text = paste0("Query seq ID: ", qseqid, "\n", "Subject seq ID: ", sseqid, "\n", "BSR: ",round(bsr,3)))
-
-subset_blastp.p <- ggplot(data, aes(qseqid, sseqid, fill= bsr, text=text)) + 
-  geom_tile() +
-  scale_fill_viridis(discrete=FALSE) +
-  xlab("Query seq ID") + 
-  ylab("Subject seq ID") +
-  theme(axis.text.x = element_text(angle=90, vjust=.5, hjust=1))
-subset_blastp.p <- ggplotly(subset_blastp.p, tooltip="text")
-subset_blastp.p
+```{r expandedPool, echo=FALSE, fig.cap="Heatmap of BSR of BLASTP all-vs-all pairwise alignemnts of all 150 proteins in the expanded protein pool"}
+expanded_protein_pool_blastp.parse <- parse_data(expanded_protein_pool_blastp) 
+expanded_protein_pool_blastp.plot.interactive <- get_interactive_plot(expanded_protein_pool_blastp.parse)
+expanded_protein_pool_blastp.plot.interactive
 ```
 
-After filtering for a percentage identity of greater than or equal to 70%, the BSR was plotted for the remaining proteins. The majority of the remaining proteins produced a BSR of less than 1. However, the following query proteins produced a high BSR (of 1.5-1.9) against the the majority of the proteins in the protein clusters:
-- QFT14636.1
-- VDR25565.1
-- VDZ67166.1
-- VED48126.1
-- VEI47712.1
-- VTO17894.1
-- VTP66272.1
-- VTP66274.1
-
-Where no data is presented in the figure \@ref{fig:remainingFamsBlastp} the specific pairwise alignment between the query and subject protein sequences did not have a percentage identity of greater than or equal to 70%. In order to produce a MSA with a clear consensus sequence for molecular modeling, proteins including in the MSA need to have have sequence identity with the majority of other proteins in the MSA. Therefore, proteins from the BLASTP search of the remaining proteins from the CAZy families of interest against the 4 largest clusters from `MMSeq2` which did **not** have a percentage identity of greater than or equal to 70% against the majority of proteins from the 4 largest `MMSeq2` clusters were **not** added to the collection of proteins to be included in the MSA.
-
-The proteins which did have a percentage identity of greater than or equal to 70% against high BSR (of 1.5-1.9) against the the majority of the proteins in the protein clusters the majority of proteins from the 4 largest `MMSeq2` clusters were included in the collection of proteins to be included in the MSA. These were the 8 proteins with a high BSR (of 1.5-1.9) against the the majority of the proteins in the protein clusters. None of these proteins were linked to any PDB accessions in UniProt.
+The majority of pairwise alignments produced a BSR of between 0.7 and 0.8. Distinct small clusters of pairwise alignments produced very high BRS of greater than 1.8. Very few pairwise alignments produced a BSR of less than 0.7. Altogether the results inferred a relatively higher level of sequence conservation across the entire expanded protein pool and a MSA with minimal gaps should be producible from the expanded protein pool.
