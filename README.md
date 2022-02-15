@@ -409,7 +409,16 @@ python3 scripts/molecular_modeling/remove_duplicate_seqs.py \
   data/molecular_modeling/all_fam_seqs.fasta
 ```
 
-3. A HMM model of the protein sequences across all 4 protein clusters of interest was constructed using [`HMMBuild`](http://rothlab.ucdavis.edu/genhelp/hmmerbuild.html) (Eddy, 2008) using default parameters.
+3. [`Trimal`](http://trimal.cgenomics.org/trimal) () (version 1.4.1) was used to trim the MSA, by removing all columns with gaps in more than 20% of the sequences:
+
+> Capella-Gutierrez, S., Silla-Martinez, J. M., Gabaldon, T. (2009) 'trimAl: a tool for automated alignment trimming in large-scale phylogenetic analyses', Bioinformatics, 25, pp. 1972-1973
+
+```bash
+# run from the root of the repository
+trimal -in data/cluster_data/all_clusters_aligned.fasta -out data/cluster_data/trimed_aligned_clusters.fasta -gt 0.8
+```
+
+4. A HMM model of the protein sequences across all 4 protein clusters of interest was constructed using [`HMMBuild`](http://rothlab.ucdavis.edu/genhelp/hmmerbuild.html) (Eddy, 2008) using default parameters.
 
 > Eddy, S. R. (2008) 'A Probabilistic Model of Local Sequence Alignment that Simplifies Statistical Significance Estimation', _PloS Comput. Biol._, 4, pp. e1000069.
 
@@ -417,15 +426,15 @@ To rerun this analysis, run the following command in the root of this repository
 ```bash
 hmmbuild \
 	-n supplementary/cluster_data/ec_cluster_hmm \
-	supplementary/cluster_data/-o ec_cluster_hmm_summary \
+	-o supplementary/cluster_data/ec_cluster_hmm_summary \
 	-O supplementary/cluster_data/ec_cluster_msa \
 	--amino \
 	supplementary/cluster_data/ec_cluster_phmm \
-	supplementary/cluster_data/all_clusters_aligned.fasta
+	supplementary/cluster_data/trimed_aligned_clusters.fasta
 ```
-This produces a HMM profile, called `ec_cluster_phmm`
+This produces a HMM profile, called [`ec_cluster_phmm`]().
 
-4. Determine the bitscore cut-offs for using the pHMM to identify potentially functionally relevant proteins.
+5. Determine the bitscore cut-offs for using the pHMM to identify potentially functionally relevant proteins.
 
 By default [`HMMERSearch`](https://academic.oup.com/nar/article/41/12/e121/1025950?login=false) (Mistry _et al.,_ 2013) uses a E-value threshold to identify candidates of interest. However, the E-value is database size dependent and is a measure of the significance of the hit against the size of the database. The bitscore is a measure of the statistical significance of the alignment.
 
@@ -467,53 +476,46 @@ hmmsearch \
 	supplementary/cluster_data/ec_cluster_phmm \
 	data/cluster_data/all_clusters.fasta
 ```
-The GC was defined as the smallest valued returned from `HMMER`, which was **606.8**.  
+The GC was defined as the smallest valued returned from `HMMER`, which was **607.0**.  
 All output files are stored in the `supplementary/cluster_data` directory of the repository.
 
-4. [`HMMERSearch`](https://academic.oup.com/nar/article/41/12/e121/1025950?login=false) (Mistry _et al.,_ 2013) was used to query the proteins from the GH CAZy families of interest against the constructed pHMM, using default search parameters.
-
+6. [`HMMERSearch`](https://academic.oup.com/nar/article/41/12/e121/1025950?login=false) (Mistry _et al.,_ 2013) was used to query the proteins from the GH CAZy families of interest against the constructed pHMM, using default search parameters.
 
 To repeat this analysis, run the following command in the `./supplementary/cluster_data/` directory:
 ```bash
-# build a HMMER sequence db to be used as the reference/subject of the protein sequences
-# from the 4 clusters of interest
-
-
-# query GH CAZy fam proteins against the 4 clusters of interest
 hmmsearch \
-	-o ec_hmm_search_results\
-	-A ec_hmm_search_alignment \
-	--tblout ec_hmm_search_tab \
+	-o supplementary/cluster_data/ec_hmm_search_results \
+	-A supplementary/cluster_data/ec_hmm_search_alignment \
+	--tblout supplementary/cluster_data/ec_hmm_search_tab \
+	-T 607.0 \
 	supplementary/cluster_data/ec_cluster_phmm \
 	data/cluster_data/remaining_fam_seqs.fasta
 ```
 
-5. Add hits to protein pool compiled from the 4 clusters of interset
-
-6. The Python script `run_blastp_search.py` was run from the root of the repository to run a all-vs-all BLASTP of all proteins in the expanded protein sequence pool to measure the degree of sequence diversity across the sequence pool.
-
-4. The R note [`cluster_analysis.Rmd`]() was used to parse, analyse and present the results of the all-vs-all BLASTP analysis.
-
-A cut-off of 70% percentage identity was applied. Only protein sequences with a 70% percentage identity against the majoirty of protein sequences pooled from the 4 `MMSeq2` clusters of interest were added to the protein pool. These were:
-- QFT14636.1
-- VDR25565.1
-- VDZ67166.1
-- VED48126.1
-- VEI47712.1
-- VTO17894.1
-- VTP66272.1
-- VTP66274.1
+7. The hits from `hmmsearch` were added to the protein pool (containing proteins from the 4 clusters of interest) to generate an extended protein pool. This was done using the Python script `extract_hmmer_accessions.py`, which parsed the HMMER output using the `BioPython.SearchIO` module, and which wrote out all protein sequences in the extended protein pool to the fasta file `expanded_protein_pool.fasta`. This FASTA file contained **150** protein sequences (59 protein sequences in addition to the 91 protein sequences in the clusters of interest).
 
 The new protein pool was stored in the FASTA file [`expanded_protein_pool.fasta`]().
 
-`MAFFT` was then used to align the new protein pool of 99 proteins. The resulting MSA in fasta and clustal format are located in the [supplementary]().
+8. The Python script `run_blastp.py` from `pyrewton` was run from the root of the repository to run a all-vs-all BLASTP of all proteins in the expanded protein sequence pool to measure the degree of sequence diversity across the sequence pool. The results were written to [`supplementary/cluster_data/expanded_protein_pool_blastp.tsv`]().
+
+9. The R note [`cluster_analysis.Rmd`]() was used to parse, analyse and present the results of the all-vs-all BLASTP analysis.
+
+10. `MAFFT` was then used to align the new protein pool of 99 proteins. The resulting MSA in fasta and clustal format are located in the [supplementary]().
 ```bash
 # FASTA output
-mafft --thread 12 mafft --thread 12 data/cluster_data/expanded_protein_pool.fasta > supplementary/cluster_data/expanded_protein_pool_aligned.fasta
-# CLUSTAL output
-mafft --thread 12 --clustalout data/cluster_data/expanded_protein_pool.fasta > supplementary/cluster_data/expanded_protein_pool_aligned.clustal
+mafft --thread 12 data/cluster_data/expanded_protein_pool.fasta > data/cluster_data/expanded_protein_pool_aligned.fasta
 ```
 
+11. [`Trimal`](http://trimal.cgenomics.org/trimal)  was used to trim the MSA, by removing all columns with gaps in more than 20% of the sequences:
+
+```bash
+# run from the root of the repository
+trimal -in data/cluster_data/expanded_protein_pool_aligned.fasta -out data/cluster_data/trimed_expanded_protein_pool_aligned.fasta -gt 0.8
+```
+
+The two MSA were then used for molecular modeling:
+1. [MSA of protein sequences from the 4 largest clusters of proteins annotated with the EC number 3.2.1.37]()
+2. [MSA of the expanded protein pool]()
 
 ## Identification of neighbouring genes
 
