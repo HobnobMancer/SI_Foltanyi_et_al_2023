@@ -1,0 +1,104 @@
+#                                                                                    --- full sequence ---- --- best 1 domain ---- --- domain number estimation ----
+# target name        accession  query name                                accession    E-value  score  bias   E-value  score  bias   exp reg clu  ov env dom rep inc description of target
+#------------------- ----------                      -------------------- ---------- --------- ------ ----- --------- ------ -----   --- --- --- --- --- --- --- --- ---------------------
+ARK32088.1           -          supplementary/cluster_data/ec_cluster_hmm -           2.2e-289  952.8   1.8  2.4e-289  952.6   1.8   1.0   1   0   0   1   1   1   1 GenBank
+CAB13642.2           -          supplementary/cluster_data/ec_cluster_hmm -           1.8e-288  949.8   2.2    2e-288  949.6   2.2   1.0   1   0   0   1   1   1   1 GenBank
+CDG29680.1           -          supplementary/cluster_data/ec_cluster_hmm -           1.8e-288  949.7   1.3    2e-288  949.6   1.3   1.0   1   0   0   1   1   1   1 GenBank
+QTN97354.1           -          supplementary/cluster_data/ec_cluster_hmm -           3.6e-288  948.8   2.0    4e-288  948.6   2.0   1.0   1   0   0   1   1   1   1 GenBank
+ADU28836.1           -          supplementary/cluster_data/ec_cluster_hmm -             1e-287  947.3   4.1  1.1e-287  947.1   4.1   1.0   1   0   0   1   1   1   1 GenBank
+AAB41091.1           -          supplementary/cluster_data/ec_cluster_hmm -             1e-287  947.3   2.1  1.1e-287  947.1   2.1   1.0   1   0   0   1   1   1   1 GenBank
+QRE01774.1           -          supplementary/cluster_data/ec_cluster_hmm -           3.3e-287  945.6   2.4  3.7e-287  945.4   2.4   1.0   1   0   0   1   1   1   1 GenBank
+AYN44931.1           -          supplementary/cluster_data/ec_cluster_hmm -           3.3e-287  945.6   2.3  3.7e-287  945.4   2.3   1.0   1   0   0   1   1   1   1 GenBank
+AFM43655.1           -          supplementary/cluster_data/ec_cluster_hmm -           3.4e-287  945.5   2.2  3.8e-287  945.4   2.2   1.0   1   0   0   1   1   1   1 GenBank
+QTG86872.1           -          supplementary/cluster_data/ec_cluster_hmm -           6.3e-287  944.6   1.8  7.1e-287  944.5   1.8   1.0   1   0   0   1   1   1   1 GenBank
+AEP86745.1           -          supplementary/cluster_data/ec_cluster_hmm -             7e-287  944.5   1.5  7.8e-287  944.3   1.5   1.0   1   0   0   1   1   1   1 GenBank
+ARW39074.1           -          supplementary/cluster_data/ec_cluster_hmm -             2e-286  943.0   1.3  2.2e-286  942.8   1.3   1.0   1   0   0   1   1   1   1 GenBank
+QQZ02561.1           -          supplementary/cluster_data/ec_cluster_hmm -           2.3e-286  942.8   2.1  2.5e-286  942.6   2.1   1.0   1   0   0   1   1   1   1 GenBank
+AAC27699.1           -          supplementary/cluster_data/ec_cluster_hmm -           3.6e-286  942.2   1.6    4e-286  942.0   1.6   1.0   1   0   0   1   1   1   1 GenBank
+QEK65184.1           -          supplementary/cluster_data/ec_cluster_hmm -           4.8e-286  941.7   2.2  5.5e-286  941.5   2.2   1.0   1   0   0   1   1   1   1 GenBank
+AWI11220.1           -          supplementary/cluster_data/ec_cluster_hmm -           5.2e-286  941.6   2.3  5.8e-286  941.5   2.3   1.0   1   0   0   1   1   1   1 GenBank
+AGE22437.1           -          supplementary/cluster_data/ec_cluster_hmm -             2e-285  939.7   0.7  2.3e-285  939.5   0.7   1.0   1   0   0   1   1   1   1 GenBank
+ABO67122.1           -          supplementary/cluster_data/ec_cluster_hmm -           2.3e-285  939.5   0.5  2.6e-285  939.3   0.5   1.0   1   0   0   1   1   1   1 GenBank
+ARP42883.1           -          supplementary/cluster_data/ec_cluster_hmm -           2.3e-285  939.5   0.5  2.6e-285  939.3   0.5   1.0   1   0   0   1   1   1   1 GenBank
+AAC97375.1           -          supplementary/cluster_data/ec_cluster_hmm -           7.1e-285  937.9   1.2    8e-285  937.7   1.2   1.0   1   0   0   1   1   1   1 GenBank
+CBL10126.1           -          supplementary/cluster_data/ec_cluster_hmm -           1.3e-284  937.0   1.8  1.4e-284  936.9   1.8   1.0   1   0   0   1   1   1   1 GenBank
+AFL93485.1           -          supplementary/cluster_data/ec_cluster_hmm -           1.5e-284  936.8   0.6  1.7e-284  936.6   0.6   1.0   1   0   0   1   1   1   1 GenBank
+CBL13352.1           -          supplementary/cluster_data/ec_cluster_hmm -           2.9e-284  935.9   1.9  3.2e-284  935.7   1.9   1.0   1   0   0   1   1   1   1 GenBank
+ALI16361.1           -          supplementary/cluster_data/ec_cluster_hmm -           4.5e-284  935.2   0.6    5e-284  935.1   0.6   1.0   1   0   0   1   1   1   1 GenBank
+QCO69166.1           -          supplementary/cluster_data/ec_cluster_hmm -           1.2e-283  933.9   1.1  1.3e-283  933.7   1.1   1.0   1   0   0   1   1   1   1 GenBank
+CAA29235.1           -          supplementary/cluster_data/ec_cluster_hmm -           2.7e-283  932.6   0.8  3.1e-283  932.5   0.8   1.0   1   0   0   1   1   1   1 GenBank
+BAC15081.1           -          supplementary/cluster_data/ec_cluster_hmm -           9.5e-283  930.9   1.3  1.1e-282  930.7   1.3   1.0   1   0   0   1   1   1   1 GenBank
+SQI53914.1           -          supplementary/cluster_data/ec_cluster_hmm -           1.2e-282  930.5   2.4  1.4e-282  930.3   2.4   1.0   1   0   0   1   1   1   1 GenBank
+ABX75762.2           -          supplementary/cluster_data/ec_cluster_hmm -           2.8e-282  929.3   6.1  3.1e-282  929.1   6.1   1.0   1   0   0   1   1   1   1 GenBank
+QNT21370.1           -          supplementary/cluster_data/ec_cluster_hmm -             3e-282  929.2   6.3  3.4e-282  929.0   6.3   1.0   1   0   0   1   1   1   1 GenBank
+AAK05603.1           -          supplementary/cluster_data/ec_cluster_hmm -           4.2e-282  928.7   6.3  4.8e-282  928.5   6.3   1.0   1   0   0   1   1   1   1 GenBank
+CCG44311.1           -          supplementary/cluster_data/ec_cluster_hmm -           1.1e-281  927.4   0.3  1.2e-281  927.2   0.3   1.0   1   0   0   1   1   1   1 GenBank
+SQJ12668.1           -          supplementary/cluster_data/ec_cluster_hmm -           4.8e-281  925.2   4.5  5.4e-281  925.1   4.5   1.0   1   0   0   1   1   1   1 GenBank
+ACS99429.1           -          supplementary/cluster_data/ec_cluster_hmm -           6.1e-281  924.9   0.3  6.8e-281  924.7   0.3   1.0   1   0   0   1   1   1   1 GenBank
+QDI10504.1           -          supplementary/cluster_data/ec_cluster_hmm -             4e-280  922.2   5.0  4.6e-280  922.0   5.0   1.0   1   0   0   1   1   1   1 GenBank
+QCZ47082.1           -          supplementary/cluster_data/ec_cluster_hmm -           9.7e-280  920.9   8.3  1.1e-279  920.8   8.3   1.0   1   0   0   1   1   1   1 GenBank
+QHB62214.1           -          supplementary/cluster_data/ec_cluster_hmm -           1.4e-279  920.4   2.2  1.6e-279  920.2   2.2   1.0   1   0   0   1   1   1   1 GenBank
+QIF87838.1           -          supplementary/cluster_data/ec_cluster_hmm -           1.9e-279  919.9   4.4  2.2e-279  919.7   4.4   1.0   1   0   0   1   1   1   1 GenBank
+VEC60993.1           -          supplementary/cluster_data/ec_cluster_hmm -           3.3e-279  919.2   4.5  3.7e-279  919.0   4.5   1.0   1   0   0   1   1   1   1 GenBank
+VDZ59395.1           -          supplementary/cluster_data/ec_cluster_hmm -           3.4e-279  919.1   4.4  3.9e-279  918.9   4.4   1.0   1   0   0   1   1   1   1 GenBank
+QCZ54377.1           -          supplementary/cluster_data/ec_cluster_hmm -           3.6e-279  919.0   8.3    4e-279  918.9   8.3   1.0   1   0   0   1   1   1   1 GenBank
+BBQ91616.1           -          supplementary/cluster_data/ec_cluster_hmm -           6.7e-279  918.1   5.5  7.6e-279  918.0   5.5   1.0   1   0   0   1   1   1   1 GenBank
+ACI06688.1           -          supplementary/cluster_data/ec_cluster_hmm -           7.1e-279  918.1   4.3    8e-279  917.9   4.3   1.0   1   0   0   1   1   1   1 GenBank
+QOV58171.1           -          supplementary/cluster_data/ec_cluster_hmm -           9.7e-279  917.6   4.6  1.1e-278  917.4   4.6   1.0   1   0   0   1   1   1   1 GenBank
+VEI66908.1           -          supplementary/cluster_data/ec_cluster_hmm -           9.9e-279  917.6   5.1  1.1e-278  917.4   5.1   1.0   1   0   0   1   1   1   1 GenBank
+CAE1148859.1         -          supplementary/cluster_data/ec_cluster_hmm -           1.2e-278  917.3   5.2  1.4e-278  917.1   5.2   1.0   1   0   0   1   1   1   1 GenBank
+SQI91192.1           -          supplementary/cluster_data/ec_cluster_hmm -           1.4e-278  917.1   4.0  1.6e-278  916.9   4.0   1.0   1   0   0   1   1   1   1 GenBank
+VTP65858.1           -          supplementary/cluster_data/ec_cluster_hmm -           1.7e-278  916.8   4.7  1.9e-278  916.6   4.7   1.0   1   0   0   1   1   1   1 GenBank
+ASW23510.1           -          supplementary/cluster_data/ec_cluster_hmm -           7.5e-278  914.7   0.9  8.5e-278  914.5   0.9   1.0   1   0   0   1   1   1   1 GenBank
+QBZ05673.1           -          supplementary/cluster_data/ec_cluster_hmm -           7.6e-278  914.7   8.7  8.7e-278  914.5   8.7   1.0   1   0   0   1   1   1   1 GenBank
+ACL29336.1           -          supplementary/cluster_data/ec_cluster_hmm -           1.3e-277  913.9   1.0  1.4e-277  913.7   1.0   1.0   1   0   0   1   1   1   1 GenBank
+AEK29976.1           -          supplementary/cluster_data/ec_cluster_hmm -           1.3e-277  913.9   1.0  1.4e-277  913.7   1.0   1.0   1   0   0   1   1   1   1 GenBank
+ALE36853.1           -          supplementary/cluster_data/ec_cluster_hmm -             2e-277  913.3   1.5  2.2e-277  913.1   1.5   1.0   1   0   0   1   1   1   1 GenBank
+VEA69500.1           -          supplementary/cluster_data/ec_cluster_hmm -           2.6e-277  912.9   4.4  2.9e-277  912.7   4.4   1.0   1   0   0   1   1   1   1 GenBank
+ALI32240.1           -          supplementary/cluster_data/ec_cluster_hmm -           6.4e-277  911.6   8.9  7.3e-277  911.4   8.9   1.0   1   0   0   1   1   1   1 GenBank
+CBK69950.1           -          supplementary/cluster_data/ec_cluster_hmm -           4.4e-276  908.9   1.4  4.9e-276  908.7   1.4   1.0   1   0   0   1   1   1   1 GenBank
+BAM46395.1           -          supplementary/cluster_data/ec_cluster_hmm -           1.5e-275  907.1   1.6  1.7e-275  906.9   1.6   1.0   1   0   0   1   1   1   1 GenBank
+ADB09236.1           -          supplementary/cluster_data/ec_cluster_hmm -           2.4e-275  906.4   1.9  2.8e-275  906.2   1.9   1.0   1   0   0   1   1   1   1 GenBank
+SFZ86993.1           -          supplementary/cluster_data/ec_cluster_hmm -           5.3e-274  902.0   7.3  5.9e-274  901.8   7.3   1.0   1   0   0   1   1   1   1 GenBank
+ACA81905.1           -          supplementary/cluster_data/ec_cluster_hmm -           6.7e-272  895.1   7.2  7.6e-272  894.9   7.2   1.0   1   0   0   1   1   1   1 GenBank
+AOT56963.1           -          supplementary/cluster_data/ec_cluster_hmm -           3.6e-270  889.4   4.9  4.1e-270  889.2   4.9   1.0   1   0   0   1   1   1   1 GenBank
+ANL22220.1           -          supplementary/cluster_data/ec_cluster_hmm -           1.7e-266  877.2   0.0  1.9e-266  877.0   0.0   1.0   1   0   0   1   1   1   1 GenBank
+ABC91230.1           -          supplementary/cluster_data/ec_cluster_hmm -           1.7e-265  873.9   0.0  1.9e-265  873.7   0.0   1.0   1   0   0   1   1   1   1 GenBank
+ARO30532.1           -          supplementary/cluster_data/ec_cluster_hmm -           2.9e-265  873.2   0.0  3.2e-265  873.0   0.0   1.0   1   0   0   1   1   1   1 GenBank
+AGS22247.1           -          supplementary/cluster_data/ec_cluster_hmm -           4.8e-265  872.4   0.0  5.4e-265  872.3   0.0   1.0   1   0   0   1   1   1   1 GenBank
+APO67964.1           -          supplementary/cluster_data/ec_cluster_hmm -           7.6e-265  871.8   0.0  8.5e-265  871.6   0.0   1.0   1   0   0   1   1   1   1 GenBank
+AIC27686.1           -          supplementary/cluster_data/ec_cluster_hmm -           3.5e-264  869.6   0.0    4e-264  869.4   0.0   1.0   1   0   0   1   1   1   1 GenBank
+AJC79690.1           -          supplementary/cluster_data/ec_cluster_hmm -           3.7e-264  869.5   0.0  4.1e-264  869.3   0.0   1.0   1   0   0   1   1   1   1 GenBank
+ARM12734.1           -          supplementary/cluster_data/ec_cluster_hmm -           4.6e-264  869.2   0.0  5.2e-264  869.0   0.0   1.0   1   0   0   1   1   1   1 GenBank
+AJD41574.1           -          supplementary/cluster_data/ec_cluster_hmm -           8.2e-264  868.4   0.0  9.2e-264  868.2   0.0   1.0   1   0   0   1   1   1   1 GenBank
+CDM57808.1           -          supplementary/cluster_data/ec_cluster_hmm -           3.1e-263  866.5   0.0  3.5e-263  866.3   0.0   1.0   1   0   0   1   1   1   1 GenBank
+ACS56603.1           -          supplementary/cluster_data/ec_cluster_hmm -           3.6e-263  866.3   0.0    4e-263  866.1   0.0   1.0   1   0   0   1   1   1   1 GenBank
+AUX76693.1           -          supplementary/cluster_data/ec_cluster_hmm -           7.6e-263  865.2   0.0  9.4e-263  864.9   0.0   1.0   1   0   0   1   1   1   1 GenBank
+ACE91508.1           -          supplementary/cluster_data/ec_cluster_hmm -           7.8e-263  865.1   0.0  8.7e-263  865.0   0.0   1.0   1   0   0   1   1   1   1 GenBank
+APO75144.1           -          supplementary/cluster_data/ec_cluster_hmm -           8.3e-263  865.0   0.0  9.2e-263  864.9   0.0   1.0   1   0   0   1   1   1   1 GenBank
+AUW42963.1           -          supplementary/cluster_data/ec_cluster_hmm -           2.3e-262  863.6   0.0  2.6e-262  863.4   0.0   1.0   1   0   0   1   1   1   1 GenBank
+ARM88787.1           -          supplementary/cluster_data/ec_cluster_hmm -           7.2e-262  861.9   0.0  8.1e-262  861.8   0.0   1.0   1   0   0   1   1   1   1 GenBank
+APG91432.1           -          supplementary/cluster_data/ec_cluster_hmm -           4.6e-261  859.3   0.0  5.6e-261  859.0   0.0   1.0   1   0   0   1   1   1   1 GenBank
+ACP25531.1           -          supplementary/cluster_data/ec_cluster_hmm -           7.9e-261  858.5   0.0  9.7e-261  858.2   0.0   1.0   1   0   0   1   1   1   1 GenBank
+APG84786.1           -          supplementary/cluster_data/ec_cluster_hmm -           1.1e-260  858.0   0.0  1.4e-260  857.7   0.0   1.0   1   0   0   1   1   1   1 GenBank
+AFL52732.1           -          supplementary/cluster_data/ec_cluster_hmm -           4.2e-259  852.8   0.0  5.2e-259  852.5   0.0   1.0   1   0   0   1   1   1   1 GenBank
+AVA21776.1           -          supplementary/cluster_data/ec_cluster_hmm -           1.1e-258  851.5   0.0  1.2e-258  851.3   0.0   1.0   1   0   0   1   1   1   1 GenBank
+CCE96199.1           -          supplementary/cluster_data/ec_cluster_hmm -             7e-257  845.5   0.0  8.6e-257  845.2   0.0   1.0   1   0   0   1   1   1   1 GenBank
+AEG04639.1           -          supplementary/cluster_data/ec_cluster_hmm -           3.1e-256  843.3   0.0  3.8e-256  843.1   0.0   1.0   1   0   0   1   1   1   1 GenBank
+CAC46496.1           -          supplementary/cluster_data/ec_cluster_hmm -           3.1e-256  843.3   0.0  3.8e-256  843.1   0.0   1.0   1   0   0   1   1   1   1 GenBank
+CCF19678.1           -          supplementary/cluster_data/ec_cluster_hmm -           2.8e-255  840.2   0.0  3.2e-255  840.0   0.0   1.0   1   0   0   1   1   1   1 GenBank
+QJR15254.1           -          supplementary/cluster_data/ec_cluster_hmm -           3.3e-246  810.3   0.0  3.7e-246  810.1   0.0   1.0   1   0   0   1   1   1   1 GenBank
+AFJ62036.1           -          supplementary/cluster_data/ec_cluster_hmm -           5.8e-244  802.9   0.9  6.5e-244  802.7   0.9   1.0   1   0   0   1   1   1   1 GenBank
+QJR11213.1           -          supplementary/cluster_data/ec_cluster_hmm -           6.7e-244  802.6   0.0  7.5e-244  802.5   0.0   1.0   1   0   0   1   1   1   1 GenBank
+AKI02785.1           -          supplementary/cluster_data/ec_cluster_hmm -             6e-242  796.2   0.0  6.7e-242  796.0   0.0   1.0   1   0   0   1   1   1   1 GenBank
+VEI47713.1           -          supplementary/cluster_data/ec_cluster_hmm -           1.3e-184  607.0   3.4  1.5e-184  606.8   3.4   1.0   1   0   0   1   1   1   1 GenBank
+#
+# Program:         hmmsearch
+# Version:         3.3 (Nov 2019)
+# Pipeline mode:   SEARCH
+# Query file:      supplementary/cluster_data/ec_cluster_phmm
+# Target file:     data/cluster_data/all_clusters.fasta
+# Option settings: hmmsearch -o supplementary/cluster_data/ec_hmm_search_gc_results -A supplementary/cluster_data/ec_hmm_search_gc_alignment --tblout supplementary/cluster_data/ec_hmm_search_gc_tab supplementary/cluster_data/ec_cluster_phmm data/cluster_data/all_clusters.fasta 
+# Current dir:     /mnt/g/Foltanyi_et_al_2022/repo_reorganise
+# Date:            Tue Feb 15 13:03:53 2022
+# [ok]

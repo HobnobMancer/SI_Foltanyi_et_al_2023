@@ -1,0 +1,13 @@
+#                                                               --- full sequence ---- --- best 1 domain ---- --- domain number estimation ----
+# target name        accession  query name           accession    E-value  score  bias   E-value  score  bias   exp reg clu  ov env dom rep inc description of target
+#------------------- ---------- -------------------- ---------- --------- ------ ----- --------- ------ -----   --- --- --- --- --- --- --- --- ---------------------
+#
+# Program:         hmmsearch
+# Version:         3.3 (Nov 2019)
+# Pipeline mode:   SEARCH
+# Query file:      supplementary/cluster_data/ec_cluster_phmm
+# Target file:     data/cluster_data/3-2-1-52-protein_seqs.fasta
+# Option settings: hmmsearch -o supplementary/cluster_data/ec_hmm_search_nc_results -A supplementary/cluster_data/ec_hmm_search_nc_alignment --tblout supplementary/cluster_data/ec_hmm_search_nc_tab -T -100 supplementary/cluster_data/ec_cluster_phmm data/cluster_data/3-2-1-52-protein_seqs.fasta 
+# Current dir:     /mnt/g/Foltanyi_et_al_2022/repo_reorganise
+# Date:            Tue Feb 15 11:34:29 2022
+# [ok]

@@ -1,0 +1,18 @@
+# hmmbuild :: profile HMM construction from multiple sequence alignments
+# HMMER 3.3 (Nov 2019); http://hmmer.org/
+# Copyright (C) 2019 Howard Hughes Medical Institute.
+# Freely distributed under the BSD open source license.
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# input alignment file:             supplementary/cluster_data/all_clusters_aligned.fasta
+# output HMM file:                  supplementary/cluster_data/ec_cluster_phmm
+# name (the single) HMM:            supplementary/cluster_data/ec_cluster_hmm
+# output directed to file:          supplementary/cluster_data/ec_cluster_hmm_summary
+# processed alignment resaved to:   supplementary/cluster_data/ec_cluster_msa
+# input alignment is asserted as:   protein
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# idx name                  nseq  alen  mlen eff_nseq re/pos description
+#---- -------------------- ----- ----- ----- -------- ------ -----------
+1     supplementary/cluster_data/ec_cluster_hmm    91   651   537     0.70  0.589 
+
+# CPU time: 0.62u 0.01s 00:00:00.63 Elapsed: 00:00:00.64
