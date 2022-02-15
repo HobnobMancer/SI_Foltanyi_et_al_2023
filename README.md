@@ -431,27 +431,32 @@ By default [`HMMERSearch`](https://academic.oup.com/nar/article/41/12/e121/10259
 
 > Mistry, J., Finn, R. D., Eddy, S. R., Bateman, A., Punta, M. (2013) 'Challenges in Homology Search: HMMER3 and Convergent Evolution of Coiled-Coil Regions', Nucleic Acids Research, 41, pp. e121
 
-The **'noise cut-off' (NC)** bitscore was calculated by querying a set of proteins known negatives, in this case proteins that do not have ability to catalyse the reaction represented by the EC number 3.2.1.37. Bacterial protein sequences from the Glycosidetransferase (GT) family GT10 were selected as known negatives for calculating the NC. This was because all GT CAZymes are involved the synthesis of oligo- and polysaccharides, and do not posses functions related to the degradation of polysaccharides, which the catalytic reaction represented by the EC number 3.2.1.37 is associated with. The GT10 protein sequences were retrieved from NCBI, added to the local CAZyme database and extracted from the local CAZyme database using `cazy_webscraper`.
+The **'noise cut-off' (NC)** bitscore was calculated by querying a set of proteins known negatives, in this case proteins that do not have ability to catalyse the reaction represented by the EC number 3.2.1.37.
+
+Initally, bacterial protein sequences from the Glycosidetransferase (GT) family GT10 were selected as known negatives for calculating the NC. This was because all GT CAZymes are involved the synthesis of oligo- and polysaccharides, and do not posses functions related to the degradation of polysaccharides, which the catalytic reaction represented by the EC number 3.2.1.37 is associated with. The GT10 protein sequences were retrieved from NCBI, added to the local CAZyme database and extracted from the local CAZyme database using `cazy_webscraper`. However, even with a E-value cut-off of 1000, no hits between the bacterial GT10 protein sequences and the pHMM were found by `Hmmsearch`.
+
+Instead, bacterial proteins with the EC number 2.4.1.12 (a UDP-glucose--beta-glucan glucosyltransferase) were selected at the known negatives for calculating the NC score.
 ```bash
 cw_get_genbank_seqs \
-	data/cazy_database.db <email_address> --families GT10
+	data/cazy_database.db <email_address> --ec_filter 2.7.1.12
 cw_extract_db_sequences \
 	datacazy_database.db genbank \
-	--families GT10 \
-	--fasta_file data/cluster_data/gt10_protein_seqs.fasta
+	--ec_filter \
+	--fasta_file data/cluster_data/2-7-1-12_protein_seqs.fasta
 ```
-The CAZy family GT10 contained **727** GenBank accessions for bacterial proteins, and **727** protein sequences were retrieved from NCBI GenBank.
+**110** bacterial protein sequences were retrieved from the local CAZyme database and written to the fasta file `data/cluster_data/2-7-1-12_protein_seqs.fasta`.
 
-`Hmmsearch` was then used to query the GT10 bacterial protein sequences against the constructed pHMM.
+`Hmmsearch` was then used to query these protein sequences against the constructed pHMM.
 ```
 hmmsearch \
 	-o supplementary/cluster_data/ec_hmm_search_nc_results \
 	-A supplementary/cluster_data/ec_hmm_search_nc_alignment \
 	--tblout supplementary/cluster_data/ec_hmm_search_nc_tab \
 	supplementary/cluster_data/ec_cluster_phmm \
-	data/cluster_data/gt10_protein_seqs.fasta
+	data/cluster_data/2-7-1-12_protein_seqs.fasta
 ```
-The NC was defined as the largest valued returned from `HMMER`, which was **a**.
+The NC was defined as the largest valued returned from `HMMER`, which was **a**.  
+All output files are stored in the `supplementary/cluster_data` directory of the repository.
 
 The **'gathering cutoff' (GC)** bitscore was calculated by quering the pHMM against the training set of proteins used to construct the model.
 ```bash
