@@ -8,6 +8,7 @@ output:
     toc_float:
       toc_collapsed: false
     number_sections: true
+    css: "css/rmd_style.css"
     theme: lumen
 ---
 
@@ -234,19 +235,19 @@ WHERE (Genbanks.genbank_accession IN Ec_Query)
 
 To further expand the pool of potentially functionally relevant proteins, the proteins from the CAZy families of interest (listed below) which were not included in the clusters were BLASTP queries against the members of the 4 clusters.
 
-**Glycoside Hydrolase CAZy families of interest:**
-- GH1
-- GH2
-- GH3
-- GH11
-- GH26
-- GH30
-- GH43
-- GH51
-- GH52
-- GH54
-- GH116
-- GH120
+**Glycoside Hydrolase CAZy families of interest:**  
+- GH1  
+- GH2  
+- GH3  
+- GH11  
+- GH26  
+- GH30  
+- GH43  
+- GH51  
+- GH52  
+- GH54  
+- GH116  
+- GH120  
 
 From `HMMER3`, `hmmbuild` was used to construct a pHMM model of representing the 91 protein sequences from the 4 clusters of interest. The protein sequences from the CAZy families of interest that were no in the 4 clusters of interset were queried against the pHMM model to find additional potentially functionally relevant proteins.
 
