@@ -407,12 +407,18 @@ The genomes were downloaded from NCBI using [`ncbi-genome-download`](https://git
 To reproduce this download run the following command from the root of this repository:
 ```bash
 scripts ncbi/download_genomes.sh \
-  data/ref_genomes_of_interest_acc.txt
-  ml_tree_genomes
+  data/ref_genomes_of_interest_acc.txt \
+  ml_tree_genomes \
+  fasta
 ```
+The arguments provided are:
+1. Path to the file containing a list of the genomes of interest
+2. Path to the output directory
+3. The file format to download the genomes as
 
 25 genomes were downloaded and stored in the directory `ml_tree_genomes`. The accession numbers of the downloaded genomes are listed in `data/downloaded_genome_acc.txt`
 
+The 25 genomes were downloaded in GenBank Flat File and FASTA format. The latter was used for reconstruction of the phylogenetic tree, the former were used for annotating the CAZome.
 
 #### 2. CDS prediction
 
