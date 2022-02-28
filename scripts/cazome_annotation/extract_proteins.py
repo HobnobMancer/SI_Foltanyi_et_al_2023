@@ -52,7 +52,7 @@ from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from tqdm import tqdm
 
-from saintBioutils.utilities.logger import config_logger, build_logger
+from saintBioutils.utilities.logger import config_logger
 from saintBioutils.utilities.file_io import make_output_directory
 from saintBioutils.utilities.file_io import get_paths
 
@@ -65,8 +65,7 @@ def main():
     parser = build_parser()
     args = parser.parse_args()
 
-    if logger is None:
-        config_logger(args)
+    config_logger(args)
     logger = logging.getLogger(__package__)
 
     make_output_directory(args.output_dir, args.force, args.nodelete)
@@ -106,7 +105,7 @@ def compile_fasta(assembly_path, args):
     """
     logger = logging.getLogger(__name__)
 
-    no_proteins_logger = build_logger(args.output_dir, "genomes_with_no_proteins.log")
+    no_proteins_path = args.output_dir / "genomes_with_no_proteins.log"
 
     # compile fasta name species.fasta
     name_fragments = (assembly_path.name).split("_")
@@ -130,7 +129,7 @@ def compile_fasta(assembly_path, args):
 
     output_path = args.output_dir / fasta_path
 
-    proteins = set()
+    proteins = []
 
     with open(assembly_path, "rt") as handle:  # unzip the genomic assembly
         for gb_record in SeqIO.parse(handle, "genbank"):
@@ -151,12 +150,13 @@ def compile_fasta(assembly_path, args):
                         continue
 
                     new_record = SeqRecord(Seq(seq), id=protein_accession, name=product)
-                    proteins.add(new_record)
+                    proteins.append(new_record)
 
     logger.warning(f"{len(proteins)} proteins in genomic assembly {genomic_accession}")
 
     if len(proteins) == 0:
-        no_proteins_logger.warning(f"{genomic_accession}")
+        with open(no_proteins_path, "a") as fh:
+            fh.write(f"{genomic_accession}\n")
         return assembly_path
 
     SeqIO.write(list(proteins), output_path, 'fasta')
@@ -179,9 +179,16 @@ def get_record_feature(feature, qualifier, accession, genomic_accession):
         data = feature.qualifiers[qualifier][0]
         return data
     except KeyError:
-        logger.warning(
-            f"Failed to retrieve feature {qualifier}, for protein {accession} in {genomic_accession}\n"
-            "Returning an empty string it its place. If a protein_id, gene_id will be written in its place"
+        if qualifier == "protein_id":
+            logger.warning(
+                f"Failed to the protein id for {accession} in {genomic_accession}\n"
+                "The ene_id will be written in its place"
+            )
+        else:
+            logger.warning(
+            f"Failed to retrieve feature {qualifier}\n" 
+            f"for protein {accession} in {genomic_accession}\n"
+            "Returning an empty string it its place."
         )
         return ""
 
