@@ -36,19 +36,6 @@ the exact instructions provided in the `dbCAN` [README]((https://github.com/linn
 - ape
 - dplyr
 
-## Method to reconstruct the analysis
-
-To reconstruct the analysis run all commands from this directory.
-
-The method is split into four sections:
-1. [Systematic exploration of tmgh3](#systematic-exploration-of-tmgh3)
-
-1. [Construct a local CAZyme database](#construct-a-local-cazyme-database)
-2. [Reconstructing the _Thermotoga_ genus phylogenetic tree](#reconstructing-the-thermotoga-genus-phylogenetic-tree)
-3. [Selecting models for molecular replacement](#selecting-models-for-molecular-replacement)
-4. [Identifying co-evolving CAZy families](#identifying-co-evolving-cazy-families)
-
-
 ## Data, results and scripts
 
 All **scripts** used in this analysis are stored in the `scripts` directory in the repo.  
@@ -56,6 +43,24 @@ All **scripts** used in this analysis are stored in the `scripts` directory in t
 **Input data** for the analysis, such as FASTA files, are stored in the `data` directory.  
 
 **Results** data from this analysis, such as R markdown notebooks and MSA files, are stored in the `results` directory.
+
+## Method to reconstruct the analysis
+
+To reconstruct the analysis run all commands from this directory.
+
+The method is split into four sections:
+1. [Construct a local CAZyme database](#construct-a-local-cazyme-database)
+2. [Systematic exploration of tmgh3](#systematic-exploration-of-tmgh3)
+3. [Exploration of a GH3-CE complex](#exploration-of-a-gh3-ce-complex)
+  - [Reconstructing the _Thermotoga_ genus phylogenetic tree](#reconstructing-the-thermotoga-genus-phylogenetic-tree)
+  - [Annotate the CAZomes](#annotate-the-cazomes)
+  - [Run `FlaGs`](#run-flags)
+
+1. [Construct a local CAZyme database](#construct-a-local-cazyme-database)
+2. [Reconstructing the _Thermotoga_ genus phylogenetic tree](#reconstructing-the-thermotoga-genus-phylogenetic-tree)
+3. [Selecting models for molecular replacement](#selecting-models-for-molecular-replacement)
+4. [Identifying co-evolving CAZy families](#identifying-co-evolving-cazy-families)
+
 
 ## Construct a local CAZyme database
 
@@ -658,7 +663,7 @@ SOMETHING ELSE
 `dbCAN` parsed ___ proteins.  
 ___ of these proteinse were predicted to be CAZymes with a consensus CAZy family prediction (i.e. a CAZy family annotation that at least two of three tools in dbCAN agreed upon).
 
-### Running `FlaGs`
+### Run `FlaGs`
 
 ...
 
