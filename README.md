@@ -601,8 +601,7 @@ To reproduce the analysis, run the following command from the root of the reposi
 ```bash
 python3 scripts/cazome_annotation/extract_proteins.py \
   cazomes/cazome_genomes \
-  cazomes/extracted_proteins \
-  -f -n
+  cazomes/extracted_proteins
 ```
 
 The FASTA files were written to the `cazomes/extracted_proteins` directory.
@@ -633,8 +632,7 @@ python3 scripts/cazome_annotation/get_cazy_cazymes.py \
   cazomes/extracted_proteins \
   cazy_database.db \
   cazomes/non_cazy_proteins \
-  cazomes/proteins_of_interest.txt \
-  -f -n
+  cazomes/proteins_of_interest.txt
 ```
 
 The `csv` file containing all proteins annotated in CAZy in the genomes is available in the [repository]().
@@ -652,7 +650,9 @@ _`dbCAN` version 2.0.11._
 
 To run dbCAN for every set of protein sequences extracted from the genomes and not included in CAZy, run the following command in the root of the repository:
 ```bash
-SOMETHING
+python3 scripts/cazome_annotation/run_dbcan.py \
+  cazomes/non_cazy_proteins \
+  cazome/dbcan_output
 ```
 
 To parse the output from dbCAN, and the proteins from the CAZy families of interest to the tab delimited list, run the following command in the root of the repository:
