@@ -43,15 +43,16 @@
 #
 # Download genomes of interset from NCBI
 
-$1  # path to plain text file containing list of genomic accessions
-$2  # path to output directory
+# $1  path to plain text file containing list of genomic accessions
+# $2  path to output directory
+# $3  output file format
 
 # Create output directory
 mkdir -p $2
 
 ncbi-genome-download \
     --assembly-accessions $1 \
-    --formats fasta \
+    --formats $3 \
     --output-folder $2 \
     --flat-output \
     -v \
