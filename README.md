@@ -121,12 +121,20 @@ As a preliminary search to identify potentially functionally similar proteins to
 
 > Altschul, S. F., Gish, W., Miller, W., Myers, E. W., Lipman, D. J. (1990) 'Basic local alignment search tool', Journal of Molecular Biology, 215(3), pp. 403-10
 
+This was done via the NCBI BLASTP (webinterface)[https://blast.ncbi.nlm.nih.gov/Blast.cgi?PROGRAM=blastp&PAGE_TYPE=BlastSearch&LINK_LOC=blasthome] using default query parameters.
+
 The reults of the query against the NR database were stored in a [csv file]().
 
 A 70% identity cut-off was used to select proteins, which is widely accepted as a reasonably cut-off for selecting proteins that share the first 3 digits of their respective EC numbers.
 
-### 2. 
+### 2. Query against the CAZy database
 The analysis presented in Folasdas _et al._ using HHpred was repeated using the MSA of potentially functionally relevant proteins, with the aim to identify more functionally relevant proteins than querying with only the protein sequence of interest.
+
+### 3. Interrogation of the CAZy database
+SQL commands... why does our protein come up with so few hits?
+
+### 4. Repeating the analysis using HHpred
+Generation of an MSA...
 
 Using the MSA did not signficantly increase the number of functionally relevant hits returned by HHpred. In general, the results between the two queries were similar. This potentially reflects the limited knowledge pool for _Thermotoga_ glycoside hydrolase GH3 proteins.
 
@@ -648,12 +656,14 @@ _`dbCAN` version 2.0.11._
 
 > Zhang, H., Yohe, T., Huang, L., Entwistle, S., Wu, P., Yang, Z., Busk, P.K., Xu, Y., Yin, Y. (2018) ‘dbCAN2: a meta server for automated carbohydrate-active enzyme annotation’, Nucleic Acids Res., 46(W1), pp. W95-W101. doi: 10.1093/nar/gky418
 
-To run dbCAN for every set of protein sequences extracted from the genomes and not included in CAZy, run the following command in the root of the repository:
+To run dbCAN for every set of protein sequences extracted from the genomes and not included in CAZy, run the following command in `dbcan` directory (*this is necessary because the paths encoded in `dbCAN` are hard coded, this does require copying the input data into a new directory withint the `dbcan` directory*):
 ```bash
-python3 scripts/cazome_annotation/run_dbcan.py \
-  cazomes/non_cazy_proteins \
-  cazome/dbcan_output
+python3 run_dbcan.py \
+  non_cazy_proteins_copy \
+  dbcan_output
 ```
+
+The output directory `dbcan_output` was moved to the `cazomes` directory: `cazomes/dbcan_output`.
 
 To parse the output from dbCAN, and the proteins from the CAZy families of interest to the tab delimited list, run the following command in the root of the repository:
 ```bash
