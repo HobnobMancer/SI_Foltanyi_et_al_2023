@@ -16,14 +16,18 @@ This repo contains the commands and data files necessary to repeat the study pre
 
 - POISx or Mac OS, or linux emulator
 - Python version 3.9+
-- Miniconda3 or Anaconda managed microenvironment  
-- Prodigal
-- HMMER >= 3.3
-- Coinfinder
-- Pyani
-- cazy_webscraper
-- Cazomevolve
-- get-ncbi-genomes
+- `Miniconda3` or `Anaconda` managed microenvironment  
+- `Prodigal`
+- `HMMER` >= 3.3
+- `Coinfinder`
+- `Pyani`
+- `cazy_webscraper` >= 2.0.0
+- `Cazomevolve`
+- `get-ncbi-genomes`
+- `dbCAN` == [2.0.11](https://github.com/linnabrown/run_dbcan)
+
+**Note on install dbCAN:** Paths are hardcoded in `dbCAN` v2.0.11, therefore, to use `dbCAN` in this analysis, follow 
+the exact instructions provided in the `dbCAN` [README]((https://github.com/linnabrown/run_dbcan)) and run the commands in the `scripts/cazome_annotation` directory.
 
 ### Python packages
 - tqdm
@@ -593,10 +597,12 @@ To reproduce the analysis, run the following command from the root of the reposi
 python3 scripts/cazome_annotation/extract_proteins.py \
   cazomes/cazome_genomes \
   cazomes/extracted_proteins \
-  -n
+  -f -n
 ```
 
 The FASTA files were written to the `cazomes/extracted_proteins` directory.
+
+In total 34,671 proteins were extracted.
 
 #### 3. Identify proteins in CAZy
 
@@ -611,24 +617,25 @@ The script has 3 positiional arguments:
 _The list of CAZy families of interest is hardcoded in to the `get_cazy_cazymes.py` script, in the constant `FAMILIES_OF_INTEREST`._ 
 
 This script produced 3 outputs:
-1. A single `csv` file containing all extrated CAZy annotations (including the genomic accession, protein accession and CAZy family annotation), in tidy data formatting
-2. A FASTA file per parsed genome containing all protein sequences that are not included in CAZy
+1. A single `csv` file containing all extrated CAZy annotations (including the genomic accession, protein accession and CAZy family annotation), in tidy data formatting (this is written to the output directory)
+2. A FASTA file per parsed genome containing all protein sequences that are not included in CAZy (these are written to the output directory)
 3. A single tab-delimited list with the genomic accession and protein accession of all proteins that are from the families of interest.
+4. A `summary.txt` file, listing the number of proteins from CAZy, not in CAZy and from the families of interest (this is writte to the output directory)
 
 Run the following command from the root of the repository to repeat this analysis:
 ```bash
 python3 scripts/cazome_annotation/get_cazy_cazymes.py \
   cazomes/extracted_proteins \
-  cazy_database.db
+  cazy_database.db \
   cazomes/non_cazy_proteins \
-  cazomes/proteins_of_interest.txt
+  cazomes/proteins_of_interest.txt \
   -f -n
 ```
 
 The `csv` file containing all proteins annotated in CAZy in the genomes is available in the [repository]().
 
-In total ___ proteins were retrieved from CAZy.  
-__ proteins were extracted from the genomes and were not included in CAZy.  
+In total 0 proteins were retrieved from CAZy.  
+34,671 proteins were extracted from the genomes and were not included in CAZy.  
 
 #### 4. Run and parse dbCAN
 
