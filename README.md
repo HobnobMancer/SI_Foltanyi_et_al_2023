@@ -557,6 +557,105 @@ Tree reconstructions are placed in the `tree` directory. The best estimate tree 
 
 
 
+
+
+### Annotate the CAZomes
+
+`cazy_webscraper` and `dbCAN` were used to annotate all CAZymes in the _Thermotoga_ genomes (the CAZomes).
+
+#### 1. Download genomes
+
+The proteins from the _Thermotoga_ genomes were required, therefore, the genomes of interested were downloaded in 
+GenBank Flat File format.
+
+To reproduce this download run the following command from the root of this repository:
+```bash
+scripts/ncbi/download_genomes.sh \
+  data/ref_genomes_of_interest_acc.txt \
+  cazomes/cazome_genomes \
+  genbank
+```
+
+25 genomes were downloaded and stored in the `cazome_genomes` directory, and were decompressed by the `download_genomes.sh` script.
+
+#### 2. Extract proteins
+
+The Python script `extract_proteins.py` was used to extract the protein sequences from each downloaded genome, and write the protein 
+sequences to FASTA files. One FASTA file was created by per downloaded genome, and contained all protein sequences extracted from the 
+respective genome.
+
+The script takes the following args:
+1. Path to input dir containing genomes (in `.gbff` format)
+2. Path to output dir to write out FASTA files
+
+To reproduce the analysis, run the following command from the root of the repository:
+```bash
+python3 scripts/cazome_annotation/extract_proteins.py \
+  cazomes/cazome_genomes \
+  cazomes/extracted_proteins \
+  -n
+```
+
+The FASTA files were written to the `cazomes/extracted_proteins` directory.
+
+#### 3. Identify proteins in CAZy
+
+All proteins extracted from the downloaded genomes were queried against a local CAZyme database using the `get_cazy_cazymes.py` script. 
+
+The script has 3 positiional arguments:
+1. Path to directory containing FASTA files of extracted protein sequences
+2. Path to the local CAZyme database
+3. Path to output directory to write out FASTA files of proteins not in CAZy
+4. Path to write out tab delimited list of proteins in the CAZy families of interest.
+
+_The list of CAZy families of interest is hardcoded in to the `get_cazy_cazymes.py` script, in the constant `FAMILIES_OF_INTEREST`._ 
+
+This script produced 3 outputs:
+1. A single `csv` file containing all extrated CAZy annotations (including the genomic accession, protein accession and CAZy family annotation), in tidy data formatting
+2. A FASTA file per parsed genome containing all protein sequences that are not included in CAZy
+3. A single tab-delimited list with the genomic accession and protein accession of all proteins that are from the families of interest.
+
+Run the following command from the root of the repository to repeat this analysis:
+```bash
+python3 scripts/cazome_annotation/get_cazy_cazymes.py \
+  cazomes/extracted_proteins \
+  cazy_database.db
+  cazomes/non_cazy_proteins \
+  cazomes/proteins_of_interest.txt
+  -f -n
+```
+
+The `csv` file containing all proteins annotated in CAZy in the genomes is available in the [repository]().
+
+In total ___ proteins were retrieved from CAZy.  
+__ proteins were extracted from the genomes and were not included in CAZy.  
+
+#### 4. Run and parse dbCAN
+
+CAzy annotates the GenBank protein sequence releases, therefore, it is rare for CAZy to include the RefSeq protein accessions. To annotate the comprehensive CAZome of each genome, `dbCAN` was used to annotate the CAZomes.
+
+_`dbCAN` version 2.0.11._
+
+> Zhang, H., Yohe, T., Huang, L., Entwistle, S., Wu, P., Yang, Z., Busk, P.K., Xu, Y., Yin, Y. (2018) ‘dbCAN2: a meta server for automated carbohydrate-active enzyme annotation’, Nucleic Acids Res., 46(W1), pp. W95-W101. doi: 10.1093/nar/gky418
+
+To run dbCAN for every set of protein sequences extracted from the genomes and not included in CAZy, run the following command in the root of the repository:
+```bash
+SOMETHING
+```
+
+To parse the output from dbCAN, and the proteins from the CAZy families of interest to the tab delimited list, run the following command in the root of the repository:
+```bash
+SOMETHING ELSE
+```
+
+`dbCAN` parsed ___ proteins.  
+___ of these proteinse were predicted to be CAZymes with a consensus CAZy family prediction (i.e. a CAZy family annotation that at least two of three tools in dbCAN agreed upon).
+
+### Running `FlaGs`
+
+...
+
+
 ## Identifying co-evolving CAZy families
 
 ### 1. CAZy family co-occurence
