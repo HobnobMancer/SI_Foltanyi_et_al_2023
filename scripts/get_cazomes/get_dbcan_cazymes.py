@@ -56,8 +56,6 @@ from saintBioutils.utilities.file_io import get_paths
 
 FAMILIES_OF_INTEREST = [
     "GH3",
-    "CE4",
-    "CE7",
 ]
 
 
@@ -83,8 +81,7 @@ def parse_dbcan(dir_path, args):
     overview_path = dir_path / "overview.txt"
     genomic_accession = dir_path.name
 
-    fams_annotations = []  # list of strings, f"{genome}\t{protein accession}" for proteins from fams of interest
-    families = []
+    proteins_of_interest = []  # list of strings, f"{genome}\t{protein accession}" for proteins from fams of interest
 
     dbcan_df = pd.read_csv(overview_path, sep='\t', header=0)
 
@@ -125,16 +122,11 @@ def parse_dbcan(dir_path, args):
         if (annotations['HMMER'] == annotations['eCAMI']) or (annotations['HMMER'] == annotations['DIAMOND']) or (annotations['eCAMI'] == annotations['DIAMOND']):
             for fam in combined_consensus:
                 if fam in FAMILIES_OF_INTEREST:
-                    families.append(f"{genomic_accession}\t{protein_accession}\t{fam}\n")
-                    fams_annotations.append(f"{genomic_accession}\t{protein_accession}\n")
+                    proteins_of_interest.append(f"{genomic_accession}\t{protein_accession}\n")
                     
     # write out annotations of fams of interest to the tab-deliminted list
     with open(args.tab_annno_list, "a") as fh:
-        for line in fams_annotations:
-            fh.write(line)
-
-    with open(args.summary, "a") as fh:
-        for line in families:
+        for line in proteins_of_interest:
             fh.write(line)
 
 
@@ -160,13 +152,6 @@ def build_parser():
         type=Path,
         default=None,
         help="Path to write out tab deliminated list",
-    )
-
-    parser.add_argument(
-        "summary",
-        type=Path,
-        default=None,
-        help="Path to write family annotations of proteins of interest",
     )
 
     # Add option to specific directory for log to be written out to
