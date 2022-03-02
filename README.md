@@ -685,3 +685,29 @@ python3 FlaGs/FlaGs.py \
 
 Add links to results and discusss
 Include images of results
+
+To estimate the degree of conservation across the GH3-CE7 gene cluster, BLASTP all-versus-all analysis was performed for the retrieved GH3 proteins and CE7 proteins (GH3 vs GH3 and CE7 vs CE7 analyses were performed).
+
+The GH3 and CE7 protein sequences were retrieved from the NCBI Protein database using [Batch Entrez](https://www.ncbi.nlm.nih.gov/sites/batchentrez). The resulting fasta files for [GH3]() and [CE7]() protein sequences are available in the `data/gh3_complex` directory.
+
+To reproduce the BLASTP all-versus-all analyses, call the following commands in the root of this repository.
+```bash
+python3 scripts/gh3_complex/run_blastp_gh3.py
+python3 scripts/gh3_complex/run_blastp_ce7.py
+```
+The outputs from BLASTP are written to the `results` directory for the [GH3]() and [CE7]() proteins.
+
+The two data files of GH3 and CE7 protein accessions used in this analysis are located in the `data/gh3_complex` directory.
+
+The R script `scripts/gh3_complex/get_heatmaps.R` was used to generate heatmaps plotting the percentage identity of the BLASTP all-versus-all 
+analysis of the GH3 and CE7 proteins, to explore the degree of conservation over the potential complex.
+
+<figure>
+<img src="https://images.unsplash.com/photo-1549740425-5e9ed4d8cd34?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXwzOTU0NTB8fGVufDB8fHw%3D&w=1000&q=80" alt="Trulli" style="width:100%">
+<figcaption align = "center"><b>Fig.1 - 4K Mountains Wallpaper</b></figcaption>
+</figure>
+
+<figure>
+<img src="https://images.unsplash.com/photo-1549740425-5e9ed4d8cd34?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXwzOTU0NTB8fGVufDB8fHw%3D&w=1000&q=80" alt="Trulli" style="width:100%">
+<figcaption align = "center"><b>Fig.1 - 4K Mountains Wallpaper</b></figcaption>
+</figure>
