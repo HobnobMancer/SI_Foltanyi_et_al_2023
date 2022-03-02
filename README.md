@@ -102,9 +102,11 @@ copy of this database is available in the [`data`]() directory of this repositor
 
 ## Systematic exploration of tmgh3
 
+The protein sequence of _tmgh3_ is stored in `data/tmgh3_exploration/tmgh3.fasta`.
+
 ### 1. Query against the NR database
 
-As a preliminary search to identify potentially functionally similar proteins to infer functional and structural information about tmgh3, the 
+As a preliminary search to identify potentially functionally similar proteins to infer functional and structural information about _tmgh3_, the 
 [non-redundant database](https://www.ncbi.nlm.nih.gov/refseq/about/nonredundantproteins/#related-documentation) was queried using BLASTP.
 
 > Altschul, S. F., Gish, W., Miller, W., Myers, E. W., Lipman, D. J. (1990) 'Basic local alignment search tool', Journal of Molecular Biology, 215(3), pp. 403-10
@@ -115,273 +117,69 @@ The reults of the query against the NR database were stored in a [csv file]().
 
 A 70% identity cut-off was used to select proteins, which is widely accepted as a reasonably cut-off for selecting proteins that share the first 3 digits of their respective EC numbers.
 
-### 2. Query against the CAZy database
-The analysis presented in Folasdas _et al._ using HHpred was repeated using the MSA of potentially functionally relevant proteins, with the aim to identify more functionally relevant proteins than querying with only the protein sequence of interest.
+The protein sequences of the 19 hits with sequence identity of equal to or greater than 70% against _tmgh3_ were written to the FASTA file `data/tmgh3_exploration/nr_hits.fasta`.
 
-### 3. Interrogation of the CAZy database
-SQL commands... why does our protein come up with so few hits?
+### 2. Query against CAZy
 
-### 4. Repeating the analysis using HHpred
-Generation of an MSA...
+CAZy annotates GenBank database releases. Reference sequence protein IDs are not catalogued in CAZy. Therefore, the _tmgh3_ prortein sequence was queried against the CAZy database to find potentially functionally similar proteins to infer functional and structural information about _tmgh3_.
 
-Using the MSA did not signficantly increase the number of functionally relevant hits returned by HHpred. In general, the results between the two queries were similar. This potentially reflects the limited knowledge pool for _Thermotoga_ glycoside hydrolase GH3 proteins.
-
-## Selecting models for molecular replacement
-
-Via SQL and an SQL database browser, the local CAZyme database was queried with the aim to retrieve functionally relevant proteins, to generate an MSA of functional relevant proteins for molecular modeling. 
-
-A list of all SQL queries performed and the output is presented [here](https://hobnobmancer.github.io/Foltanyi_et_al_2022/sql_queries/).
-
-In summary, from the CAZy families of interest, 560 proteins were annotated with the EC number 3.2.1.37, indicating they potentially had the function of interest.
-
-`cazy_webscraper` was used to retrieve the GenBank protein sequences for these 560 proteins.
-
-[`MMSeq2`](https://github.com/soedinglab/MMseqs2) was used to cluster the proteins with a percentage identity and coverage cut-off of 80%.
-
-To repeat this analysis, run the following code from the root of the repository, using a fasta file called ec_proteins_seqs.fasta
-which contains all bacterial proteins retieved with the EC number of interest. This analysis also uses the Python script `get_clusters.py`, which 
-parses the MMseq output to create a `csv` file with the size of each cluster, and a `JSON` file containing the GenBank accessions for each cluster.
-
+The CAZy website does not support querying the database using BLASTP. Therefore, `cazy_webscraper` was used to extract the GenBank protein sequences for all GH CAZy families of interest from the local CAZyme database and write them to a FASTA file.
 ```bash
-# make an output directory
-mkdir mmseq_cluster_80
-
-# create the db
-mmseqs createdb ec_proteins_seqs.fasta mmseq_cluster_80/mmseq_db_80
-
-# cluster the proteins
-mmseqs cluster mmseq_cluster_80/mmseq_db_80 \
-  mmseq_cluster_80/mmseq_db_80_output \
-  mmseq_cluster_80/mmseq_db_80/tmp \
-  --min-seq-id 0.8 -c 0.8
-
-# create tsv
-mmseqs createtsv \
-  cluster mmseq_cluster_80/mmseq_db_80 \
-  cluster mmseq_cluster_80/mmseq_db_80 \
-  mmseq_cluster_80/mmseq_db_80_output \
-  mmseq_cluster_80/mmseq_db_80_output.tsv
-
-# get summary
-python3 get_clusters.py \
-  mmseq_cluster_80/mmseq_db_80_output.tsv \
-  mmseq_cluster_80/mmseq_cluster_summary.csv \
-  mmseq_cluster_80/mmseq_clusters.json
-```
-
-This produced 420 clusters. Only 2 clusters contained more than 10 proteins, each contained 17 proteins sequences. All remaining clusters contained less than 10 proteins, 366 clusters contained only 1 proteins.
-
-`MMSeq2` was used to cluster the protein again, but with a percentage identity and coverage cut-off of 70% with the aim to increase the cluster sizes.
-
-To repeat this analysis, run the following code from the root of the repository, using a fasta file called ec_proteins_seqs.fasta
-which contains all bacterial proteins retieved with the EC number of interest.
-
-```bash
-# make an output directory
-mkdir mmseq_cluster_70
-
-# create the db
-mmseqs createdb ec_proteins_seqs.fasta mmseq_cluster_70/mmseq_db_70
-
-# cluster the proteins
-mmseqs cluster mmseq_cluster_70/mmseq_db_70 \
-  mmseq_cluster_70/mmseq_db_70_output \
-  mmseq_cluster_70/mmseq_db_70/tmp \
-  --min-seq-id 0.7 -c 0.7
-
-# create tsv
-mmseqs createtsv \
-  cluster mmseq_cluster_70/mmseq_db_70 \
-  cluster mmseq_cluster_70/mmseq_db_70 \
-  mmseq_cluster_70/mmseq_db_70_output \
-  mmseq_cluster_70/mmseq_db_70_output.tsv
-
-# get summary
-python3 get_clusters.py \
-  mmseq_cluster_70/mmseq_db_70_output.tsv \
-  mmseq_cluster_70/mmseq_cluster_summary.csv \
-  mmseq_cluster_70/mmseq_clusters.json
-```
-
-This produced 346 clusters. The 4 largest clusters contained 33, 28, 17 and 13 proteins each. All remaining clusters contained less than 10 proteins, 227 of which contained only 1 protein.
-
-The JSON file containing the GenBank accessions of each cluster compiled by `MMSeq2` can be found [here](https://github.com/HobnobMancer/Foltanyi_et_al_2022/blob/master/supplementary/cluster_data/clusters_70.json).
-
-A representative sequence from each of the 4 largest clusters from this second clustering were compared using BLASTP all-versus-all, using the Python script `run_blastp.py` from the Python package [`pyrewton` DOI:10.5281/zenodo.3876218)](https://github.com/HobnobMancer/pyrewton).
-
-The R notebook `cluster_analysis.Rmd` was used to parse and analyse the results. This notebook can be viewed [here](https://hobnobmancer.github.io/Foltanyi_et_al_2022/supplementary/cluster_data/cluster_analysis.html) and found [here](https://github.com/HobnobMancer/Foltanyi_et_al_2022/tree/master/supplementary/cluster_data).
-
-The GenBank accessions for each of the 4 largest clusters were extracted to plain text files, with one unique GenBank accession per row. These files can be found here:
-- [AGE22437_1.txt](https://github.com/HobnobMancer/Foltanyi_et_al_2022/blob/master/supplementary/cluster_data/AGE22437_1.txt)
-- [CBK6950_1.txt](https://github.com/HobnobMancer/Foltanyi_et_al_2022/blob/master/supplementary/cluster_data/CBK6950_1.txt)
-- [CDG29680_1.txt](https://github.com/HobnobMancer/Foltanyi_et_al_2022/blob/master/supplementary/cluster_data/CDG29680_1.txt)
-- [QJR11213_1.txt](https://github.com/HobnobMancer/Foltanyi_et_al_2022/blob/master/supplementary/cluster_data/QJR11213_1.txt)
-
-These text files were parsed by `cazy_webscraper` in order to extract the GenBank protein sequences of all proteins in each cluster, and write the protein sequences to a FASTA file. One FASTA file per cluster was compiled.
-
-```bash
-cw_extract_db_sequences cazy_database.db genbank AGE22437_1.txt --fasta_file AGE22437_1.fasta -f -n
-cw_extract_db_sequences cazy_database.db genbank CBK6950_1.txt --fasta_file CBK6950_1.fasta -f -n
-cw_extract_db_sequences cazy_database.db genbank CDG29680_1.txt --fasta_file CDG29680_1.fasta -f -n
-cw_extract_db_sequences cazy_database.db genbank QJR11213_1.txt --fasta_file QJR11213_1.fasta -f -n
-```
-
-The Python script `run_blastp.py` from [`pyrewton` DOI:10.5281/zenodo.3876218)](https://github.com/HobnobMancer/pyrewton) was used to run a BLASTP all-vs-all analysis for each cluster. The results of which can be viewed [here](https://hobnobmancer.github.io/Foltanyi_et_al_2022/supplementary/cluster_data/cluster_analysis.html#4_Sequence_divergence_in_individual_clusters).
-
-The BLASTP all-versus-all of the representative proteins from each cluster inferred the AGE224371.1 and CDG296801.1 clusters had relatively low sequence diveregence across all proteins from the two clusters. To futher explore this, a BLASTP all-versus-all of all proteins in the two clusters was performed, and demonstrated high sequence similarity across the two clusters. The BLAST score ratios of the BLASTP analysis can be found [here](https://hobnobmancer.github.io/Foltanyi_et_al_2022/supplementary/cluster_data/cluster_analysis.html#51_AGE224371_and_CDG296801).
-
-The sequence diveregence when pooling all proteins from the 4 clusters was also explored, and demonstrated a relatively high sequence similarity across the entire protein pool. The BLAST score ratios of the BLASTP analysis can be found [here](https://hobnobmancer.github.io/Foltanyi_et_al_2022/supplementary/cluster_data/cluster_analysis.html#52_Sequence_divergence_across_all_4_clusters).
-
-Owing to the overall high sequence similarity across the entire protein pool, all 91 protein sequences were aligned using `MAFFT`.
-```bash
-# FASTA output
-mafft --thread 12 mafft --thread 12 data/cluster_data/all_clusters.fasta > supplementary/cluster_data/all_clusters_aligned.fasta
-# CLUSTAL output
-mafft --thread 12 --clustalout data/cluster_data/all_clusters.fasta > supplementary/cluster_data/all_clusters_aligned.clustal
-```
-
-The total number of proteins in across all 4 clusters was 91. This included 0 proteins with PDB accessions listed in UniProt. The following SQL command was used to retrive the results:
-
-```sql
-WITH Ec_Query (ec_gbk_acc) AS (
-	SELECT DISTINCT Genbanks.genbank_accession
-	FROM Genbanks
-	INNER JOIN Genbanks_Ecs ON Genbanks.genbank_id = Genbanks_Ecs.genbank_id
-	INNER JOIN Ecs ON Genbanks_Ecs.ec_id = Ecs.ec_id
-	WHERE Ecs.ec_number = '3.2.1.37'
-)
-SELECT DISTINCT Genbanks.genbank_accession, Pdbs.pdb_accession
-FROM Genbanks
-INNER JOIN Pdbs ON Genbanks.genbank_id = Pdbs.genbank_id
-LEFT JOIN Ec_Query ON Genbanks.genbank_accession = Ec_Query.ec_gbk_acc
-WHERE (Genbanks.genbank_accession IN Ec_Query)
-```
-
-To further expand the pool of potentially functionally relevant proteins, the proteins from the CAZy families of interest (listed below) which were not included in the clusters were BLASTP queries against the members of the 4 clusters. Specifically:
-
-1. `cazy_webscraper` was used to extract the GenBank protein sequences for all proteins in the Glycoside Hydrolase families of interest:
-```bash
-cw_extract_db_sequences \
-  cazy_database.db \
-  genbank \
+cw_extract_protein_sequences \
+  cazy_database.db genbank \
   --families GH1,GH2,GH3,GH11,GH26,GH30,GH43,GH51,GH52,GH54,GH116,GH120 \
-  --fasta_file all_fam_seqs.fasta \
+  --fasta_file data/tmgh3_exploration/cazy_proteins_seqs.fasta \
   -f -n
 ```
 
-2. The Python script `remove_duplicate_seqs.py` was run from the root of the repository and used to remove proteins from the `all_fam_seqs.fasta` file (containing protein sequences for the GH CAZy families of interest) that were already in the one of the 4 clusters of interest.
+The Python script `run_blastp_cazy.py` was used to query _tmgh3_ against the proteins from the CAZy families of interest using BLASTP. To repeat this analysis, run the following command from the root of the repository.
 ```bash
-python3 scripts/molecular_modeling/remove_duplicate_seqs.py \
-  data/molecular_modeling/all_fam_seqs.fasta
+python3 scripts/tmgh3_exploration/run_blastp_cazy.py
 ```
 
-3. [`Trimal`](http://trimal.cgenomics.org/trimal) () (version 1.4.1) was used to trim the MSA, by removing all columns with gaps in more than 20% of the sequences:
+The protein sequences of the 19 hits with sequence identity of equal to or greater than 70% against _tmgh3_ were written to the FASTA file `data/tmgh3_exploration/cazy_hits.fasta`.
 
-> Capella-Gutierrez, S., Silla-Martinez, J. M., Gabaldon, T. (2009) 'trimAl: a tool for automated alignment trimming in large-scale phylogenetic analyses', Bioinformatics, 25, pp. 1972-1973
+### 3. Exploration of NR and CAZy hits
 
+Both the BLASTP query against the NR and CAZy databases returned 19 proteins from _Thermotoga_ with percentage identities of equal to or greater than 70% against _tmgh3_. 
+
+CAZy annotates GenBank database releases. Reference sequence protein IDs are not catalogued in CAZy. To determine if the hits from NR were reference sequences of proteins in CAZy, the Python script `run_blastp_nr_cazy.py` was used to perform a BLASTP analysis of the 19 hits from NR against the 19 hits from querying CAZy. To repeat this analysis, run the following command from the root of the repository.
 ```bash
-# run from the root of the repository
-trimal -in data/cluster_data/all_clusters_aligned.fasta -out data/cluster_data/trimed_aligned_clusters.fasta -gt 0.8
+python3 scripts/tmgh3_exploration/run_blastp_nr_cazy.py
 ```
 
-4. A HMM model of the protein sequences across all 4 protein clusters of interest was constructed using [`HMMBuild`](http://rothlab.ucdavis.edu/genhelp/hmmerbuild.html) (Eddy, 2008) using default parameters.
+The resulting `tsv` file was written to [`results/nr_cazy_blastp_results.tsv`]().
 
-> Eddy, S. R. (2008) 'A Probabilistic Model of Local Sequence Alignment that Simplifies Statistical Significance Estimation', _PloS Comput. Biol._, 4, pp. e1000069.
+The protein sequences for the 15 of the 19 from NR shared 100% sequence identity with at least one protein from CAZy, the remaining proteins shared greater than 90% sequence identity with at least one protein from CAZy.
 
-To rerun this analysis, run the following command in the root of this repository:
+### 4. Generation of a MSA of xylosdiases
+
+Previously _tmgh3_ had been queried against HHpred to find potential templates for molecular modelling. To explore the potential cause for HHpred returning many non-functionally relevant proteins and few xylosidases, the analysis using HHpred was repeated using an MSA of xylosdiase protein sequences.
+
+To create the MSA the proteins sequences 19 hits from quering the NR database and the 19 hits from querying the CAZy database, which had greater than or equal to 70% sequence identity with _tmgh3_ were combined into a single fasta file. This is located at [`data/tmgh3_exploration/nr_and_cazy_hits.fasta`]().
+
+The previous BLASTP query of the NR hits against the CAZy hits revealed several NR hits shared 100% sequence identity with hits from CAZy. Therefore, [`seqkit`](https://bioinf.shenwei.me/seqkit/) was used to remove redundant protein sequences based upon sequence.
 ```bash
-hmmbuild \
-	-n supplementary/cluster_data/ec_cluster_hmm \
-	-o supplementary/cluster_data/ec_cluster_hmm_summary \
-	-O supplementary/cluster_data/ec_cluster_msa \
-	--amino \
-	supplementary/cluster_data/ec_cluster_phmm \
-	supplementary/cluster_data/trimed_aligned_clusters.fasta
+seqkit rmdup -s data/tmgh3_exploration/nr_and_cazy_hits.fasta data/tmgh3_exploration/nr_cazy_hits_nonred.fasta
 ```
-This produces a HMM profile, called [`ec_cluster_phmm`]().
 
-5. Determine the bitscore cut-offs for using the pHMM to identify potentially functionally relevant proteins.
-
-By default [`HMMERSearch`](https://academic.oup.com/nar/article/41/12/e121/1025950?login=false) (Mistry _et al.,_ 2013) uses a E-value threshold to identify candidates of interest. However, the E-value is database size dependent and is a measure of the significance of the hit against the size of the database. The bitscore is a measure of the statistical significance of the alignment.
-
-> Mistry, J., Finn, R. D., Eddy, S. R., Bateman, A., Punta, M. (2013) 'Challenges in Homology Search: HMMER3 and Convergent Evolution of Coiled-Coil Regions', Nucleic Acids Research, 41, pp. e121
-
-The **'noise cut-off' (NC)** bitscore was calculated by querying a set of proteins known negatives, in this case proteins that do not have ability to catalyse the reaction represented by the EC number 3.2.1.37.
-
-Initally, bacterial protein sequences from the Glycosidetransferase (GT) family GT10 were selected as known negatives for calculating the NC. This was because all GT CAZymes are involved the synthesis of oligo- and polysaccharides, and do not posses functions related to the degradation of polysaccharides, which the catalytic reaction represented by the EC number 3.2.1.37 is associated with. The GT10 protein sequences were retrieved from NCBI, added to the local CAZyme database and extracted from the local CAZyme database using `cazy_webscraper`. However, even with a E-value cut-off of 1000, no hits between the bacterial GT10 protein sequences and the pHMM were found by `Hmmsearch`.
-
-Instead, bacterial proteins with the EC number 2.4.1.12 (a UDP-glucose--beta-glucan glucosyltransferase) were selected at the known negatives for calculating the NC score.
+`MAFFT` was used to align the protein sequences. To repeat this analysis run the following command from the root of the repository.
 ```bash
-cw_get_genbank_seqs \
-	data/cazy_database.db <email_address> --ec_filter 2.7.1.12
-cw_extract_db_sequences \
-	datacazy_database.db genbank \
-	--ec_filter \
-	--fasta_file data/cluster_data/2-7-1-12_protein_seqs.fasta
-```
-**110** bacterial protein sequences were retrieved from the local CAZyme database and written to the fasta file `data/cluster_data/2-7-1-12_protein_seqs.fasta`.
-
-`Hmmsearch` was then used to query these protein sequences against the constructed pHMM.
-```
-hmmsearch \
-	-o supplementary/cluster_data/ec_hmm_search_nc_results \
-	-A supplementary/cluster_data/ec_hmm_search_nc_alignment \
-	--tblout supplementary/cluster_data/ec_hmm_search_nc_tab \
-	supplementary/cluster_data/ec_cluster_phmm \
-	data/cluster_data/2-7-1-12_protein_seqs.fasta
-```
-The NC was defined as the largest valued returned from `HMMER`, which was **a**.  
-All output files are stored in the `supplementary/cluster_data` directory of the repository.
-
-The **'gathering cutoff' (GC)** bitscore was calculated by quering the pHMM against the training set of proteins used to construct the model.
-```bash
-hmmsearch \
-	-o supplementary/cluster_data/ec_hmm_search_gc_results \
-	-A supplementary/cluster_data/ec_hmm_search_gc_alignment \
-	--tblout supplementary/cluster_data/ec_hmm_search_gc_tab \
-	supplementary/cluster_data/ec_cluster_phmm \
-	data/cluster_data/all_clusters.fasta
-```
-The GC was defined as the smallest valued returned from `HMMER`, which was **607.0**.  
-All output files are stored in the `supplementary/cluster_data` directory of the repository.
-
-6. [`HMMERSearch`](https://academic.oup.com/nar/article/41/12/e121/1025950?login=false) (Mistry _et al.,_ 2013) was used to query the proteins from the GH CAZy families of interest against the constructed pHMM, using default search parameters.
-
-To repeat this analysis, run the following command in the `./supplementary/cluster_data/` directory:
-```bash
-hmmsearch \
-	-o supplementary/cluster_data/ec_hmm_search_results \
-	-A supplementary/cluster_data/ec_hmm_search_alignment \
-	--tblout supplementary/cluster_data/ec_hmm_search_tab \
-	-T 607.0 \
-	supplementary/cluster_data/ec_cluster_phmm \
-	data/cluster_data/remaining_fam_seqs.fasta
+mafft --thread 12 data/tmgh3_exploration/nr_cazy_hits_nonred.fasta > data/tmgh3_exploration/nr_and_cazy_hits_aligned.fasta
 ```
 
-7. The hits from `hmmsearch` were added to the protein pool (containing proteins from the 4 clusters of interest) to generate an extended protein pool. This was done using the Python script `extract_hmmer_accessions.py`, which parsed the HMMER output using the `BioPython.SearchIO` module, and which wrote out all protein sequences in the extended protein pool to the fasta file `expanded_protein_pool.fasta`. This FASTA file contained **150** protein sequences (59 protein sequences in addition to the 91 protein sequences in the clusters of interest).
+### 4. Repeating the analysis using HHpred
 
-The new protein pool was stored in the FASTA file [`expanded_protein_pool.fasta`]().
+HHpred was run using the default parameters (via the [HHpred webserver]()) and the MSA stored in `data/tmgh3_exploration/nr_and_cazy_hits_aligned.fasta`. 
 
-8. The Python script `run_blastp.py` from `pyrewton` was run from the root of the repository to run a all-vs-all BLASTP of all proteins in the expanded protein sequence pool to measure the degree of sequence diversity across the sequence pool. The results were written to [`supplementary/cluster_data/expanded_protein_pool_blastp.tsv`]().
+The results are stored in [`results/hhpred_results.hhr`]().
 
-9. The R note [`cluster_analysis.Rmd`]() was used to parse, analyse and present the results of the all-vs-all BLASTP analysis.
+Using the MSA did not signficantly increase the number of functionally relevant hits returned by HHpred. In general, the results between the two queries were similar. This potentially reflects the limited knowledge pool for _Thermotoga_ glycoside hydrolase GH3 proteins.
 
-10. `MAFFT` was then used to align the new protein pool of 99 proteins. The resulting MSA in fasta and clustal format are located in the [supplementary]().
-```bash
-# FASTA output
-mafft --thread 12 data/cluster_data/expanded_protein_pool.fasta > data/cluster_data/expanded_protein_pool_aligned.fasta
-```
+### 3. Interrogation of the CAZy database
 
-11. [`Trimal`](http://trimal.cgenomics.org/trimal)  was used to trim the MSA, by removing all columns with gaps in more than 20% of the sequences:
-
-```bash
-# run from the root of the repository
-trimal -in data/cluster_data/expanded_protein_pool_aligned.fasta -out data/cluster_data/trimed_expanded_protein_pool_aligned.fasta -gt 0.8
-```
-
-The two MSA were then used for molecular modeling:
-1. [MSA of protein sequences from the 4 largest clusters of proteins annotated with the EC number 3.2.1.37]()
-2. [MSA of the expanded protein pool]()
+So why couldn't we find anything? Let's interrogate CAZy.
+SQL commands... why does our protein come up with so few hits?
 
 ## Exploration of a GH3-CE complex
 
