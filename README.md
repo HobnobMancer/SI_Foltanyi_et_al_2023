@@ -683,8 +683,30 @@ python3 FlaGs/FlaGs.py \
 
 ### GH3 flanking genes
 
-Add links to results and discusss
-Include images of results
+NitroPro was used to recolour the output from `FlaGs` and annotate a substree of the _Thermotoga_ phylogenetic tree shown in figure 1.
+
+<figure>
+<img src="https://images.unsplash.com/photo-1549740425-5e9ed4d8cd34?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXwzOTU0NTB8fGVufDB8fHw%3D&w=1000&q=80" alt="Thermotoga phylogenetic tree and the presence of a GH3-CE7 gene cluster" style="width:100%">
+<figcaption align = "center"><b>Fig.1 - Rooted phylogenetic tree of Thermotoga, annotated with the presence of a GH3 gene cluster. Flanking genes are numbers and coloured to indicate the protein pool they were clustered into by FlaGs. The GH3 genes are shown in black. Genes highlighted in purple (cluster 7) and genes shown in pink (cluster 3) encode ATP-binding cassette (ABC) transporter permeases. The parent genes of ABC transporter ATP-binding proteins (cluster 1) and iron ABC transporter permeases (cluster 11) are shown in green. Genes in light green (cluster 12) encode cobalamin-binding proteins. Genes shown in blue (cluster 5) produce a cephalosporin-C deacetylase from CAZy family CE7. Genes shown in white had significant sequence diversity to all other GH3 flanking genes and were clustered individually.</b></figcaption>
+</figure>
+
+- GH3 protein was highly conserved across _Thermotoga martima_, the genomes shared the same protein reference sequence ID
+- The protein was flanked by (traversing upstream to downstream, and the values in brackets are the RefSeq protein IDs for the proteins in the T. martima_ genomes):
+  - ABC transporter permease (WP_004082581.1)
+  - ABC transporter permease (WP_004082583.1)
+  - ABC transporter ATP-binding protein (WP_041426669.1)
+  - ABC transporter ATP-binding protein (WP_004082591.1)
+  - GH3 (WP_004082594.1)
+  - cephalosporin-C deacetylase from CAZy family CE7 (WP_004082599.1)
+  - ABC transporter ATP-binding protein (WP_004082601.1)
+  - iron ABC transporter permease (WP_004082603.1)
+  - cobalamin-binding protein (WP_004082604.1)
+
+ABC transporter ATP-binding protein (WP_004082591.1), cephalosporin-C deacetylase from CAZy family CE7 (WP_004082599.1) and ABC transporter ATP-binding protein (WP_004082601.1) were queried against the NR database to explore the possibility of sequence similarity to proteins from archae. The results of which are stored in the `results` directory of this repository.
+
+Only proteins from _Thermotoga_ and _Pseudothermotoga_ species shared greater than 70% sequence identity with the query proteins. Except CE7 (WP_004082599.1), which returned 2 fits of 71% identity against _Firmicutes bacterium_ and one hit against a generic bacterium. The highest sequence identity achieved between WP_004082601.1 and a bacterial protein was 41%.
+
+Tmgh3 was flanked upstream by (in order) two ABC transporter permeases and two ABC transporter ATP-binding protein, and downstream by a cephalosporin-C deacetylase from CAZy family CE7, an ABC transporter ATP-binding protein, an iron ABC transporter permease and a cobalamin-binding protein. This gene cluster including distances between, and lengths of the genes (allowing for small variations of a few nucleotides) was conserved across the Thermotoga genomes.
 
 To estimate the degree of conservation across the GH3-CE7 gene cluster, BLASTP all-versus-all analysis was performed for the retrieved GH3 proteins and CE7 proteins (GH3 vs GH3 and CE7 vs CE7 analyses were performed).
 
@@ -702,12 +724,9 @@ The two data files of GH3 and CE7 protein accessions used in this analysis are l
 The R script `scripts/gh3_complex/get_heatmaps.R` was used to generate heatmaps plotting the percentage identity of the BLASTP all-versus-all 
 analysis of the GH3 and CE7 proteins, to explore the degree of conservation over the potential complex.
 
-<figure>
-<img src="https://images.unsplash.com/photo-1549740425-5e9ed4d8cd34?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXwzOTU0NTB8fGVufDB8fHw%3D&w=1000&q=80" alt="Trulli" style="width:100%">
-<figcaption align = "center"><b>Fig.1 - 4K Mountains Wallpaper</b></figcaption>
-</figure>
+
 
 <figure>
-<img src="https://images.unsplash.com/photo-1549740425-5e9ed4d8cd34?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXwzOTU0NTB8fGVufDB8fHw%3D&w=1000&q=80" alt="Trulli" style="width:100%">
-<figcaption align = "center"><b>Fig.1 - 4K Mountains Wallpaper</b></figcaption>
+<img src="https://images.unsplash.com/photo-1549740425-5e9ed4d8cd34?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXwzOTU0NTB8fGVufDB8fHw%3D&w=1000&q=80" alt="Percentage identity between CE7 proteins" style="width:100%">
+<figcaption align = "center"><b>Fig.3 - Percentage identity between CE7 proteins</b></figcaption>
 </figure>
