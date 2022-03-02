@@ -113,7 +113,7 @@ As a preliminary search to identify potentially functionally similar proteins to
 
 This was done via the NCBI BLASTP (webinterface)[https://blast.ncbi.nlm.nih.gov/Blast.cgi?PROGRAM=blastp&PAGE_TYPE=BlastSearch&LINK_LOC=blasthome] using default query parameters.
 
-The reults of the query against the NR database were stored in a [csv file]().
+The reults of the query against the NR database were stored in [`results/tmgh3_nr_query_desc_table.csv`]().
 
 A 70% identity cut-off was used to select proteins, which is widely accepted as a reasonably cut-off for selecting proteins that share the first 3 digits of their respective EC numbers.
 
@@ -136,6 +136,8 @@ The Python script `run_blastp_cazy.py` was used to query _tmgh3_ against the pro
 ```bash
 python3 scripts/tmgh3_exploration/run_blastp_cazy.py
 ```
+
+The results were written to [`results/cazy_blastp_results.tsv`]().
 
 The protein sequences of the 19 hits with sequence identity of equal to or greater than 70% against _tmgh3_ were written to the FASTA file `data/tmgh3_exploration/cazy_hits.fasta`.
 
