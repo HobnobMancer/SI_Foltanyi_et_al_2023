@@ -41,9 +41,6 @@
 
 
 import argparse
-import os
-import re
-import subprocess
 import pandas as pd
 
 from pathlib import Path
@@ -62,6 +59,8 @@ FAMILIES_OF_INTEREST = [
 def main():
     parser = build_parser()
     args = parser.parse_args()
+
+    make_output_directory(args.tab_annno_list.parent, args.force, args.nodelete)
 
     # get the path to output directories
     output_dir = list(set(get_paths.get_dir_paths(args.input_dir)))
