@@ -69,8 +69,6 @@ To reconstruct the database to repeat the analysis, use the following command fr
 cazy_webscraper <user_email> --db_output cazy_database.db
 ```
 
-The CAZy database was downloaded on 2022-01-28.
-
 Data from UniProt was retrieved for proteins in the local CAZyme database, and added to the datbase. The following data was retrieved:
 - UniProt accession
 - Protein name
@@ -90,23 +88,17 @@ The retreival of data was limited to proteins from the following families of int
 - GH54
 - GH116
 - GH120
-- CE1
-- CE2
-- CE3
-- CE4
-- CE5
-- CE6
-- CE7
-- CE12
-- CE16
 
 The retreival of the data can be repeated using the following command:
 ```bash
 cw_get_uniprot_data cazy_database.db \
-  --families GH1,GH2,GH3,GH11,GH26,GH30,GH43,GH51,GH52,GH54,GH116,GH120,CE1,CE2,CE3,CE4,CE5,CE6,CE7,CE12,CE16
+  --families GH1,GH2,GH3,GH11,GH26,GH30,GH43,GH51,GH52,GH54,GH116,GH120
   --ec \
   -- pdb
 ```
+
+These data were downloaded in Feburary 2022. To faciltiate reproducing the analyses presenter here using this data set, a 
+copy of this database is available in the [`data`]() directory of this repository.
 
 ## Systematic exploration of tmgh3
 
@@ -674,6 +666,8 @@ The first argument is the path to the directory containing output from `dbCAN`. 
 1,663 of these proteinse were predicted to be CAZymes with a consensus CAZy family prediction (i.e. a CAZy family annotation that at least two of three tools in dbCAN agreed upon).
 - 78 proteins from GH3
 - 23 proteins from CE7
+
+To facilitate reproduction of this analysis, the raw output `overview.txt` files from dbCAN for each _Thermotoga_ genome are available in the `data/dbcan_output` directory of this repository.
 
 ### Run `FlaGs`
 
