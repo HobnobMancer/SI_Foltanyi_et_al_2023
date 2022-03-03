@@ -102,7 +102,7 @@ copy of this database is available in the [`data`]() directory of this repositor
 
 ## Systematic exploration of tmgh3
 
-The protein sequence of _tmgh3_ is stored in `data/tmgh3_exploration/tmgh3.fasta`.
+The protein sequence of _tmgh3_ is stored in [`data/tmgh3_exploration/tmgh3.fasta`](https://hobnobmancer.github.io/Foltanyi_et_al_2022/data/tmgh3_exploration.zip).
 
 ### 1. Query against the NR database
 
@@ -113,7 +113,7 @@ As a preliminary search to identify potentially functionally similar proteins to
 
 This was done via the NCBI BLASTP (webinterface)[https://blast.ncbi.nlm.nih.gov/Blast.cgi?PROGRAM=blastp&PAGE_TYPE=BlastSearch&LINK_LOC=blasthome] using default query parameters.
 
-The reults of the query against the NR database were stored in [`results/tmgh3_nr_query_desc_table.csv`]().
+The reults of the query against the NR database were stored in [`results/tmgh3_nr_query_desc_table.csv`](https://hobnobmancer.github.io/Foltanyi_et_al_2022/results/tmgh3_nr_query_desc_table.csv).
 
 A 70% identity cut-off was used to select proteins, which is widely accepted as a reasonably cut-off for selecting proteins that share the first 3 digits of their respective EC numbers.
 
@@ -137,7 +137,7 @@ The Python script `run_blastp_cazy.py` was used to query _tmgh3_ against the pro
 python3 scripts/tmgh3_exploration/run_blastp_cazy.py
 ```
 
-The results were written to [`results/cazy_blastp_results.tsv`]().
+The results were written to [`results/cazy_blastp_results.tsv`](https://hobnobmancer.github.io/Foltanyi_et_al_2022/results/cazy_blastp_results.tsv).
 
 The protein sequences of the 19 hits with sequence identity of equal to or greater than 70% against _tmgh3_ were written to the FASTA file `data/tmgh3_exploration/cazy_hits.fasta`.
 
@@ -150,7 +150,7 @@ CAZy annotates GenBank database releases. Reference sequence protein IDs are not
 python3 scripts/tmgh3_exploration/run_blastp_nr_cazy.py
 ```
 
-The resulting `tsv` file was written to [`results/nr_cazy_blastp_results.tsv`]().
+The resulting `tsv` file was written to [`results/nr_cazy_blastp_results.tsv`](https://hobnobmancer.github.io/Foltanyi_et_al_2022/results/nr_cazy_blastp_results.tsv).
 
 The protein sequences for the 15 of the 19 from NR shared 100% sequence identity with at least one protein from CAZy, the remaining proteins shared greater than 90% sequence identity with at least one protein from CAZy.
 
@@ -170,11 +170,15 @@ seqkit rmdup -s data/tmgh3_exploration/nr_and_cazy_hits.fasta data/tmgh3_explora
 mafft --thread 12 data/tmgh3_exploration/nr_cazy_hits_nonred.fasta > data/tmgh3_exploration/nr_and_cazy_hits_aligned.fasta
 ```
 
+> Katoh K, Misawa K, Kuma K, Miyata T. MAFFT: a novel method for rapid multiple sequence alignment based on fast Fourier transform. Nucleic Acids Res. 2002 Jul 15;30(14):3059-66. doi: 10.1093/nar/gkf436. PMID: 12136088; PMCID: PMC135756.
+
 ### 4. Repeating the analysis using HHpred
 
-HHpred was run using the default parameters (via the [HHpred webserver]()) and the MSA stored in `data/tmgh3_exploration/nr_and_cazy_hits_aligned.fasta`. 
+HHpred was run using the default parameters (via the [HHpred webserver](https://toolkit.tuebingen.mpg.de/tools/hhpred)) and the MSA stored in `data/tmgh3_exploration/nr_and_cazy_hits_aligned.fasta`. 
 
-The results are stored in [`results/hhpred_results.hhr`]().
+> Söding J, Biegert A, Lupas AN. The HHpred interactive server for protein homology detection and structure prediction. Nucleic Acids Res. 2005 Jul 1;33(Web Server issue):W244-8. doi: 10.1093/nar/gki408. PMID: 15980461; PMCID: PMC1160169.
+
+The results are stored in [`results/hhpred_results.hhr`](https://hobnobmancer.github.io/Foltanyi_et_al_2022/results/hhpred_results.hhr).
 
 Using the MSA did not signficantly increase the number of functionally relevant hits returned by HHpred. In general, the results between the two queries were similar. This potentially reflects the limited knowledge pool for _Thermotoga_ glycoside hydrolase GH3 proteins.
 
@@ -275,10 +279,6 @@ The output from `orthofinder` was written to the `orthologues/Results_Nov11/Sing
 
 Each collection of single-copy orthologous was aligned using [`MAFFT`](https://mafft.cbrc.jp/alignment/software/).
 
-> Nakamura, Yamada, Tomii, Katoh 2018 (Bioinformatics 34:2490–2492)
-Parallelization of MAFFT for large-scale multiple sequence alignments.
-(describes MPI parallelization of accurate progressive options) 
-
 To reproduce the MSA, run following command from the root of this repository.
 ```bash
 scripts/reconstruct_tree/ml_tree/align_scos.sh \
@@ -357,11 +357,7 @@ Tree reconstructions are placed in the `tree` directory. The best estimate tree 
 
 > Alexey M. Kozlov, Diego Darriba, Tomáš Flouri, Benoit Morel, and Alexandros Stamatakis (2019) RAxML-NG: A fast, scalable, and user-friendly tool for maximum likelihood phylogenetic inference. Bioinformatics, btz305 [doi:10.1093/bioinformatics/btz305](https://doi.org/10.1093/bioinformatics/btz305)
 
-
-
-
-
-
+The resulting tree in the [original format](https://hobnobmancer.github.io/Foltanyi_et_al_2022/results/2022_annotated_thermotoga_tree.pdf) and after [rerooting using the outgroup](https://hobnobmancer.github.io/Foltanyi_et_al_2022/results/2022_annotated_thermotoga_tree.rerooted.pdf) are stored in the `results` directory.
 
 
 ### Annotate the CAZomes
@@ -431,8 +427,6 @@ python3 scripts/cazome_annotation/get_cazy_cazymes.py \
   cazomes/proteins_of_interest.txt
 ```
 
-The `csv` file containing all proteins annotated in CAZy in the genomes is available in the [repository]().
-
 In total 0 proteins were retrieved from CAZy.  
 34,671 proteins were extracted from the genomes and were not included in CAZy.  
 
@@ -467,11 +461,11 @@ The first argument is the path to the directory containing output from `dbCAN`. 
 - 78 proteins from GH3
 - 23 proteins from CE7
 
-To facilitate reproduction of this analysis, the raw output `overview.txt` files from dbCAN for each _Thermotoga_ genome are available in the `data/dbcan_output` directory of this repository.
+To facilitate reproduction of this analysis, the raw output `overview.txt` files from dbCAN for each _Thermotoga_ genome are available in the [`data/dbcan_output`](https://github.com/HobnobMancer/Foltanyi_et_al_2022/tree/master/data/dbcan_output) directory of this repository.
 
 ### Run `FlaGs`
 
-To repeat the analysis using [`FlaGs`](), install `FlaGs` in a dir called `FlaGs` (located in the root of the repository) and run the following from the root of this repository:
+To repeat the analysis using [`FlaGs`](http://www.webflags.se/), install `FlaGs` in a dir called `FlaGs` (located in the root of the repository) and run the following from the root of this repository:
 ```bash
 mkdir cazomes/flags_output  # create output directory
 
@@ -481,12 +475,14 @@ python3 FlaGs/FlaGs.py \
   -u <email_address>
 ```
 
+> Chayan Kumar Saha, Rodrigo Sanches Pires, Harald Brolin, Maxence Delannoy, Gemma Catherine Atkinson, FlaGs and webFlaGs: discovering novel biology through the analysis of gene neighbourhood conservation, Bioinformatics, Volume 37, Issue 9, 1 May 2021, Pages 1312–1314, https://doi.org/10.1093/bioinformatics/btaa788
+
 ### GH3 flanking genes
 
 NitroPro was used to recolour the output from `FlaGs` and annotate a substree of the _Thermotoga_ phylogenetic tree shown in figure 1.
 
 <figure>
-<img src="https://images.unsplash.com/photo-1549740425-5e9ed4d8cd34?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXwzOTU0NTB8fGVufDB8fHw%3D&w=1000&q=80" alt="Thermotoga phylogenetic tree and the presence of a GH3-CE7 gene cluster" style="width:100%">
+<img src="https://github.com/HobnobMancer/Foltanyi_et_al_2022/blob/master/results/annotated_thermotoga_tree.rerooted.truncated.svg" alt="Thermotoga phylogenetic tree and the presence of a GH3-CE7 gene cluster" style="width:100%">
 <figcaption align = "center"><b>Fig.1 - Rooted phylogenetic tree of Thermotoga, annotated with the presence of a GH3 gene cluster</b></figcaption>
 </figure>
 
@@ -517,22 +513,20 @@ To reproduce the BLASTP all-versus-all analyses, call the following commands in 
 python3 scripts/gh3_complex/run_blastp_gh3.py
 python3 scripts/gh3_complex/run_blastp_ce7.py
 ```
-The outputs from BLASTP are written to the `results` directory for the [GH3]() and [CE7]() proteins.
+The outputs from BLASTP are written to the `results` directory for the [GH3](https://hobnobmancer.github.io/Foltanyi_et_al_2022/results/blastp_gh3_complex_proteins.tsv) and [CE7](https://hobnobmancer.github.io/Foltanyi_et_al_2022/results/blastp_ce7_complex_proteins.tsv) proteins.
 
 The two data files of GH3 and CE7 protein accessions used in this analysis are located in the `data/gh3_complex` directory.
 
 The R script `scripts/gh3_complex/get_heatmaps.R` was used to generate heatmaps plotting the percentage identity of the BLASTP all-versus-all 
 analysis of the GH3 and CE7 proteins, to explore the degree of conservation over the potential complex.
 
-
-
 <figure>
-<img src="https://images.unsplash.com/photo-1549740425-5e9ed4d8cd34?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXwzOTU0NTB8fGVufDB8fHw%3D&w=1000&q=80" alt="Percentage identity between Gh3 proteins" style="width:100%">
-<figcaption align = "center"><b>Fig.2 - Percentage identity between CE7 proteins</b></figcaption>
+<img src="https://github.com/HobnobMancer/Foltanyi_et_al_2022/blob/master/results/blastpGh3ComplexProteins.svg" alt="Percentage identity between Gh3 proteins" style="width:100%">
+<figcaption align = "center"><b>Fig.2 - Percentage identity between GH3 proteins</b></figcaption>
 </figure>
 
 <figure>
-<img src="https://images.unsplash.com/photo-1549740425-5e9ed4d8cd34?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXwzOTU0NTB8fGVufDB8fHw%3D&w=1000&q=80" alt="Percentage identity between CE7 proteins" style="width:100%">
+<img src="https://github.com/HobnobMancer/Foltanyi_et_al_2022/blob/master/results/blastpCe7ComplexProteins.svg" alt="Percentage identity between CE7 proteins" style="width:100%">
 <figcaption align = "center"><b>Fig.3 - Percentage identity between CE7 proteins</b></figcaption>
 </figure>
 
