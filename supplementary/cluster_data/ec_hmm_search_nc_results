@@ -1,0 +1,42 @@
+# hmmsearch :: search profile(s) against a sequence database
+# HMMER 3.3 (Nov 2019); http://hmmer.org/
+# Copyright (C) 2019 Howard Hughes Medical Institute.
+# Freely distributed under the BSD open source license.
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# query HMM file:                  supplementary/cluster_data/ec_cluster_phmm
+# target sequence database:        data/cluster_data/3-2-1-52-protein_seqs.fasta
+# output directed to file:         supplementary/cluster_data/ec_hmm_search_nc_results
+# MSA of all hits saved to file:   supplementary/cluster_data/ec_hmm_search_nc_alignment
+# per-seq hits tabular output:     supplementary/cluster_data/ec_hmm_search_nc_tab
+# sequence reporting threshold:    score >= -100
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Query:       ec_cluster_hmm  [M=537]
+Scores for complete sequences (score includes all domains):
+   --- full sequence ---   --- best 1 domain ---    -#dom-
+    E-value  score  bias    E-value  score  bias    exp  N  Sequence Description
+    ------- ------ -----    ------- ------ -----   ---- --  -------- -----------
+
+   [No hits detected that satisfy reporting thresholds]
+
+
+Domain annotation for each sequence (and alignments):
+
+   [No targets detected that satisfy reporting thresholds]
+
+
+Internal pipeline statistics summary:
+-------------------------------------
+Query model(s):                            1  (537 nodes)
+Target sequences:                       2836  (1066873 residues searched)
+Passed MSV filter:                       138  (0.0486601); expected 56.7 (0.02)
+Passed bias filter:                      126  (0.0444288); expected 56.7 (0.02)
+Passed Vit filter:                         2  (0.000705219); expected 2.8 (0.001)
+Passed Fwd filter:                         0  (0); expected 0.0 (1e-05)
+Initial search space (Z):               2836  [actual number of targets]
+Domain search space  (domZ):               0  [number of targets reported over threshold]
+# CPU time: 0.07u 0.00s 00:00:00.07 Elapsed: 00:00:00.03
+# Mc/sec: 16606.88
+//
+# No hits satisfy inclusion thresholds; no alignment saved
+[ok]
