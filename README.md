@@ -16,14 +16,18 @@ This repo contains the commands and data files necessary to repeat the study pre
 
 - POISx or Mac OS, or linux emulator
 - Python version 3.9+
-- Miniconda3 or Anaconda managed microenvironment  
-- Prodigal
-- HMMER >= 3.3
-- Coinfinder
-- Pyani
-- cazy_webscraper
-- Cazomevolve
-- get-ncbi-genomes
+- `Miniconda3` or `Anaconda` managed microenvironment  
+- `Prodigal`
+- `HMMER` >= 3.3
+- `Coinfinder`
+- `Pyani`
+- `cazy_webscraper` >= 2.0.0
+- `Cazomevolve`
+- `get-ncbi-genomes`
+- `dbCAN` >= [3.0.2](https://github.com/linnabrown/run_dbcan)
+
+**Note on install dbCAN:** Paths are hardcoded in `dbCAN` v2.0.11, therefore, to use `dbCAN` in this analysis, follow 
+the exact instructions provided in the `dbCAN` [README]((https://github.com/linnabrown/run_dbcan)) and run the commands in the `scripts/cazome_annotation` directory.
 
 ### Python packages
 - tqdm
@@ -32,37 +36,38 @@ This repo contains the commands and data files necessary to repeat the study pre
 - ape
 - dplyr
 
+## Data, results and scripts
+
+All **scripts** used in this analysis are stored in the `scripts` directory in the repo.  
+
+**Input data** for the analysis, such as FASTA files, are stored in the `data` directory.  
+
+**Results** data from this analysis, such as R markdown notebooks and MSA files, are stored in the `results` directory.
+
 ## Method to reconstruct the analysis
 
 To reconstruct the analysis run all commands from this directory.
 
 The method is split into four sections:
 1. [Construct a local CAZyme database](#construct-a-local-cazyme-database)
-2. [Reconstructing the _Thermotoga_ genus phylogenetic tree](#reconstructing-the-thermotoga-genus-phylogenetic-tree)
-3. [Selecting models for molecular replacement](#selecting-models-for-molecular-replacement)
-4. [Identifying co-evolving CAZy families](#identifying-co-evolving-cazy-families)
+2. [Systematic exploration of tmgh3](#systematic-exploration-of-tmgh3)
+3. [Exploration of a GH3-CE complex](#exploration-of-a-gh3-ce-complex)
+  - [Reconstructing the _Thermotoga_ genus phylogenetic tree](#reconstructing-the-thermotoga-genus-phylogenetic-tree)
+  - [Annotate the CAZomes](#annotate-the-cazomes)
+  - [Run `FlaGs`](#run-flags)
+  - [GH3 flanking genes](#gh3-flanking-genes)
 
-
-## Data, supplementary and scripts
-
-All **scripts** used in this analysis are stored in the `scripts` directory in the repo.  
-
-**Input data** for the analysis, such as FASTA files, are stored in the `data` directory.  
-
-**Output** data from this analysis, such as R markdown notebooks and MSA files, are stored in the `supplementary` directory.
 
 ## Construct a local CAZyme database
 
-`cazy_webscraper` [Hobbs et al., 2021] (DOI:) was used to construct a local CAZyme database.
+`cazy_webscraper` [Hobbs et al., 2021] (DOI:) was used to construct a local CAZyme database, to facilitate the thorough interrogation of the CAZy dataset.
 
 > Hobbs, Emma E. M.; Pritchard, Leighton; Chapman, Sean; Gloster, Tracey M. (2021): cazy_webscraper Microbiology Society Annual Conference 2021 poster. figshare. Poster. https://doi.org/10.6084/m9.figshare.14370860.v7
 
 To reconstruct the database to repeat the analysis, use the following command from the root of this repository:
 ```bash
-cazy_webscraper <user_email> --kingdoms bacteria --db_output cazy_database.db
+cazy_webscraper <user_email> --db_output cazy_database.db
 ```
-
-The CAZy database was downloaded on 2022-01-28.
 
 Data from UniProt was retrieved for proteins in the local CAZyme database, and added to the datbase. The following data was retrieved:
 - UniProt accession
@@ -83,29 +88,117 @@ The retreival of data was limited to proteins from the following families of int
 - GH54
 - GH116
 - GH120
-- CE1
-- CE2
-- CE3
-- CE4
-- CE5
-- CE6
-- CE7
-- CE12
-- CE16
 
 The retreival of the data can be repeated using the following command:
 ```bash
 cw_get_uniprot_data cazy_database.db \
-  --families GH1,GH2,GH3,GH11,GH26,GH30,GH43,GH51,GH52,GH54,GH116,GH120,CE1,CE2,CE3,CE4,CE5,CE6,CE7,CE12,CE16
+  --families GH1,GH2,GH3,GH11,GH26,GH30,GH43,GH51,GH52,GH54,GH116,GH120
   --ec \
   -- pdb
 ```
 
-## Reconstructing the _Thermotoga_ genus phylogenetic tree
+These data were downloaded in Feburary 2022. To faciltiate reproducing the analyses presenter here using this data set, a 
+copy of this database is available in the [`data`]() directory of this repository.
+
+## Systematic exploration of tmgh3
+
+The protein sequence of _tmgh3_ is stored in `data/tmgh3_exploration/tmgh3.fasta`.
+
+### 1. Query against the NR database
+
+As a preliminary search to identify potentially functionally similar proteins to infer functional and structural information about _tmgh3_, the 
+[non-redundant database](https://www.ncbi.nlm.nih.gov/refseq/about/nonredundantproteins/#related-documentation) was queried using BLASTP.
+
+> Altschul, S. F., Gish, W., Miller, W., Myers, E. W., Lipman, D. J. (1990) 'Basic local alignment search tool', Journal of Molecular Biology, 215(3), pp. 403-10
+
+This was done via the NCBI BLASTP (webinterface)[https://blast.ncbi.nlm.nih.gov/Blast.cgi?PROGRAM=blastp&PAGE_TYPE=BlastSearch&LINK_LOC=blasthome] using default query parameters.
+
+The reults of the query against the NR database were stored in [`results/tmgh3_nr_query_desc_table.csv`]().
+
+A 70% identity cut-off was used to select proteins, which is widely accepted as a reasonably cut-off for selecting proteins that share the first 3 digits of their respective EC numbers.
+
+The protein sequences of the 19 hits with sequence identity of equal to or greater than 70% against _tmgh3_ were written to the FASTA file `data/tmgh3_exploration/nr_hits.fasta`.
+
+### 2. Query against CAZy
+
+CAZy annotates GenBank database releases. Reference sequence protein IDs are not catalogued in CAZy. Therefore, the _tmgh3_ prortein sequence was queried against the CAZy database to find potentially functionally similar proteins to infer functional and structural information about _tmgh3_.
+
+The CAZy website does not support querying the database using BLASTP. Therefore, `cazy_webscraper` was used to extract the GenBank protein sequences for all GH CAZy families of interest from the local CAZyme database and write them to a FASTA file.
+```bash
+cw_extract_protein_sequences \
+  cazy_database.db genbank \
+  --families GH1,GH2,GH3,GH11,GH26,GH30,GH43,GH51,GH52,GH54,GH116,GH120 \
+  --fasta_file data/tmgh3_exploration/cazy_proteins_seqs.fasta \
+  -f -n
+```
+
+The Python script `run_blastp_cazy.py` was used to query _tmgh3_ against the proteins from the CAZy families of interest using BLASTP. To repeat this analysis, run the following command from the root of the repository.
+```bash
+python3 scripts/tmgh3_exploration/run_blastp_cazy.py
+```
+
+The results were written to [`results/cazy_blastp_results.tsv`]().
+
+The protein sequences of the 19 hits with sequence identity of equal to or greater than 70% against _tmgh3_ were written to the FASTA file `data/tmgh3_exploration/cazy_hits.fasta`.
+
+### 3. Exploration of NR and CAZy hits
+
+Both the BLASTP query against the NR and CAZy databases returned 19 proteins from _Thermotoga_ with percentage identities of equal to or greater than 70% against _tmgh3_. 
+
+CAZy annotates GenBank database releases. Reference sequence protein IDs are not catalogued in CAZy. To determine if the hits from NR were reference sequences of proteins in CAZy, the Python script `run_blastp_nr_cazy.py` was used to perform a BLASTP analysis of the 19 hits from NR against the 19 hits from querying CAZy. To repeat this analysis, run the following command from the root of the repository.
+```bash
+python3 scripts/tmgh3_exploration/run_blastp_nr_cazy.py
+```
+
+The resulting `tsv` file was written to [`results/nr_cazy_blastp_results.tsv`]().
+
+The protein sequences for the 15 of the 19 from NR shared 100% sequence identity with at least one protein from CAZy, the remaining proteins shared greater than 90% sequence identity with at least one protein from CAZy.
+
+### 4. Generation of a MSA of xylosdiases
+
+Previously _tmgh3_ had been queried against HHpred to find potential templates for molecular modelling. To explore the potential cause for HHpred returning many non-functionally relevant proteins and few xylosidases, the analysis using HHpred was repeated using an MSA of xylosdiase protein sequences.
+
+To create the MSA the proteins sequences 19 hits from quering the NR database and the 19 hits from querying the CAZy database, which had greater than or equal to 70% sequence identity with _tmgh3_ were combined into a single fasta file. This is located at [`data/tmgh3_exploration/nr_and_cazy_hits.fasta`]().
+
+The previous BLASTP query of the NR hits against the CAZy hits revealed several NR hits shared 100% sequence identity with hits from CAZy. Therefore, [`seqkit`](https://bioinf.shenwei.me/seqkit/) was used to remove redundant protein sequences based upon sequence.
+```bash
+seqkit rmdup -s data/tmgh3_exploration/nr_and_cazy_hits.fasta data/tmgh3_exploration/nr_cazy_hits_nonred.fasta
+```
+
+`MAFFT` was used to align the protein sequences. To repeat this analysis run the following command from the root of the repository.
+```bash
+mafft --thread 12 data/tmgh3_exploration/nr_cazy_hits_nonred.fasta > data/tmgh3_exploration/nr_and_cazy_hits_aligned.fasta
+```
+
+### 4. Repeating the analysis using HHpred
+
+HHpred was run using the default parameters (via the [HHpred webserver]()) and the MSA stored in `data/tmgh3_exploration/nr_and_cazy_hits_aligned.fasta`. 
+
+The results are stored in [`results/hhpred_results.hhr`]().
+
+Using the MSA did not signficantly increase the number of functionally relevant hits returned by HHpred. In general, the results between the two queries were similar. This potentially reflects the limited knowledge pool for _Thermotoga_ glycoside hydrolase GH3 proteins.
+
+### 3. Interrogation of the CAZy database
+
+So why couldn't we find anything? Let's interrogate CAZy.
+SQL commands... why does our protein come up with so few hits?
+
+## Exploration of a GH3-CE complex
+
+Exploration of the local CAZyme database revealed the frequent co-occurence of a GH3 and CE4 and/or CE7 protein in the same _Thermotoga_ genomes. 
+This mirrored the proposal of possible GH3-CE4 and/or GH3-CE7 complexes in the literature. To explore the probability of a GH3 and CE4 and/or CE7 complexes in 
+_Thermotoga_ genomes, the CAZomes (all CAZymes incoded in a genome) of _Thermotoga_ genomes were annotated. The flanking genes of each GH3 protein in the 
+_Thermotoga_ genomes were then identified using FlaGs (Saha _et al_., 2021).
+
+> Saha, C. K, Pires, R. S., Brolin, H., Delannoy, M., Atkinson, G. C. (2021) 'FlaGs and webFlaGs: discovering novel biology through the analysis of gene neighbourhood conservation', Bioinformatics, 37(9), pp. 1312–1314
+
+`FlaGs` requires a phylogenetic tree. No recent phylogenetic tree of _Thermotoga_ genomes was available, therefore, the phylogenetic tree was reconstructed using non-redundant genomes from NCBI.
+
+### Reconstructing the _Thermotoga_ genus phylogenetic tree
 
 To reconstruct the phylogenetic tree of _Thermotoga_ genus the method presented in [Hugouvieux-Cotte-Pattat _et al_., 2021](https://pure.strath.ac.uk/ws/portalfiles/portal/124038859/Hugouvieux_Cotte_Pattat_etal_IJSEM_2021_Proposal_for_the_creation_of_a_new_genus_Musicola_gen_nov_reclassification_of_Dickeya_paradisiaca.pdf) was used. The specific methodolgy is found in the [Hugouvieux-Cotte-Pattat _et al_. supplementary](https://widdowquinn.github.io/SI_Hugouvieux-Cotte-Pattat_2021/).
 
-### 1. Download genomes
+#### 1. Download genomes
 
 RefSeq genomic assemblies were retrieved from NCBI. The genomic accessions of the genomic assemblies used to 
 reconstruct the phylogenetic tree are listed in `data/ref_genomes_of_interest_acc.txt`. This includes the 
@@ -119,14 +212,20 @@ The genomes were downloaded from NCBI using [`ncbi-genome-download`](https://git
 To reproduce this download run the following command from the root of this repository:
 ```bash
 scripts ncbi/download_genomes.sh \
-  data/ref_genomes_of_interest_acc.txt
-  ml_tree_genomes
+  data/ref_genomes_of_interest_acc.txt \
+  ml_tree_genomes \
+  fasta
 ```
+The arguments provided are:
+1. Path to the file containing a list of the genomes of interest
+2. Path to the output directory
+3. The file format to download the genomes as
 
 25 genomes were downloaded and stored in the directory `ml_tree_genomes`. The accession numbers of the downloaded genomes are listed in `data/downloaded_genome_acc.txt`
 
+The 25 genomes were downloaded in GenBank Flat File and FASTA format. The latter was used for reconstruction of the phylogenetic tree, the former were used for annotating the CAZome.
 
-### 2. CDS prediction
+#### 2. CDS prediction
 
 In order to ensure consistency of nomenclature and support back threading the nucleotides sequences onto 
 aligned single-copy orthologues, all downloaded RefSeq genomes were reannotated using 
@@ -149,7 +248,7 @@ The output from `prodigal` are placed in the following directories:
 A log of the `prodigal` terminal output was placed in `data/logs/prodigal.log`.
 
 
-### 3. Identifying Single-Copy Orthologues (SCOs)
+#### 3. Identifying Single-Copy Orthologues (SCOs)
 
 Orthologues present in the RefSeq _Thermotoga_ genomes were identified using [`orthofinder`](https://github.com/davidemms/OrthoFinder)
 
@@ -172,7 +271,7 @@ The output from `orthofinder` was written to the `orthologues/Results_Nov11/Sing
 `orthofinder` identified genome GCF_004117075.1 as the best out group.
 
 
-### 4. Multiple Sequence Alignment
+#### 4. Multiple Sequence Alignment
 
 Each collection of single-copy orthologous was aligned using [`MAFFT`](https://mafft.cbrc.jp/alignment/software/).
 
@@ -189,7 +288,7 @@ scripts/reconstruct_tree/ml_tree/align_scos.sh \
 The output from `MAFFT` (the aligned files) are placed in the `sco_proteins_aligned` directory.
 
 
-### 5. Collect Single-Copy Orthologues CDS sequences
+#### 5. Collect Single-Copy Orthologues CDS sequences
 
 The CDS sequences corresponding to each set of single-copy orthologues are identified and extracted with the Python script `extract_cds.py`. To reproduce this analysis, ensure the `PROTDIR` constant in the script is 
 directed to the correct output directory for orthofinder. The script can then be run from the current directory with:
@@ -202,7 +301,7 @@ The output is a set of unaligned CDS sequences corresponding to each single-copy
 placed in the `sco_cds` directory
 
 
-### 6. Back-translate Aligned Single-Copy Orthologues
+#### 6. Back-translate Aligned Single-Copy Orthologues
 
 The single-copy orthologue CDS sequences are threaded onto the corresponding aligned protein sequences using [`t-coffee`](http://www.tcoffee.org/Projects/tcoffee/).
 
@@ -219,7 +318,7 @@ scripts/reconstruct_tree/ml_tree/backtranslate.sh \
 The backtranslated CDS sequences are placed in the `sco_cds_aligned` directory.
 
 
-### 7. Concatenating CDS into a Multigene Alignment
+#### 7. Concatenating CDS into a Multigene Alignment
 
 The threaded single-copy orthologue CDS sequences are concatenated into a single sequence per input organism using the Python script `concatenate_cds.py`. To reproduce this, execute the script from this directory with:
 
@@ -230,7 +329,7 @@ python scripts/reconstruct_tree/concatenate_cds.py
 Two files are generated, a FASTA file with the concatenated multigene sequences, and a partition file allowing a different set of model parameters to be fit to each gene in phylogenetic reconstruction.
 
 
-### 8. Phylogenetic reconstruction
+#### 8. Phylogenetic reconstruction
 
 To reconstruct the phylogenetic tree, the bash script `raxml_ng_build_tree.sh` is used, and is 
 run from the root of this repository. This executes a series of [`raxml-ng`](https://github.com/amkozlov/raxml-ng) commands.
@@ -260,412 +359,180 @@ Tree reconstructions are placed in the `tree` directory. The best estimate tree 
 
 
 
-## Selecting models for molecular replacement
 
-Via SQL and an SQL database browser, the local CAZyme database was queried with the aim to retrieve functionally relevant proteins, to generate an MSA of functional relevant proteins for molecular modeling. 
 
-A list of all SQL queries performed and the output is presented [here](https://hobnobmancer.github.io/Foltanyi_et_al_2022/sql_queries/).
 
-In summary, from the CAZy families of interest, 560 proteins were annotated with the EC number 3.2.1.37, indicating they potentially had the function of interest.
 
-`cazy_webscraper` was used to retrieve the GenBank protein sequences for these 560 proteins.
 
-[`MMSeq2`](https://github.com/soedinglab/MMseqs2) was used to cluster the proteins with a percentage identity and coverage cut-off of 80%.
+### Annotate the CAZomes
 
-To repeat this analysis, run the following code from the root of the repository, using a fasta file called ec_proteins_seqs.fasta
-which contains all bacterial proteins retieved with the EC number of interest. This analysis also uses the Python script `get_clusters.py`, which 
-parses the MMseq output to create a `csv` file with the size of each cluster, and a `JSON` file containing the GenBank accessions for each cluster.
+`cazy_webscraper` and `dbCAN` were used to annotate all CAZymes in the _Thermotoga_ genomes (the CAZomes).
 
+#### 1. Download genomes
+
+The proteins from the _Thermotoga_ genomes were required, therefore, the genomes of interested were downloaded in 
+GenBank Flat File format.
+
+To reproduce this download run the following command from the root of this repository:
 ```bash
-# make an output directory
-mkdir mmseq_cluster_80
-
-# create the db
-mmseqs createdb ec_proteins_seqs.fasta mmseq_cluster_80/mmseq_db_80
-
-# cluster the proteins
-mmseqs cluster mmseq_cluster_80/mmseq_db_80 \
-  mmseq_cluster_80/mmseq_db_80_output \
-  mmseq_cluster_80/mmseq_db_80/tmp \
-  --min-seq-id 0.8 -c 0.8
-
-# create tsv
-mmseqs createtsv \
-  cluster mmseq_cluster_80/mmseq_db_80 \
-  cluster mmseq_cluster_80/mmseq_db_80 \
-  mmseq_cluster_80/mmseq_db_80_output \
-  mmseq_cluster_80/mmseq_db_80_output.tsv
-
-# get summary
-python3 get_clusters.py \
-  mmseq_cluster_80/mmseq_db_80_output.tsv \
-  mmseq_cluster_80/mmseq_cluster_summary.csv \
-  mmseq_cluster_80/mmseq_clusters.json
+scripts/ncbi/download_genomes.sh \
+  data/ref_genomes_of_interest_acc.txt \
+  cazomes/cazome_genomes \
+  genbank
 ```
 
-This produced 420 clusters. Only 2 clusters contained more than 10 proteins, each contained 17 proteins sequences. All remaining clusters contained less than 10 proteins, 366 clusters contained only 1 proteins.
+25 genomes were downloaded and stored in the `cazome_genomes` directory, and were decompressed by the `download_genomes.sh` script.
 
-`MMSeq2` was used to cluster the protein again, but with a percentage identity and coverage cut-off of 70% with the aim to increase the cluster sizes.
+#### 2. Extract proteins
 
-To repeat this analysis, run the following code from the root of the repository, using a fasta file called ec_proteins_seqs.fasta
-which contains all bacterial proteins retieved with the EC number of interest.
+The Python script `extract_proteins.py` was used to extract the protein sequences from each downloaded genome, and write the protein 
+sequences to FASTA files. One FASTA file was created by per downloaded genome, and contained all protein sequences extracted from the 
+respective genome.
 
+The script takes the following args:
+1. Path to input dir containing genomes (in `.gbff` format)
+2. Path to output dir to write out FASTA files
+
+To reproduce the analysis, run the following command from the root of the repository:
 ```bash
-# make an output directory
-mkdir mmseq_cluster_70
-
-# create the db
-mmseqs createdb ec_proteins_seqs.fasta mmseq_cluster_70/mmseq_db_70
-
-# cluster the proteins
-mmseqs cluster mmseq_cluster_70/mmseq_db_70 \
-  mmseq_cluster_70/mmseq_db_70_output \
-  mmseq_cluster_70/mmseq_db_70/tmp \
-  --min-seq-id 0.7 -c 0.7
-
-# create tsv
-mmseqs createtsv \
-  cluster mmseq_cluster_70/mmseq_db_70 \
-  cluster mmseq_cluster_70/mmseq_db_70 \
-  mmseq_cluster_70/mmseq_db_70_output \
-  mmseq_cluster_70/mmseq_db_70_output.tsv
-
-# get summary
-python3 get_clusters.py \
-  mmseq_cluster_70/mmseq_db_70_output.tsv \
-  mmseq_cluster_70/mmseq_cluster_summary.csv \
-  mmseq_cluster_70/mmseq_clusters.json
+python3 scripts/cazome_annotation/extract_proteins.py \
+  cazomes/cazome_genomes \
+  cazomes/extracted_proteins
 ```
 
-This produced 346 clusters. The 4 largest clusters contained 33, 28, 17 and 13 proteins each. All remaining clusters contained less than 10 proteins, 227 of which contained only 1 protein.
+The FASTA files were written to the `cazomes/extracted_proteins` directory.
 
-The JSON file containing the GenBank accessions of each cluster compiled by `MMSeq2` can be found [here](https://github.com/HobnobMancer/Foltanyi_et_al_2022/blob/master/supplementary/cluster_data/clusters_70.json).
+In total 34,671 proteins were extracted.
 
-A representative sequence from each of the 4 largest clusters from this second clustering were compared using BLASTP all-versus-all, using the Python script `run_blastp.py` from the Python package [`pyrewton` DOI:10.5281/zenodo.3876218)](https://github.com/HobnobMancer/pyrewton).
+#### 3. Identify proteins in CAZy
 
-The R notebook `cluster_analysis.Rmd` was used to parse and analyse the results. This notebook can be viewed [here](https://hobnobmancer.github.io/Foltanyi_et_al_2022/supplementary/cluster_data/cluster_analysis.html) and found [here](https://github.com/HobnobMancer/Foltanyi_et_al_2022/tree/master/supplementary/cluster_data).
+All proteins extracted from the downloaded genomes were queried against a local CAZyme database using the `get_cazy_cazymes.py` script. 
 
-The GenBank accessions for each of the 4 largest clusters were extracted to plain text files, with one unique GenBank accession per row. These files can be found here:
-- [AGE22437_1.txt](https://github.com/HobnobMancer/Foltanyi_et_al_2022/blob/master/supplementary/cluster_data/AGE22437_1.txt)
-- [CBK6950_1.txt](https://github.com/HobnobMancer/Foltanyi_et_al_2022/blob/master/supplementary/cluster_data/CBK6950_1.txt)
-- [CDG29680_1.txt](https://github.com/HobnobMancer/Foltanyi_et_al_2022/blob/master/supplementary/cluster_data/CDG29680_1.txt)
-- [QJR11213_1.txt](https://github.com/HobnobMancer/Foltanyi_et_al_2022/blob/master/supplementary/cluster_data/QJR11213_1.txt)
+The script has 3 positiional arguments:
+1. Path to directory containing FASTA files of extracted protein sequences
+2. Path to the local CAZyme database
+3. Path to output directory to write out FASTA files of proteins not in CAZy
+4. Path to write out tab delimited list of proteins in the CAZy families of interest.
 
-These text files were parsed by `cazy_webscraper` in order to extract the GenBank protein sequences of all proteins in each cluster, and write the protein sequences to a FASTA file. One FASTA file per cluster was compiled.
+_The list of CAZy families of interest is hardcoded in to the `get_cazy_cazymes.py` script, in the constant `FAMILIES_OF_INTEREST`._ 
 
+This script produced 3 outputs:
+1. A single `csv` file containing all extrated CAZy annotations (including the genomic accession, protein accession and CAZy family annotation), in tidy data formatting (this is written to the output directory)
+2. A FASTA file per parsed genome containing all protein sequences that are not included in CAZy (these are written to the output directory)
+3. A single tab-delimited list with the genomic accession and protein accession of all proteins that are from the families of interest.
+4. A `summary.txt` file, listing the number of proteins from CAZy, not in CAZy and from the families of interest (this is writte to the output directory)
+
+Run the following command from the root of the repository to repeat this analysis:
 ```bash
-cw_extract_db_sequences cazy_database.db genbank AGE22437_1.txt --fasta_file AGE22437_1.fasta -f -n
-cw_extract_db_sequences cazy_database.db genbank CBK6950_1.txt --fasta_file CBK6950_1.fasta -f -n
-cw_extract_db_sequences cazy_database.db genbank CDG29680_1.txt --fasta_file CDG29680_1.fasta -f -n
-cw_extract_db_sequences cazy_database.db genbank QJR11213_1.txt --fasta_file QJR11213_1.fasta -f -n
-```
-
-The Python script `run_blastp.py` from [`pyrewton` DOI:10.5281/zenodo.3876218)](https://github.com/HobnobMancer/pyrewton) was used to run a BLASTP all-vs-all analysis for each cluster. The results of which can be viewed [here](https://hobnobmancer.github.io/Foltanyi_et_al_2022/supplementary/cluster_data/cluster_analysis.html#4_Sequence_divergence_in_individual_clusters).
-
-The BLASTP all-versus-all of the representative proteins from each cluster inferred the AGE224371.1 and CDG296801.1 clusters had relatively low sequence diveregence across all proteins from the two clusters. To futher explore this, a BLASTP all-versus-all of all proteins in the two clusters was performed, and demonstrated high sequence similarity across the two clusters. The BLAST score ratios of the BLASTP analysis can be found [here](https://hobnobmancer.github.io/Foltanyi_et_al_2022/supplementary/cluster_data/cluster_analysis.html#51_AGE224371_and_CDG296801).
-
-The sequence diveregence when pooling all proteins from the 4 clusters was also explored, and demonstrated a relatively high sequence similarity across the entire protein pool. The BLAST score ratios of the BLASTP analysis can be found [here](https://hobnobmancer.github.io/Foltanyi_et_al_2022/supplementary/cluster_data/cluster_analysis.html#52_Sequence_divergence_across_all_4_clusters).
-
-Owing to the overall high sequence similarity across the entire protein pool, all 91 protein sequences were aligned using `MAFFT`.
-```bash
-# FASTA output
-mafft --thread 12 mafft --thread 12 data/cluster_data/all_clusters.fasta > supplementary/cluster_data/all_clusters_aligned.fasta
-# CLUSTAL output
-mafft --thread 12 --clustalout data/cluster_data/all_clusters.fasta > supplementary/cluster_data/all_clusters_aligned.clustal
-```
-
-The total number of proteins in across all 4 clusters was 91. This included 0 proteins with PDB accessions listed in UniProt. The following SQL command was used to retrive the results:
-
-```sql
-WITH Ec_Query (ec_gbk_acc) AS (
-	SELECT DISTINCT Genbanks.genbank_accession
-	FROM Genbanks
-	INNER JOIN Genbanks_Ecs ON Genbanks.genbank_id = Genbanks_Ecs.genbank_id
-	INNER JOIN Ecs ON Genbanks_Ecs.ec_id = Ecs.ec_id
-	WHERE Ecs.ec_number = '3.2.1.37'
-)
-SELECT DISTINCT Genbanks.genbank_accession, Pdbs.pdb_accession
-FROM Genbanks
-INNER JOIN Pdbs ON Genbanks.genbank_id = Pdbs.genbank_id
-LEFT JOIN Ec_Query ON Genbanks.genbank_accession = Ec_Query.ec_gbk_acc
-WHERE (Genbanks.genbank_accession IN Ec_Query)
-```
-
-To further expand the pool of potentially functionally relevant proteins, the proteins from the CAZy families of interest (listed below) which were not included in the clusters were BLASTP queries against the members of the 4 clusters. Specifically:
-
-1. `cazy_webscraper` was used to extract the GenBank protein sequences for all proteins in the Glycoside Hydrolase families of interest:
-```bash
-cw_extract_db_sequences \
+python3 scripts/cazome_annotation/get_cazy_cazymes.py \
+  cazomes/extracted_proteins \
   cazy_database.db \
-  genbank \
-  --families GH1,GH2,GH3,GH11,GH26,GH30,GH43,GH51,GH52,GH54,GH116,GH120 \
-  --fasta_file all_fam_seqs.fasta \
+  cazomes/non_cazy_proteins \
+  cazomes/proteins_of_interest.txt
+```
+
+The `csv` file containing all proteins annotated in CAZy in the genomes is available in the [repository]().
+
+In total 0 proteins were retrieved from CAZy.  
+34,671 proteins were extracted from the genomes and were not included in CAZy.  
+
+#### 4. Run and parse dbCAN
+
+CAzy annotates the GenBank protein sequence releases, therefore, it is rare for CAZy to include the RefSeq protein accessions. To annotate the comprehensive CAZome of each genome, `dbCAN` was used to annotate the CAZomes.
+
+_`dbCAN` version 3.0.2_
+
+> Zhang, H., Yohe, T., Huang, L., Entwistle, S., Wu, P., Yang, Z., Busk, P.K., Xu, Y., Yin, Y. (2018) ‘dbCAN2: a meta server for automated carbohydrate-active enzyme annotation’, Nucleic Acids Res., 46(W1), pp. W95-W101. doi: 10.1093/nar/gky418
+
+To run dbCAN for every set of protein sequences extracted from the genomes and not included in CAZy, run the following command in `dbcan` directory (*this is necessary because the paths encoded in `dbCAN` are hard coded, this does require copying the input data into a new directory withint the `dbcan` directory*):
+```bash
+python3 invoke_dbcan.py \
+  non_cazy_proteins_copy \
+  dbcan_output \
+```
+
+The output directory `dbcan_output` was moved to the `cazomes` directory: `cazomes/dbcan_output`.
+
+To parse the output from dbCAN, and the proteins from the CAZy GH3 of interest to the tab delimited list, run the following command in the root of the repository:
+```bash
+python3 scripts/get_cazomes/get_dbcan_cazymes.py \
+  cazomes/dbcan_output \
+  cazomes/proteins_of_interest.txt \
   -f -n
 ```
+The first argument is the path to the directory containing output from `dbCAN`. The second argument is a path to the tab delimited lists of genomic accessions and protein accession, listing proteins from GH3.
 
-2. The Python script `remove_duplicate_seqs.py` was run from the root of the repository and used to remove proteins from the `all_fam_seqs.fasta` file (containing protein sequences for the GH CAZy families of interest) that were already in the one of the 4 clusters of interest.
+`dbCAN` parsed 34,671 proteins.  
+1,663 of these proteinse were predicted to be CAZymes with a consensus CAZy family prediction (i.e. a CAZy family annotation that at least two of three tools in dbCAN agreed upon).
+- 78 proteins from GH3
+- 23 proteins from CE7
+
+To facilitate reproduction of this analysis, the raw output `overview.txt` files from dbCAN for each _Thermotoga_ genome are available in the `data/dbcan_output` directory of this repository.
+
+### Run `FlaGs`
+
+To repeat the analysis using [`FlaGs`](), install `FlaGs` in a dir called `FlaGs` (located in the root of the repository) and run the following from the root of this repository:
 ```bash
-python3 scripts/molecular_modeling/remove_duplicate_seqs.py \
-  data/molecular_modeling/all_fam_seqs.fasta
+mkdir cazomes/flags_output  # create output directory
+
+python3 FlaGs/FlaGs.py \
+  -a cazomes/proteins_of_interest.txt \
+  -o cazomes_flags_output/thermotoga_gh3_flags_ \
+  -u <email_address>
 ```
 
-3. [`Trimal`](http://trimal.cgenomics.org/trimal) () (version 1.4.1) was used to trim the MSA, by removing all columns with gaps in more than 20% of the sequences:
+### GH3 flanking genes
 
-> Capella-Gutierrez, S., Silla-Martinez, J. M., Gabaldon, T. (2009) 'trimAl: a tool for automated alignment trimming in large-scale phylogenetic analyses', Bioinformatics, 25, pp. 1972-1973
+NitroPro was used to recolour the output from `FlaGs` and annotate a substree of the _Thermotoga_ phylogenetic tree shown in figure 1.
 
+<figure>
+<img src="https://images.unsplash.com/photo-1549740425-5e9ed4d8cd34?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXwzOTU0NTB8fGVufDB8fHw%3D&w=1000&q=80" alt="Thermotoga phylogenetic tree and the presence of a GH3-CE7 gene cluster" style="width:100%">
+<figcaption align = "center"><b>Fig.1 - Rooted phylogenetic tree of Thermotoga, annotated with the presence of a GH3 gene cluster</b></figcaption>
+</figure>
+
+- GH3 protein was highly conserved across _Thermotoga martima_, the genomes shared the same protein reference sequence ID
+- The protein was flanked by (traversing upstream to downstream, and the values in brackets are the RefSeq protein IDs for the proteins in the T. martima_ genomes):
+  - ABC transporter permease (WP_004082581.1)
+  - ABC transporter permease (WP_004082583.1)
+  - ABC transporter ATP-binding protein (WP_041426669.1)
+  - ABC transporter ATP-binding protein (WP_004082591.1)
+  - GH3 (WP_004082594.1)
+  - cephalosporin-C deacetylase from CAZy family CE7 (WP_004082599.1)
+  - ABC transporter ATP-binding protein (WP_004082601.1)
+  - iron ABC transporter permease (WP_004082603.1)
+  - cobalamin-binding protein (WP_004082604.1)
+
+ABC transporter ATP-binding protein (WP_004082591.1), cephalosporin-C deacetylase from CAZy family CE7 (WP_004082599.1) and ABC transporter ATP-binding protein (WP_004082601.1) were queried against the NR database to explore the possibility of sequence similarity to proteins from archae. The results of which are stored in the `results` directory of this repository.
+
+Only proteins from _Thermotoga_ and _Pseudothermotoga_ species shared greater than 70% sequence identity with the query proteins. Except CE7 (WP_004082599.1), which returned 2 fits of 71% identity against _Firmicutes bacterium_ and one hit against a generic bacterium. The highest sequence identity achieved between WP_004082601.1 and a bacterial protein was 41%.
+
+Tmgh3 was flanked upstream by (in order) two ABC transporter permeases and two ABC transporter ATP-binding protein, and downstream by a cephalosporin-C deacetylase from CAZy family CE7, an ABC transporter ATP-binding protein, an iron ABC transporter permease and a cobalamin-binding protein. This gene cluster including distances between, and lengths of the genes (allowing for small variations of a few nucleotides) was conserved across the Thermotoga genomes.
+
+To estimate the degree of conservation across the GH3-CE7 gene cluster, BLASTP all-versus-all analysis was performed for the retrieved GH3 proteins and CE7 proteins (GH3 vs GH3 and CE7 vs CE7 analyses were performed).
+
+The GH3 and CE7 protein sequences were retrieved from the NCBI Protein database using [Batch Entrez](https://www.ncbi.nlm.nih.gov/sites/batchentrez). The resulting fasta files for [GH3]() and [CE7]() protein sequences are available in the `data/gh3_complex` directory.
+
+To reproduce the BLASTP all-versus-all analyses, call the following commands in the root of this repository.
 ```bash
-# run from the root of the repository
-trimal -in data/cluster_data/all_clusters_aligned.fasta -out data/cluster_data/trimed_aligned_clusters.fasta -gt 0.8
+python3 scripts/gh3_complex/run_blastp_gh3.py
+python3 scripts/gh3_complex/run_blastp_ce7.py
 ```
+The outputs from BLASTP are written to the `results` directory for the [GH3]() and [CE7]() proteins.
 
-4. A HMM model of the protein sequences across all 4 protein clusters of interest was constructed using [`HMMBuild`](http://rothlab.ucdavis.edu/genhelp/hmmerbuild.html) (Eddy, 2008) using default parameters.
+The two data files of GH3 and CE7 protein accessions used in this analysis are located in the `data/gh3_complex` directory.
 
-> Eddy, S. R. (2008) 'A Probabilistic Model of Local Sequence Alignment that Simplifies Statistical Significance Estimation', _PloS Comput. Biol._, 4, pp. e1000069.
+The R script `scripts/gh3_complex/get_heatmaps.R` was used to generate heatmaps plotting the percentage identity of the BLASTP all-versus-all 
+analysis of the GH3 and CE7 proteins, to explore the degree of conservation over the potential complex.
 
-To rerun this analysis, run the following command in the root of this repository:
-```bash
-hmmbuild \
-	-n supplementary/cluster_data/ec_cluster_hmm \
-	-o supplementary/cluster_data/ec_cluster_hmm_summary \
-	-O supplementary/cluster_data/ec_cluster_msa \
-	--amino \
-	supplementary/cluster_data/ec_cluster_phmm \
-	supplementary/cluster_data/trimed_aligned_clusters.fasta
-```
-This produces a HMM profile, called [`ec_cluster_phmm`]().
 
-5. Determine the bitscore cut-offs for using the pHMM to identify potentially functionally relevant proteins.
 
-By default [`HMMERSearch`](https://academic.oup.com/nar/article/41/12/e121/1025950?login=false) (Mistry _et al.,_ 2013) uses a E-value threshold to identify candidates of interest. However, the E-value is database size dependent and is a measure of the significance of the hit against the size of the database. The bitscore is a measure of the statistical significance of the alignment.
+<figure>
+<img src="https://images.unsplash.com/photo-1549740425-5e9ed4d8cd34?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXwzOTU0NTB8fGVufDB8fHw%3D&w=1000&q=80" alt="Percentage identity between Gh3 proteins" style="width:100%">
+<figcaption align = "center"><b>Fig.2 - Percentage identity between CE7 proteins</b></figcaption>
+</figure>
 
-> Mistry, J., Finn, R. D., Eddy, S. R., Bateman, A., Punta, M. (2013) 'Challenges in Homology Search: HMMER3 and Convergent Evolution of Coiled-Coil Regions', Nucleic Acids Research, 41, pp. e121
+<figure>
+<img src="https://images.unsplash.com/photo-1549740425-5e9ed4d8cd34?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXwzOTU0NTB8fGVufDB8fHw%3D&w=1000&q=80" alt="Percentage identity between CE7 proteins" style="width:100%">
+<figcaption align = "center"><b>Fig.3 - Percentage identity between CE7 proteins</b></figcaption>
+</figure>
 
-The **'noise cut-off' (NC)** bitscore was calculated by querying a set of proteins known negatives, in this case proteins that do not have ability to catalyse the reaction represented by the EC number 3.2.1.37.
-
-Initally, bacterial protein sequences from the Glycosidetransferase (GT) family GT10 were selected as known negatives for calculating the NC. This was because all GT CAZymes are involved the synthesis of oligo- and polysaccharides, and do not posses functions related to the degradation of polysaccharides, which the catalytic reaction represented by the EC number 3.2.1.37 is associated with. The GT10 protein sequences were retrieved from NCBI, added to the local CAZyme database and extracted from the local CAZyme database using `cazy_webscraper`. However, even with a E-value cut-off of 1000, no hits between the bacterial GT10 protein sequences and the pHMM were found by `Hmmsearch`.
-
-Instead, bacterial proteins with the EC number 2.4.1.12 (a UDP-glucose--beta-glucan glucosyltransferase) were selected at the known negatives for calculating the NC score.
-```bash
-cw_get_genbank_seqs \
-	data/cazy_database.db <email_address> --ec_filter 2.7.1.12
-cw_extract_db_sequences \
-	datacazy_database.db genbank \
-	--ec_filter \
-	--fasta_file data/cluster_data/2-7-1-12_protein_seqs.fasta
-```
-**110** bacterial protein sequences were retrieved from the local CAZyme database and written to the fasta file `data/cluster_data/2-7-1-12_protein_seqs.fasta`.
-
-`Hmmsearch` was then used to query these protein sequences against the constructed pHMM.
-```
-hmmsearch \
-	-o supplementary/cluster_data/ec_hmm_search_nc_results \
-	-A supplementary/cluster_data/ec_hmm_search_nc_alignment \
-	--tblout supplementary/cluster_data/ec_hmm_search_nc_tab \
-	supplementary/cluster_data/ec_cluster_phmm \
-	data/cluster_data/2-7-1-12_protein_seqs.fasta
-```
-The NC was defined as the largest valued returned from `HMMER`, which was **a**.  
-All output files are stored in the `supplementary/cluster_data` directory of the repository.
-
-The **'gathering cutoff' (GC)** bitscore was calculated by quering the pHMM against the training set of proteins used to construct the model.
-```bash
-hmmsearch \
-	-o supplementary/cluster_data/ec_hmm_search_gc_results \
-	-A supplementary/cluster_data/ec_hmm_search_gc_alignment \
-	--tblout supplementary/cluster_data/ec_hmm_search_gc_tab \
-	supplementary/cluster_data/ec_cluster_phmm \
-	data/cluster_data/all_clusters.fasta
-```
-The GC was defined as the smallest valued returned from `HMMER`, which was **607.0**.  
-All output files are stored in the `supplementary/cluster_data` directory of the repository.
-
-6. [`HMMERSearch`](https://academic.oup.com/nar/article/41/12/e121/1025950?login=false) (Mistry _et al.,_ 2013) was used to query the proteins from the GH CAZy families of interest against the constructed pHMM, using default search parameters.
-
-To repeat this analysis, run the following command in the `./supplementary/cluster_data/` directory:
-```bash
-hmmsearch \
-	-o supplementary/cluster_data/ec_hmm_search_results \
-	-A supplementary/cluster_data/ec_hmm_search_alignment \
-	--tblout supplementary/cluster_data/ec_hmm_search_tab \
-	-T 607.0 \
-	supplementary/cluster_data/ec_cluster_phmm \
-	data/cluster_data/remaining_fam_seqs.fasta
-```
-
-7. The hits from `hmmsearch` were added to the protein pool (containing proteins from the 4 clusters of interest) to generate an extended protein pool. This was done using the Python script `extract_hmmer_accessions.py`, which parsed the HMMER output using the `BioPython.SearchIO` module, and which wrote out all protein sequences in the extended protein pool to the fasta file `expanded_protein_pool.fasta`. This FASTA file contained **150** protein sequences (59 protein sequences in addition to the 91 protein sequences in the clusters of interest).
-
-The new protein pool was stored in the FASTA file [`expanded_protein_pool.fasta`]().
-
-8. The Python script `run_blastp.py` from `pyrewton` was run from the root of the repository to run a all-vs-all BLASTP of all proteins in the expanded protein sequence pool to measure the degree of sequence diversity across the sequence pool. The results were written to [`supplementary/cluster_data/expanded_protein_pool_blastp.tsv`]().
-
-9. The R note [`cluster_analysis.Rmd`]() was used to parse, analyse and present the results of the all-vs-all BLASTP analysis.
-
-10. `MAFFT` was then used to align the new protein pool of 99 proteins. The resulting MSA in fasta and clustal format are located in the [supplementary]().
-```bash
-# FASTA output
-mafft --thread 12 data/cluster_data/expanded_protein_pool.fasta > data/cluster_data/expanded_protein_pool_aligned.fasta
-```
-
-11. [`Trimal`](http://trimal.cgenomics.org/trimal)  was used to trim the MSA, by removing all columns with gaps in more than 20% of the sequences:
-
-```bash
-# run from the root of the repository
-trimal -in data/cluster_data/expanded_protein_pool_aligned.fasta -out data/cluster_data/trimed_expanded_protein_pool_aligned.fasta -gt 0.8
-```
-
-The two MSA were then used for molecular modeling:
-1. [MSA of protein sequences from the 4 largest clusters of proteins annotated with the EC number 3.2.1.37]()
-2. [MSA of the expanded protein pool]()
-
-## Identification of neighbouring genes
-
-...
-
-
-
-## Identifying co-evolving CAZy families
-
-### 1. CAZy family co-occurence
-
-`cazomevolve` was used to identify co-occurning CAZy families in the Thermotogae gnomes.
-
-#### 1.1. Download genomes  
-
-To download genomes from NCBI GenBank, the Python script from `cazomevolve` `cazomevolve/scripts/genomes/download_genomes.py` was used, and called from the root of the `cazomevolve` repo, using the following command:
-```bash
-python3 scripts/genomes/download_genomes.py \
-  <user_email_address> \
-  Thermotogae \
-  gbff,fna \
-  thermotogae_genomes \
-  --gbk
-```
-
-Genomes were downloaded into both GenBank flat file and FASTA format and writte out the directory `thermotogae_genomes`. Assemblies from all assembly levels were retrieved.
-
-#### 1.2. Reconstruct phylogenetic tree
-
-To reconstruct the distance-based phylogenetic tree, `pyani` [Pritchard et al., 2016] was used to calculate the average nucleotide identity between all pairs of genomes retrieved from NCBI GenBank.
-
-> Pritchard et al. (2016) "Genomics and taxonomy in diagnostics for food security: soft-rotting enterobacterial plant pathogens" Anal. Methods 8, 12-24
-
-To repeat this analysis use the following command from this directory:
-```bash
-scripts/reconstruct_tree/distance_tree/pyani_ani.sh \
-  thermotogae_genomes/  \         # path to directory containing downloaded .fna files
-  thermotogae_pyani_output/ \     # path to output directory
-  pyani_log.log                  # write out log file
-```
-
-The tabular data from `pyani` is stored in the [supplementary dir](https://github.com/HobnobMancer/Foltanyi_et_al_2022/tree/master/supplementary) of this repository.
-The graphical output is stored in the same directory, as well as being viewable here:  
-- [Alignment coverage](https://hobnobmancer.github.io/Foltanyi_et_al_2022/supplementary/pyani_output/ANIm_alignment_coverage.pdf)
-- [Percentage identity](https://hobnobmancer.github.io/Foltanyi_et_al_2022/supplementary/pyani_output/ANIm_percentage_identity.pdf)
-- [Alignment lengths](https://hobnobmancer.github.io/Foltanyi_et_al_2022/supplementary/pyani_output/ANIm_alignment_lengths.pdf)
-
-From `cazomevolve`, the R script `cazomevolve/scripts/tree/build_distance_tree.R` was used to build a Newick-formatted distance tree.
-
-#### 1.3. Annotate CAZomes
-
-**1.3.1. Extract protein sequences from genomes**
-
-The Python script `cazomevolve/scripts/genomes/extract_gbk_proteins.py` was used to retrieve protein sequences and associated annotations from the downloaded GenBank genomic assebmlies.
-```bash
-python3 scripts/genomes/extract_gbk_proteins.py \
-  thermotogae_genomes/ \
-  thermotogae_proteins
-```
-
-XX of the genomes contained no protein annotations.
-
-**1.3.2. Annotate genomes**
-
-The XX genomes with no protein annotations were annotated using `prokka`  [Seemann, 2014].
-
-> Seemann T. (2014) Prokka: rapid prokaryotic genome annotation. Bioinformatics. 30(14):2068-9
-
-The bash script `cazomevolve/scripts/genomes/predict_cds_prokka.sh` was used to automate invoking `prokka` for all genomes retrieved from NCBI, and which did not contain any CDS features.
-```bash
-scripts/genomes/predict_cds_prokka.sh \
-  thermotogae_prokka_input \      # path to dir containing genomes that contain no CDS features
-  thermotogae_prokka_output \     # path to output dir to write prokka output to
-  thermotogae_dbcan_input \       # path to dir containing protein sequences to be parsed by dbCAN
-  | tee prokka_log_file.log       # write out a log file
-```
-
-The predicted proteins sequences were written out to one FASTA file per parsed genome, and stored in `thermotogae_dbcan_input`.
-
-**1.3.3. Get CAZy annotated CAZymes**
-
-From `cazomevolve`, Python script `cazomevolve/scripts/cazymes/get_cazy_cazymes.py` was used to retrieve the CAZy family annotations from the local CAZyme database (created using `cazy_webscraper`) for proteins extracted from 
-the genomic assemblies. 
-
-The CAZy family annotations were written out to tab delimited list, with one CAZy family annotation on each line, and each line containing the CAZy family followed by the genomic accession of the source genome.
-
-To repeat this analysis, use the following command:
-```bash
-python3 scripts/cazymes/get_cazy_cazymes.py \
-  thermotogae_proteins \
-  cazy_database.db \
-  thermotogae_dbcan_input \
-  thermotogae_fam_acc_list \
-  -f \
-  -n 
-```
-To repeat the analysis make sure the `--force` (`-f`) and `--nodelete` (`-n`) flags are used so that the data can be added to the `thermotogae_dbcan_input` directory without deteling the predicted protein sequences from `prokka`.
-
-2,555 CAZy family annotations were retrieved.
-
-Proteins not annotated by CAZy were written out to FASTA files, one FASTA file per species, which were written out to the `thermotogae_dbcan_input` directory.
-
-**1.3.4. Get dbCAN annotated CAZymes**
-
-From `cazomevolve` the Python script `cazomevolve/scripts/cazymes/get_dbcan_cazymes.py` was used to invoke dbCAN for every FASTA file in the `thermotogae_dbcan_input` directory to predict the CAZy families of all contained proteins. 
-
-The Python script also parsed the output from dbCAN and added the consensus CAZy family annotations to the same tab deliminted list from the step before (*1.3.3. Get CAZy annotated CAZymes*).
-
-To repeat the analysis, use the following command:
-```bash
-python3 ...
-```
-
-Combining CAZy annotated and dbCAN annotated CAZymes identified XXXX total CAZymes across all 263 genomes.
-
-#### 1.4 Add species names
-
-All analysises up to this point identify each genome by its genomic accession. To make the data more human-readable, the tab deliminted list and pyani output were parsed, adding the organism name as a prefix to every genomic accession.
-
-This was done by using the Python script `cazomevolve/scripts/add_organisms_names.py`:
-```bash
-python3 scripts/add_organisms_names.py thermotogae_fam_acc_list sp_thermotogae_fam_acc_list ANIm.tab sp_ANIm.tab
-```
-
-#### 1.5 CAZy family co-occurence search
-
-`coinfinder` [Whelan et al., 2002] was used to identify CAZy families that co occure more often than expected from the species lineage.
-
-To repeat the analysis use the following command:
-```bash
-coinfinder \
-  -i sp_thermotogae_fam_acc_list 
-  -p sp_ANIm.tab \
-  -a
-```
-
-To produce the circular phylogenetic tree and heatmap, with the coloured annotations, a modified version of the 
-R script `aasd` from `coinfinder` was used. A copy of the modified R script is stored in `scripts/R/...`. Use 
-this modified file instead of the original R file to recreate the analysis. Additional modifications to the script 
-maybe required if a different data set is used.
-
-### 2. Finding models for molecular replacement and comparison
-
-#### 2.1. Build a CAZyme database
-
-`cazy_webscraper` [Hobbs et al 2021] was used to build a local CAZyme database containing CAZymes from the CAZy classes GH and CE.
-
-> Hobbs, Emma E. M.; Pritchard, Leighton; Chapman, Sean; Gloster, Tracey M. (2021): cazy_webscraper Microbiology Society Annual Conference 2021 poster. figshare. Poster. https://doi.org/10.6084/m9.figshare.14370860.v7
-
-`cazy_webscraper` was invoked using the following command:
-```bash
-cazy_webscraper --database_dir Foltany_et_al_2022_cazyme_db --classes GH,CE
-```
