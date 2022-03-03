@@ -440,7 +440,7 @@ In total 0 proteins were retrieved from CAZy.
 
 CAzy annotates the GenBank protein sequence releases, therefore, it is rare for CAZy to include the RefSeq protein accessions. To annotate the comprehensive CAZome of each genome, `dbCAN` was used to annotate the CAZomes.
 
-_`dbCAN` version 2.0.11._
+_`dbCAN` version 3.0.2_
 
 > Zhang, H., Yohe, T., Huang, L., Entwistle, S., Wu, P., Yang, Z., Busk, P.K., Xu, Y., Yin, Y. (2018) ‘dbCAN2: a meta server for automated carbohydrate-active enzyme annotation’, Nucleic Acids Res., 46(W1), pp. W95-W101. doi: 10.1093/nar/gky418
 
@@ -487,7 +487,7 @@ NitroPro was used to recolour the output from `FlaGs` and annotate a substree of
 
 <figure>
 <img src="https://images.unsplash.com/photo-1549740425-5e9ed4d8cd34?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXwzOTU0NTB8fGVufDB8fHw%3D&w=1000&q=80" alt="Thermotoga phylogenetic tree and the presence of a GH3-CE7 gene cluster" style="width:100%">
-<figcaption align = "center"><b>Fig.1 - Rooted phylogenetic tree of Thermotoga, annotated with the presence of a GH3 gene cluster. Flanking genes are numbers and coloured to indicate the protein pool they were clustered into by FlaGs. The GH3 genes are shown in black. Genes highlighted in purple (cluster 7) and genes shown in pink (cluster 3) encode ATP-binding cassette (ABC) transporter permeases. The parent genes of ABC transporter ATP-binding proteins (cluster 1) and iron ABC transporter permeases (cluster 11) are shown in green. Genes in light green (cluster 12) encode cobalamin-binding proteins. Genes shown in blue (cluster 5) produce a cephalosporin-C deacetylase from CAZy family CE7. Genes shown in white had significant sequence diversity to all other GH3 flanking genes and were clustered individually.</b></figcaption>
+<figcaption align = "center"><b>Fig.1 - Rooted phylogenetic tree of Thermotoga, annotated with the presence of a GH3 gene cluster</b></figcaption>
 </figure>
 
 - GH3 protein was highly conserved across _Thermotoga martima_, the genomes shared the same protein reference sequence ID
@@ -527,6 +527,12 @@ analysis of the GH3 and CE7 proteins, to explore the degree of conservation over
 
 
 <figure>
+<img src="https://images.unsplash.com/photo-1549740425-5e9ed4d8cd34?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXwzOTU0NTB8fGVufDB8fHw%3D&w=1000&q=80" alt="Percentage identity between Gh3 proteins" style="width:100%">
+<figcaption align = "center"><b>Fig.2 - Percentage identity between CE7 proteins</b></figcaption>
+</figure>
+
+<figure>
 <img src="https://images.unsplash.com/photo-1549740425-5e9ed4d8cd34?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXwzOTU0NTB8fGVufDB8fHw%3D&w=1000&q=80" alt="Percentage identity between CE7 proteins" style="width:100%">
 <figcaption align = "center"><b>Fig.3 - Percentage identity between CE7 proteins</b></figcaption>
 </figure>
+
