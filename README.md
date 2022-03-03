@@ -482,7 +482,7 @@ python3 FlaGs/FlaGs.py \
 NitroPro was used to recolour the output from `FlaGs` and annotate a substree of the _Thermotoga_ phylogenetic tree shown in figure 1.
 
 <figure>
-<img src="https://github.com/HobnobMancer/Foltanyi_et_al_2022/blob/master/results/annotated_thermotoga_tree.rerooted.truncated.svg" alt="Thermotoga phylogenetic tree and the presence of a GH3-CE7 gene cluster" style="width:100%">
+<img src="https://hobnobmancer.github.io/Foltanyi_et_al_2022/results/annotated_thermotoga_tree.rerooted.truncated.svg" alt="Thermotoga phylogenetic tree and the presence of a GH3-CE7 gene cluster" style="width:100%">
 <figcaption align = "center"><b>Fig.1 - Rooted phylogenetic tree of Thermotoga, annotated with the presence of a GH3 gene cluster</b></figcaption>
 </figure>
 
@@ -521,12 +521,12 @@ The R script `scripts/gh3_complex/get_heatmaps.R` was used to generate heatmaps 
 analysis of the GH3 and CE7 proteins, to explore the degree of conservation over the potential complex.
 
 <figure>
-<img src="https://github.com/HobnobMancer/Foltanyi_et_al_2022/blob/master/results/blastpGh3ComplexProteins.svg" alt="Percentage identity between Gh3 proteins" style="width:100%">
+<img src="https://hobnobmancer.github.io/Foltanyi_et_al_2022/results/blastpGh3ComplexProteins.svg" alt="Percentage identity between Gh3 proteins" style="width:100%">
 <figcaption align = "center"><b>Fig.2 - Percentage identity between GH3 proteins</b></figcaption>
 </figure>
 
 <figure>
-<img src="https://github.com/HobnobMancer/Foltanyi_et_al_2022/blob/master/results/blastpCe7ComplexProteins.svg" alt="Percentage identity between CE7 proteins" style="width:100%">
+<img src="https://hobnobmancer.github.io/Foltanyi_et_al_2022/results/blastpCe7ComplexProteins.svg" alt="Percentage identity between CE7 proteins" style="width:100%">
 <figcaption align = "center"><b>Fig.3 - Percentage identity between CE7 proteins</b></figcaption>
 </figure>
 
