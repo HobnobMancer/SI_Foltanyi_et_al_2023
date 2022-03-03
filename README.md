@@ -486,6 +486,42 @@ NitroPro was used to recolour the output from `FlaGs` and annotate a substree of
 <figcaption align = "center"><b>Fig.1 - Rooted phylogenetic tree of Thermotoga, annotated with the presence of a GH3 gene cluster</b></figcaption>
 </figure>
 
+#### Addressing proteins that were not clustered
+
+To determine if the unclustered protein from _Thermotoga_ sp. 2812B (GCF_000789335.1) was a CE7 protein, `cazy_webscraper` was used to retrieve the protein sequences from GenBank for all proteins in CE7.
+
+```bash
+cw_get_genbank_seqs cazy_database.db <user email> --families CE7
+```
+
+The protein sequences were written to the local CAZyme database, and extracted to a FASTA file using `cazy_webscraper`.
+
+```bash
+cw_extract_db_seqs \
+  cazy_database.db \
+  genbank \
+  --families CE7 \
+  --fasta_file data/gh3_complex/cazy_ce7_proteins.fasta \
+  -f -n
+```
+
+In total, 2,664 protein sequences were retrieved from NCBI and written to the fasta a file [`cazy_ce7_proteins.fasta`]().
+
+The protein sequence for WP_?? (named pseudogene_69.1) was mannualy retrieved from NCBI and written to the fasta file [`data/gh3_complex/unclustered_ce7.fasta`]().
+
+The Python script `run_blastp_unclustered_ce7.py` was used to query the potential CE7 protein from _Thermotoga_ sp. 2812B (WP_???) against all GenBank proteins in the CAZy family CE7. To repeat this analysis run the following command from the root of this repository:
+```bash
+python3 scripts/gh3_complex/run_blastp_unclustered_ce7.py
+```
+
+The output was written to [`results/blastpUnclusteredCe7.tsv]().
+
+No hits were returned.
+
+NR query...
+
+#### Potential GH3-CE7 complex
+
 - GH3 protein was highly conserved across _Thermotoga martima_, the genomes shared the same protein reference sequence ID
 - The protein was flanked by (traversing upstream to downstream, and the values in brackets are the RefSeq protein IDs for the proteins in the T. martima_ genomes):
   - ABC transporter permease (WP_004082581.1)
