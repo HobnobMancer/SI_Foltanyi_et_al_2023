@@ -488,6 +488,8 @@ NitroPro was used to recolour the output from `FlaGs` and annotate a substree of
 
 #### Addressing proteins that were not clustered
 
+##### _Thermotoga_ sp. 2812B (GCF_000789335.1)
+
 To determine if the unclustered protein from _Thermotoga_ sp. 2812B (GCF_000789335.1) was a CE7 protein, `cazy_webscraper` was used to retrieve the protein sequences from GenBank for all proteins in CE7.
 
 ```bash
@@ -669,6 +671,29 @@ LEFT JOIN Uniprot_Query ON Genbanks.genbank_accession = Uniprot_Query.uni_gbk
 The results are stored in [`results/unclustedCE7_cazy_query.csv`]().
 
 All 12 proteins were from _Thermotoga_ species.
+
+To investigate if the entire GH3-CE7 gene cluster was conserved, the protein record of the product from the gene immediately upstream of the GH3 encoding gene (which was labelled by FlaGs as __) and which was individually clustered, was retrieved mannually from the _Thermotoga_ sp. 2812B (GCF_000789335.1) assembly. The protein was annotated as XXX, and the protein sequence was queried against the NR database using the BLOSUM45 matrix. This identified .....
+
+##### _Thermotoga_ sp. TBGT1765 () and _Thermtoga_ sp. TBGT1766 ()
+
+1765
+
+1766
+GCF_000784825.1 assemby ASM78482v1, assembly level of contig
+located the GH3 protein WP_038033230.1 at 31821..34157, locus tag TBGT1766_RS08440
+immediately up stream was WP_004082591.1, which was annotated as an ABC transporter ATP-binding protein
+
+Therefore, the GH3-CE7 gene cluster is conserved in  _Thermotoga_ sp. TBGT1765 and _Thermtoga_ sp. TBGT1766.
+
+##### _Thermotoga_ sp. EMB (GCF_000294555.1)
+
+Protein WP_008194121.1
+Query NCBI Protein database: nucleotide: NCBI Reference Sequence: NZ_AJII01000008.1 from _Thermotoga_ sp. EMP Contig 08 as part of the assembly ASM29455v1, with an assembly level of contig
+Mannually found NZ_AJII01000008.1 in the assembly
+REFSEQ INFORMATION: The reference sequence is identical to
+            AJII01000008.1.
+located at AJII01000008.1:1..2412 in the conti
+Without assembling the contigs onto a scaffold, the flanking genes cannot be identified. However, the degree of conservation, we speculate the GH3-Ce7 gene cluster is also conserved in _Thermotoga_ sp. EMB, espeically because dbCAN did predict the proteome contained 1 CE7 protein.
 
 #### Potential GH3-CE7 complex
 
