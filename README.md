@@ -507,18 +507,168 @@ cw_extract_db_seqs \
 
 In total, 2,664 protein sequences were retrieved from NCBI and written to the fasta a file [`cazy_ce7_proteins.fasta`]().
 
-The protein sequence for WP_?? (named pseudogene_69.1) was mannualy retrieved from NCBI and written to the fasta file [`data/gh3_complex/unclustered_ce7.fasta`]().
+The nucleotide sequence of the gene that encoded the putative CE7 protein (named by FlaGs as pseudogene_69.1) was mannualy retrieved from genome (GCF_000789335.1). Both the forward and reverse strand sequences were retrieved, and written to a single fasta file located at [`data/g3_complex/unclustered_ce7_nt.fasta`]().
 
-The Python script `run_blastp_unclustered_ce7.py` was used to query the potential CE7 protein from _Thermotoga_ sp. 2812B (WP_???) against all GenBank proteins in the CAZy family CE7. To repeat this analysis run the following command from the root of this repository:
+The nucleotide sequence was translated to a protein sequence (specifically the reverse strand was translated), and the protein sequence was stored at [`data/gh3_complex/unclustered_ce7_prt.fasta]().
+
+The Python script `run_blastp_unclustered_ce7.py` was used to query the potential CE7 protein from _Thermotoga_ sp. 2812B against all GenBank proteins in the CAZy family CE7. To allow for greater sequence diversity between proteins with a similar structure the BLOSUM45 matrix was used.
+
+To repeat this analysis run the following command from the root of this repository:
 ```bash
 python3 scripts/gh3_complex/run_blastp_unclustered_ce7.py
 ```
 
 The output was written to [`results/blastpUnclusteredCe7.tsv]().
 
-No hits were returned.
+12 hits were returned with a percentage identitiy of greater than or equal to 90%, all of which had a percentage coverage of greater than or equal to 98%. In order of percentage identity these proteins were:
+- AIY86427.1
+- AKE29758.1
+- AGL49000.1
+- NP_227893.1
+- AKE26023.1
+- AHD18153.1
+- AAD35171.1
+- AKE27885.1
+- ACB09222.1
+- ADA66802.1
+- ABQ46866.1
+- AIY88183.1
 
-NR query...
+The protein AIY86427.1 in CE7 shared 100% percentage identity and covereage with the query unclustered CE7 protein sequence.
+
+The local CAZyme database `cazy_database.db` was queried to return the following data for the protein AIY86427.1:
+- Source organism
+- CAZy family annotations
+- EC number annotations
+- UniProt database record ID
+
+```sql
+WITH Tax_Query (tax_gbk, organism_genus, organism_sp) AS (
+	SELECT DISTINCT GenBanks.genbank_accession, Taxs.genus, Taxs.species
+	FROM Genbanks
+	INNER JOIN Taxs ON Genbanks.taxonomy_id = Taxs.taxonomy_id
+	WHERE Genbanks.genbank_accession = 'AIY86427.1'
+), Fam_Query (fam_gbk, cazy_family) AS (
+	SELECT Genbanks.genbank_accession, CazyFamilies.family
+	FROM Genbanks
+	INNER JOIN Genbanks_CazyFamilies ON Genbanks.genbank_id = Genbanks_CazyFamilies.genbank_id
+	INNER JOIN CazyFamilies ON Genbanks_CazyFamilies.family_id = CazyFamilies.family_id
+	WHERE Genbanks.genbank_accession = 'AIY86427.1'
+), Ec_Query (ec_gbk, ec_annotation) AS (
+	SELECT Genbanks.genbank_accession, Ecs.ec_number
+	FROM Genbanks
+	INNER JOIN Genbanks_Ecs ON Genbanks.genbank_id = Genbanks_Ecs.genbank_id
+	INNER JOIN Ecs ON Genbanks_Ecs.ec_id = Ecs.ec_id
+	WHERE Genbanks.genbank_accession = 'AIY86427.1'
+), Uniprot_Query (uni_gbk, uniprot) AS (
+	SELECT Genbanks.genbank_accession, UniProts.uniprot_accession
+	FROM Genbanks
+	INNER JOIN Uniprots ON Genbanks.genbank_id = Uniprots.genbank_id
+	WHERE Genbanks.genbank_accession = 'AIY86427.1'
+)
+SELECT DISTINCT Genbanks.genbank_accession, Tax_Query.organism_genus, Tax_Query.organism_sp, Fam_Query.cazy_family, Ec_Query.ec_annotation, Uniprot_Query.uniprot
+FROM Genbanks
+LEFT JOIN Tax_Query ON Genbanks.genbank_accession = Tax_Query.tax_gbk
+LEFT JOIN Fam_Query ON Genbanks.genbank_accession = Fam_Query.fam_gbk
+LEFT JOIN Ec_Query ON Genbanks.genbank_accession = Ec_Query.ec_gbk
+LEFT JOIN Uniprot_Query ON Genbanks.genbank_accession = Uniprot_Query.uni_gbk
+WHERE Genbanks.genbank_accession = 'AIY86427.1'
+```
+
+The source organism was returned as 'Thermotoga	sp. 2812B', with the only CAZy family annotation being CE7. No EC number annotations of UniProt ID was returned.
+
+This query was expanded to retrieve data for the 12 proteins with greater than or equal to 90% precentage identity with the query unclustered CE7 protein.
+```sql
+WITH Tax_Query (tax_gbk, organism_genus, organism_sp) AS (
+	SELECT DISTINCT GenBanks.genbank_accession, Taxs.genus, Taxs.species
+	FROM Genbanks
+	INNER JOIN Taxs ON Genbanks.taxonomy_id = Taxs.taxonomy_id
+	WHERE Genbanks.genbank_accession = 'AIY86427.1' OR
+		Genbanks.genbank_accession = 'AKE29758.1' OR
+		Genbanks.genbank_accession = 'AGL49000.1' OR
+		Genbanks.genbank_accession = 'NP_227893.1' OR
+		Genbanks.genbank_accession = 'AKE26023.1' OR
+		Genbanks.genbank_accession = 'AHD18153.1' OR
+		Genbanks.genbank_accession = 'AAD35171.1' OR
+		Genbanks.genbank_accession = 'AKE27885.1' OR
+		Genbanks.genbank_accession = 'ACB09222.1' OR
+		Genbanks.genbank_accession = 'ADA66802.1' OR
+		Genbanks.genbank_accession = 'ABQ46866.1' OR
+		Genbanks.genbank_accession = 'AIY88183.1'
+), Fam_Query (fam_gbk, cazy_family) AS (
+	SELECT Genbanks.genbank_accession, CazyFamilies.family
+	FROM Genbanks
+	INNER JOIN Genbanks_CazyFamilies ON Genbanks.genbank_id = Genbanks_CazyFamilies.genbank_id
+	INNER JOIN CazyFamilies ON Genbanks_CazyFamilies.family_id = CazyFamilies.family_id
+	WHERE Genbanks.genbank_accession = 'AIY86427.1' OR
+		Genbanks.genbank_accession = 'AKE29758.1' OR
+		Genbanks.genbank_accession = 'AGL49000.1' OR
+		Genbanks.genbank_accession = 'NP_227893.1' OR
+		Genbanks.genbank_accession = 'AKE26023.1' OR
+		Genbanks.genbank_accession = 'AHD18153.1' OR
+		Genbanks.genbank_accession = 'AAD35171.1' OR
+		Genbanks.genbank_accession = 'AKE27885.1' OR
+		Genbanks.genbank_accession = 'ACB09222.1' OR
+		Genbanks.genbank_accession = 'ADA66802.1' OR
+		Genbanks.genbank_accession = 'ABQ46866.1' OR
+		Genbanks.genbank_accession = 'AIY88183.1'
+), Ec_Query (ec_gbk, ec_annotation) AS (
+	SELECT Genbanks.genbank_accession, Ecs.ec_number
+	FROM Genbanks
+	INNER JOIN Genbanks_Ecs ON Genbanks.genbank_id = Genbanks_Ecs.genbank_id
+	INNER JOIN Ecs ON Genbanks_Ecs.ec_id = Ecs.ec_id
+	WHERE Genbanks.genbank_accession = 'AIY86427.1' OR
+		Genbanks.genbank_accession = 'AKE29758.1' OR
+		Genbanks.genbank_accession = 'AGL49000.1' OR
+		Genbanks.genbank_accession = 'NP_227893.1' OR
+		Genbanks.genbank_accession = 'AKE26023.1' OR
+		Genbanks.genbank_accession = 'AHD18153.1' OR
+		Genbanks.genbank_accession = 'AAD35171.1' OR
+		Genbanks.genbank_accession = 'AKE27885.1' OR
+		Genbanks.genbank_accession = 'ACB09222.1' OR
+		Genbanks.genbank_accession = 'ADA66802.1' OR
+		Genbanks.genbank_accession = 'ABQ46866.1' OR
+		Genbanks.genbank_accession = 'AIY88183.1'
+), Uniprot_Query (uni_gbk, uniprot) AS (
+	SELECT Genbanks.genbank_accession, UniProts.uniprot_accession
+	FROM Genbanks
+	INNER JOIN Uniprots ON Genbanks.genbank_id = Uniprots.genbank_id
+	WHERE Genbanks.genbank_accession = 'AIY86427.1' OR
+		Genbanks.genbank_accession = 'AKE29758.1' OR
+		Genbanks.genbank_accession = 'AGL49000.1' OR
+		Genbanks.genbank_accession = 'NP_227893.1' OR
+		Genbanks.genbank_accession = 'AKE26023.1' OR
+		Genbanks.genbank_accession = 'AHD18153.1' OR
+		Genbanks.genbank_accession = 'AAD35171.1' OR
+		Genbanks.genbank_accession = 'AKE27885.1' OR
+		Genbanks.genbank_accession = 'ACB09222.1' OR
+		Genbanks.genbank_accession = 'ADA66802.1' OR
+		Genbanks.genbank_accession = 'ABQ46866.1' OR
+		Genbanks.genbank_accession = 'AIY88183.1'
+)
+SELECT DISTINCT Genbanks.genbank_accession, Tax_Query.organism_genus, Tax_Query.organism_sp, Fam_Query.cazy_family, Ec_Query.ec_annotation, Uniprot_Query.uniprot
+FROM Genbanks
+LEFT JOIN Tax_Query ON Genbanks.genbank_accession = Tax_Query.tax_gbk
+LEFT JOIN Fam_Query ON Genbanks.genbank_accession = Fam_Query.fam_gbk
+LEFT JOIN Ec_Query ON Genbanks.genbank_accession = Ec_Query.ec_gbk
+LEFT JOIN Uniprot_Query ON Genbanks.genbank_accession = Uniprot_Query.uni_gbk
+	WHERE Genbanks.genbank_accession = 'AIY86427.1' OR
+		Genbanks.genbank_accession = 'AKE29758.1' OR
+		Genbanks.genbank_accession = 'AGL49000.1' OR
+		Genbanks.genbank_accession = 'NP_227893.1' OR
+		Genbanks.genbank_accession = 'AKE26023.1' OR
+		Genbanks.genbank_accession = 'AHD18153.1' OR
+		Genbanks.genbank_accession = 'AAD35171.1' OR
+		Genbanks.genbank_accession = 'AKE27885.1' OR
+		Genbanks.genbank_accession = 'ACB09222.1' OR
+		Genbanks.genbank_accession = 'ADA66802.1' OR
+		Genbanks.genbank_accession = 'ABQ46866.1' OR
+		Genbanks.genbank_accession = 'AIY88183.1'
+```
+
+The results are stored in [`results/unclustedCE7_cazy_query.csv`]().
+
+All 12 proteins were from _Thermotoga_ species.
 
 #### Potential GH3-CE7 complex
 
