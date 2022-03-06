@@ -312,3 +312,161 @@ WHERE CazyFamilies.family = 'GH3' AND
 ```
 
 55 PDB accessions were returned, and these are listed in the [repository]().
+
+
+## 12. _Thermotoga_
+
+The total number of CAZymes from _Thermotoga_ species in CAZy was retrievied using the command:
+
+```sql
+SELECT COUNT(DISTINCT genbank_accession)
+FROM Genbanks
+INNER JOIN Taxs ON Genbanks.taxonomy_id = Taxs.taxonomy_id
+WHERE Taxs.genus = 'Thermotoga'
+```
+
+This identied 1211 proteins
+
+## 14. CAZy families of _Thermotoga_
+
+The CAZy families containing proteins from _Thermotoga_ and the number of _Thermotoga_ proteins per CAZy family were retrieved using the following command:
+
+```sql
+WITH Tax_Query (tax_gbk) AS (
+	SELECT genbank_accession
+	FROM Genbanks
+	INNER JOIN Taxs ON Genbanks.taxonomy_id = Taxs.taxonomy_id
+	WHERE Taxs.genus = 'Thermotoga'
+)
+SELECT DISTINCT CazyFamilies.family, COUNT(Genbanks.genbank_accession) AS num_of_cazymes
+FROM CazyFamilies
+INNER JOIN Genbanks_CazyFamilies ON CazyFamilies.family_id = Genbanks_CazyFamilies.family_id
+INNER JOIN Genbanks ON Genbanks_CazyFamilies.genbank_id = Genbanks.genbank_id
+LEFT JOIN Tax_Query ON Genbanks.genbank_accession = Tax_Query.tax_gbk
+WHERE Genbanks.genbank_accession IN Tax_Query
+GROUP BY CazyFamilies.family
+```
+
+68 CAZy families were returned.  
+
+A `csv` file of the output is available in the [repository]().
+
+## 13. _Thermotoga_ OR _Pseudothermotoga_
+
+The total number of CAZymes from _Thermotoga_ and _Pseudothermotoga_ species was retrieved using the following command:
+
+```sql
+SELECT COUNT(DISTINCT genbank_accession)
+FROM Genbanks
+INNER JOIN Taxs ON Genbanks.taxonomy_id = Taxs.taxonomy_id
+WHERE Taxs.genus = 'Thermotoga' OR Taxs.genus = 'Pseudothermotoga'
+```
+
+This identified 1379 proteins
+
+## 14. CAZy families of _Thermotoga_ OR _Pseudothermotoga_
+
+The CAZy families of proteins from _Thermotoga_ and _Pseudothermotoga_ species, as well as the number of proteins from these species in the CAZy families was retrieived using:
+
+```sql
+WITH Tax_Query (tax_gbk) AS (
+	SELECT genbank_accession
+	FROM Genbanks
+	INNER JOIN Taxs ON Genbanks.taxonomy_id = Taxs.taxonomy_id
+	WHERE Taxs.genus = 'Thermotoga' OR Taxs.genus = 'Pseudothermotoga'
+)
+SELECT DISTINCT CazyFamilies.family, COUNT(Genbanks.genbank_accession) AS num_of_cazymes
+FROM CazyFamilies
+INNER JOIN Genbanks_CazyFamilies ON CazyFamilies.family_id = Genbanks_CazyFamilies.family_id
+INNER JOIN Genbanks ON Genbanks_CazyFamilies.genbank_id = Genbanks.genbank_id
+LEFT JOIN Tax_Query ON Genbanks.genbank_accession = Tax_Query.tax_gbk
+WHERE Genbanks.genbank_accession IN Tax_Query
+GROUP BY CazyFamilies.family
+```
+
+The output is stored in a `csv` file in the [repository]().
+
+## 15. _Thermotoga_ AND EC 3.2.1.37
+
+```sql
+WITH Thermo_Query (thermo_gbk) AS (
+	SELECT DISTINCT genbank_accession
+	FROM Genbanks
+	INNER JOIN Taxs ON Genbanks.taxonomy_id = Taxs.taxonomy_id
+	WHERE Taxs.genus = 'Thermotoga'
+)
+SELECT COUNT(DISTINCT genbank_accession)
+FROM Genbanks
+INNER JOIN Genbanks_Ecs ON Genbanks.genbank_id = Genbanks_Ecs.genbank_id
+INNER JOIN Ecs ON Genbanks_Ecs.ec_id = Ecs.ec_id
+LEFT JOIN Thermo_Query ON Genbanks.genbank_accession = Thermo_Query.thermo_gbk
+WHERE Ecs.ec_number = '3.2.1.37' AND
+	genbank_accession IN Thermo_Query
+```
+
+## 16. CAZy families of _Thermotoga_ AND EC 3.2.1.37
+
+```sql
+WITH Tax_Query (tax_gbk) AS (
+	SELECT genbank_accession
+	FROM Genbanks
+	INNER JOIN Taxs ON Genbanks.taxonomy_id = Taxs.taxonomy_id
+	WHERE Taxs.genus = 'Thermotoga'
+)
+SELECT DISTINCT CazyFamilies.family, COUNT(Genbanks.genbank_accession)
+FROM CazyFamilies
+INNER JOIN Genbanks_CazyFamilies ON CazyFamilies.family_id = Genbanks_CazyFamilies.family_id
+INNER JOIN Genbanks ON Genbanks_CazyFamilies.genbank_id = Genbanks.genbank_id
+INNER JOIN Genbanks_Ecs ON Genbanks.genbank_id = Genbanks_Ecs.genbank_id
+INNER JOIN Ecs ON Genbanks_Ecs.ec_id = Ecs.ec_id
+LEFT JOIN Tax_Query ON Genbanks.genbank_accession = Tax_Query.tax_gbk
+WHERE Ecs.ec_number = '3.2.1.37' AND 
+	Genbanks.genbank_accession IN Tax_Query
+GROUP BY CazyFamilies.family
+```
+
+## 15. _Thermotoga_ OR _Pseudothermotoga_ AND EC 3.2.1.37
+
+```sql
+WITH Thermo_Query (thermo_gbk) AS (
+	SELECT DISTINCT genbank_accession
+	FROM Genbanks
+	INNER JOIN Taxs ON Genbanks.taxonomy_id = Taxs.taxonomy_id
+	WHERE Taxs.genus = 'Thermotoga' OR Taxs.genus = 'Pseudothermotoga'
+)
+SELECT COUNT(DISTINCT genbank_accession)
+FROM Genbanks
+INNER JOIN Genbanks_Ecs ON Genbanks.genbank_id = Genbanks_Ecs.genbank_id
+INNER JOIN Ecs ON Genbanks_Ecs.ec_id = Ecs.ec_id
+LEFT JOIN Thermo_Query ON Genbanks.genbank_accession = Thermo_Query.thermo_gbk
+WHERE Ecs.ec_number = '3.2.1.37' AND
+	genbank_accession IN Thermo_Query
+```
+
+## T OR P + EC Families
+
+```sql
+WITH Tax_Query (tax_gbk) AS (
+	SELECT genbank_accession
+	FROM Genbanks
+	INNER JOIN Taxs ON Genbanks.taxonomy_id = Taxs.taxonomy_id
+	WHERE Taxs.genus = 'Thermotoga' OR Taxs.genus = 'Pseudothermotoga'
+)
+SELECT DISTINCT CazyFamilies.family, COUNT(Genbanks.genbank_accession)
+FROM CazyFamilies
+INNER JOIN Genbanks_CazyFamilies ON CazyFamilies.family_id = Genbanks_CazyFamilies.family_id
+INNER JOIN Genbanks ON Genbanks_CazyFamilies.genbank_id = Genbanks.genbank_id
+INNER JOIN Genbanks_Ecs ON Genbanks.genbank_id = Genbanks_Ecs.genbank_id
+INNER JOIN Ecs ON Genbanks_Ecs.ec_id = Ecs.ec_id
+LEFT JOIN Tax_Query ON Genbanks.genbank_accession = Tax_Query.tax_gbk
+WHERE Ecs.ec_number = '3.2.1.37' AND 
+	Genbanks.genbank_accession IN Tax_Query
+GROUP BY CazyFamilies.family
+```
+
+## 17. _Thermotoga_ OR _Pseudothermotoga_ AND PDBs
+
++ CAZy family annotation
+
+```sql
+```
