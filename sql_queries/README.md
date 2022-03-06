@@ -386,7 +386,7 @@ A `csv` file of the output is available in the [repository]().
 
 ## 14. _Thermotoga_ AND PDBs
 
-The PDB accessions retrieved from UniProt for CAZymes from _Thermotoga_ species were retrieved using the following command:
+The PDB accessions retrieved from UniProt for CAZymes from _Thermotoga_ species , including the CAZy family annotation, were retrieved using the following command:
 
 ```sql
 WITH Thermo_Query (thermo_gbk) AS (
@@ -395,15 +395,32 @@ WITH Thermo_Query (thermo_gbk) AS (
 	INNER JOIN Taxs ON Genbanks.taxonomy_id = Taxs.taxonomy_id
 	WHERE Taxs.genus = 'Thermotoga'
 )
-SELECT DISTINCT Genbanks.genbank_accession, Pdbs.pdb_accession
+SELECT DISTINCT Genbanks.genbank_accession, Pdbs.pdb_accession, CazyFamilies.family
 FROM Genbanks
 INNER JOIN Genbanks_Pdbs ON Genbanks.genbank_id = Genbanks_Pdbs.genbank_id
 INNER JOIN Pdbs ON Genbanks_Pdbs.pdb_id = Pdbs.pdb_id
+INNER JOIN Genbanks_CazyFamilies ON Genbanks.genbank_id = Genbanks_CazyFamilies.genbank_id
+INNER JOIN CazyFamilies ON Genbanks_CazyFamilies.family_id = CazyFamilies.family_id
 LEFT JOIN Thermo_Query ON Genbanks.genbank_accession = Thermo_Query.thermo_gbk
 WHERE genbank_accession IN Thermo_Query
 ```
 
-This returned ___ PDB accession
+This returned 46 PDB accessions from 9 proteins.
+
+These 9 proteins were:
+| GenBank Accession | CAZy family |
+|-------------------|-------------|
+| AAB95492.2        | GH1         |
+| AAD35369.1        | GH51        |
+| AAD35891.1        | GH3         |
+| AAK16587.1        | GH3         |
+| ABI29899.1        | GH3         |
+| ABQ46651.1        | GH51        |
+| ABQ46657.1        | GH43        |
+| CAA04513.1        | GH2         |
+| CAA52276.1        | GH1         |
+
+The results were stored in a `csv` file, which is available in the [repository]().
 
 ## 15. _Thermotoga_ AND EC 3.2.1.37
 
@@ -445,17 +462,7 @@ WHERE Ecs.ec_number = '3.2.1.37' AND
 
 This returned the GenBank accession of **AGL48999.1**.
 
-The taxonomy information for this protein was retrieved using:
-
-```sql
-SELECT Kingdoms.kingdom, Taxs.genus, Taxs.species
-FROM Taxs
-INNER JOIN Kingdoms ON Taxs.kingdom_id = Kingdoms.kingdom_id
-INNER JOIN Genbanks ON Taxs.taxonomy_id = Genbanks.taxonomy_id
-WHERE genbank_accession = 'AGL48999.1'
-```
-
-Which returned **Thermotoga	maritima MSB8** from bacteria.
+**The protein AGL48999.1 was the protein of interest _tm_gh3.**
 
 ## 16. CAZy families of _Thermotoga_ AND EC 3.2.1.37
 
