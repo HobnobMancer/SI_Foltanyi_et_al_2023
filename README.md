@@ -510,6 +510,11 @@ cw_extract_db_seqs \
 In total, 2,664 protein sequences were retrieved from NCBI and written to the fasta a file [`cazy_ce7_proteins.fasta`]().
 
 The nucleotide sequence of the gene that encoded the putative CE7 protein (named by FlaGs as pseudogene_69.1) was mannualy retrieved from genome (GCF_000789335.1). Both the forward and reverse strand sequences were retrieved, and written to a single fasta file located at [`data/g3_complex/unclustered_ce7_nt.fasta`]().
+- Gene: axeA
+- Locus tag: T2812B_RS04530
+- Product: Cephalosporin-C deacetylase
+- location: complement(901723..902701)
+
 
 The nucleotide sequence was translated to a protein sequence (specifically the reverse strand was translated), and the protein sequence was stored at [`data/gh3_complex/unclustered_ce7_prt.fasta]().
 
@@ -672,11 +677,23 @@ The results are stored in [`results/unclustedCE7_cazy_query.csv`]().
 
 All 12 proteins were from _Thermotoga_ species.
 
-To investigate if the entire GH3-CE7 gene cluster was conserved, the protein record of the product from the gene immediately upstream of the GH3 encoding gene (which was labelled by FlaGs as __) and which was individually clustered, was retrieved mannually from the _Thermotoga_ sp. 2812B (GCF_000789335.1) assembly. The protein was annotated as XXX, and the protein sequence was queried against the NR database using the BLOSUM45 matrix. This identified .....
+To investigate if the entire GH3-CE7 gene cluster was conserved, the protein record of the product from the gene immediately upstream of the GH3 (WP_008194121.1) encoding gene (which was labelled by FlaGs as pseudogene_69.3) and which was individually clustered, was retrieved mannually from the _Thermotoga_ sp. 2812B (GCF_000789335.1) assembly (ASM78933v1).
+- Locus tag: T2812B_RS04540
+- Product: ABC transporter ATP-binding protein
+- Protein: WP_004082591.1
+- location: complement(905080..906083)
+
+The protein was annotated as ABC transporter ATP-binding protein.
 
 ##### _Thermotoga_ sp. TBGT1765 () and _Thermtoga_ sp. TBGT1766 ()
 
 1765
+annotated as pseudogene_27.2 by flags
+located at 30820	31783
+retrieved from GCF_000784795.1
+locus_tag="TBGT1765_RS08750"
+RefSeq:WP_004082591.1
+ABC transporter ATP-binding protein
 
 1766
 GCF_000784825.1 assemby ASM78482v1, assembly level of contig
@@ -691,9 +708,14 @@ Protein WP_008194121.1
 Query NCBI Protein database: nucleotide: NCBI Reference Sequence: NZ_AJII01000008.1 from _Thermotoga_ sp. EMP Contig 08 as part of the assembly ASM29455v1, with an assembly level of contig
 Mannually found NZ_AJII01000008.1 in the assembly
 REFSEQ INFORMATION: The reference sequence is identical to
-            AJII01000008.1.
+            AJII01000008.1
 located at AJII01000008.1:1..2412 in the conti
 Without assembling the contigs onto a scaffold, the flanking genes cannot be identified. However, the degree of conservation, we speculate the GH3-Ce7 gene cluster is also conserved in _Thermotoga_ sp. EMB, espeically because dbCAN did predict the proteome contained 1 CE7 protein.
+checked if the first and last 20 nucleotides of the contig NZ_AJII01000008.1 appeared any other contigs in the assembly (in the aim to identify the flanking contigs and therefore the flanking genes), but they did not.
+
+##### _Thermotoga_ sp. Mc24 (GCF_000784835.1)
+
+
 
 #### Potential GH3-CE7 complex
 
