@@ -372,7 +372,7 @@ For each protein matching the provided criteria, the command returuned:
 
 # Exploration of Thermotoga
 
-## 123. _Thermotoga_
+## 13. _Thermotoga_
 
 The total number of CAZymes from _Thermotoga_ species in CAZy was retrievied using the command:
 
@@ -385,7 +385,7 @@ WHERE Taxs.genus = 'Thermotoga'
 
 This identied 1211 proteins
 
-## 13. CAZy families of _Thermotoga_
+## 14. CAZy families of _Thermotoga_
 
 The CAZy families containing proteins from _Thermotoga_ and the number of _Thermotoga_ proteins per CAZy family were retrieved using the following command:
 
@@ -409,7 +409,7 @@ GROUP BY CazyFamilies.family
 
 A `csv` file of the output is available in the [repository]().
 
-## 14. _Thermotoga_ AND PDBs
+## 15. _Thermotoga_ AND PDBs
 
 The PDB accessions retrieved from UniProt for CAZymes from _Thermotoga_ species , including the CAZy family annotation, were retrieved using the following command:
 
@@ -420,12 +420,13 @@ WITH Thermo_Query (thermo_gbk) AS (
 	INNER JOIN Taxs ON Genbanks.taxonomy_id = Taxs.taxonomy_id
 	WHERE Taxs.genus = 'Thermotoga'
 )
-SELECT DISTINCT Genbanks.genbank_accession, Pdbs.pdb_accession, CazyFamilies.family
+SELECT DISTINCT Genbanks.genbank_accession, Pdbs.pdb_accession, CazyFamilies.family, Uniprots.uniprot_name
 FROM Genbanks
 INNER JOIN Genbanks_Pdbs ON Genbanks.genbank_id = Genbanks_Pdbs.genbank_id
 INNER JOIN Pdbs ON Genbanks_Pdbs.pdb_id = Pdbs.pdb_id
 INNER JOIN Genbanks_CazyFamilies ON Genbanks.genbank_id = Genbanks_CazyFamilies.genbank_id
 INNER JOIN CazyFamilies ON Genbanks_CazyFamilies.family_id = CazyFamilies.family_id
+INNER JOIN Uniprots ON Genbanks.genbank_id = Uniprots.genbank_id
 LEFT JOIN Thermo_Query ON Genbanks.genbank_accession = Thermo_Query.thermo_gbk
 WHERE genbank_accession IN Thermo_Query
 ```
@@ -447,7 +448,7 @@ These 9 proteins were:
 
 The results were stored in a `csv` file, which is available in the [repository]().
 
-## 15. _Thermotoga_ AND EC 3.2.1.37
+## 16. _Thermotoga_ AND EC 3.2.1.37
 
 The number of CAZymes from _Thermotoga_ species annotated with the EC number 3.2.1.37 (1 protein) was retrieved using the command:
 
@@ -489,7 +490,7 @@ This returned the GenBank accession of **AGL48999.1**.
 
 **The protein AGL48999.1 was the protein of interest _tm_gh3.**
 
-## 16. CAZy families of _Thermotoga_ AND EC 3.2.1.37
+## 17. CAZy families of _Thermotoga_ AND EC 3.2.1.37
 
 The CAZy families of proteins from _Thermotoga_ species annotated with the EC number 3.2.1.37, including the number of _Thermotoga_ proteins annotated with the EC number 3.2.1.37 per CAZy family, was retrieved using the following command:
 
@@ -514,7 +515,7 @@ GROUP BY CazyFamilies.family
 
 This returned one CAZy family, GH3.
 
-## 17. _Thermotoga_ AND EC 3.2.1.37 AND PDBs
+## 18. _Thermotoga_ AND EC 3.2.1.37 AND PDBs
 
 ```sql
 WITH Tax_Query (tax_gbk) AS (
@@ -536,10 +537,11 @@ WHERE Ecs.ec_number = '3.2.1.37' AND
 
 No PDB accessions were returned.
 
+# Exploration of _Thermotoga_ and _Pseudothermotoga_
 
+To expand the pool of potentially functionally and structurally relevant proteins, the search was expanded to include the _Pseudothermotoga_ genus, which is close to _Thermotoga_ in the evolutionary tree.
 
-
-## 18. _Thermotoga_ OR _Pseudothermotoga_
+## 19. _Thermotoga_ OR _Pseudothermotoga_
 
 The total number of CAZymes from _Thermotoga_ and _Pseudothermotoga_ species was retrieved using the following command:
 
@@ -552,7 +554,7 @@ WHERE Taxs.genus = 'Thermotoga' OR Taxs.genus = 'Pseudothermotoga'
 
 This identified 1379 proteins
 
-## 19. CAZy families of _Thermotoga_ OR _Pseudothermotoga_
+## 20. CAZy families of _Thermotoga_ OR _Pseudothermotoga_
 
 The CAZy families of proteins from _Thermotoga_ and _Pseudothermotoga_ species, as well as the number of proteins from these species in the CAZy families was retrieived using:
 
@@ -574,9 +576,9 @@ GROUP BY CazyFamilies.family
 
 68 CAZy families were returned, and the output is stored in a `csv` file in the [repository]().
 
-## 20. _Thermotoga_ OR _Pseudothermotoga_ AND PDBs
+## 21. _Thermotoga_ OR _Pseudothermotoga_ AND PDBs
 
-CAZy family annotation
+The PDB accessions for all proteins from _Thermotoga_ and _Pseudothermotoga_ species
 
 ```sql
 WITH Thermo_Query (thermo_gbk) AS (
@@ -585,17 +587,24 @@ WITH Thermo_Query (thermo_gbk) AS (
 	INNER JOIN Taxs ON Genbanks.taxonomy_id = Taxs.taxonomy_id
 	WHERE Taxs.genus = 'Thermotoga' OR Taxs.genus = 'Pseudothermotoga'
 )
-SELECT DISTINCT Genbanks.genbank_accession, Pdbs.pdb_accession, CazyFamilies.family
+SELECT DISTINCT Genbanks.genbank_accession, Pdbs.pdb_accession, CazyFamilies.family, Taxs.genus, Uniprots.uniprot_name
 FROM Genbanks
 INNER JOIN Genbanks_Pdbs ON Genbanks.genbank_id = Genbanks_Pdbs.genbank_id
 INNER JOIN Pdbs ON Genbanks_Pdbs.pdb_id = Pdbs.pdb_id
 INNER JOIN Genbanks_CazyFamilies ON Genbanks.genbank_id = Genbanks_CazyFamilies.genbank_id
 INNER JOIN CazyFamilies ON Genbanks_CazyFamilies.family_id = CazyFamilies.family_id
+INNER JOIN Taxs ON Genbanks.taxonomy_id = Taxs.taxonomy_id
+INNER JOIN Uniprots ON Genbanks.genbank_id = Uniprots.genbank_id
 LEFT JOIN Thermo_Query ON Genbanks.genbank_accession = Thermo_Query.thermo_gbk
 WHERE genbank_accession IN Thermo_Query
+ORDER BY Taxs.genus
 ```
 
-## 21. _Thermotoga_ OR _Pseudothermotoga_ AND EC 3.2.1.37
+No additional PDB accessions were retrieved when compared against query #15. All PDB accessions were retrievied from _Thermotoga_ species.
+
+The output was stored in a `csv` file and stored in the [repository]().
+
+## 22. _Thermotoga_ OR _Pseudothermotoga_ AND EC 3.2.1.37
 
 The number of CAZymes from _Thermotoga_ and _Pseudothermotoga_ species annotated with the EC number 3.2.1.37 (XXX proteins) was retrieved using the command:
 
@@ -615,7 +624,7 @@ WHERE Ecs.ec_number = '3.2.1.37' AND
 	genbank_accession IN Thermo_Query
 ```
 
-## 22. CAZy families of _Thermotoga_ OR _Pseudothermotoga_ AND EC 3.2.1.37
+## 23. CAZy families of _Thermotoga_ OR _Pseudothermotoga_ AND EC 3.2.1.37
 
 The CAZy families of proteins from _Thermotoga_  and _Pseudothermotoga_ species annotated with the EC number 3.2.1.37, including the number of _Thermotoga_ and _Pseudothermotoga_ proteins annotated with the EC number 3.2.1.37 per CAZy family, was retrieved using the following command:
 
@@ -626,7 +635,7 @@ WITH Tax_Query (tax_gbk) AS (
 	INNER JOIN Taxs ON Genbanks.taxonomy_id = Taxs.taxonomy_id
 	WHERE Taxs.genus = 'Thermotoga' OR Taxs.genus = 'Pseudothermotoga'
 )
-SELECT DISTINCT CazyFamilies.family, COUNT(Genbanks.genbank_accession)
+SELECT DISTINCT CazyFamilies.family, COUNT(Genbanks.genbank_accession) AS num_of_proteins
 FROM CazyFamilies
 INNER JOIN Genbanks_CazyFamilies ON CazyFamilies.family_id = Genbanks_CazyFamilies.family_id
 INNER JOIN Genbanks ON Genbanks_CazyFamilies.genbank_id = Genbanks.genbank_id
@@ -638,4 +647,4 @@ WHERE Ecs.ec_number = '3.2.1.37' AND
 GROUP BY CazyFamilies.family
 ```
 
-## 23. _Thermotoga_ OR _Pseudothermotoga_ AND EC 3.2.1.37 AND PDBs
+As with query #16, this only returned the protein of interest _tm_gh3.
