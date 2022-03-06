@@ -42,6 +42,8 @@ The queries are grouped by their target of exploration, and each query is named 
 23. [_Thermotoga_ AND _Pseudothermotoga_ AND EC 3.2.1.37 AND PDBs](#23-thermotoga-or-pseudothermotoga-and-ec-32137-and-pdbs)
 
 
+# Exploration of EC 3.2.1.37
+
 ## 1. EC 3.2.1.37
 
 The number of proteins in CAZy with the EC number 3.2.1.37 was retrieved using the following command.
@@ -173,6 +175,9 @@ WHERE Genbanks.genbank_accession = 'CAA73902.1' OR
 |:-----------------:|:--------------------:|:---------------:|
 |     CAA73902.1    |      Aspergillus     |     nidulans    |
 |     CAA93248.1    |      Trichoderma     |     reesei      |
+
+
+# Exploration of CAZy family GH3
 
 ## 5. GH3
 
@@ -321,6 +326,13 @@ WHERE CazyFamilies.family = 'GH3'
 
 63 PDB accessions were returned from 20 proteins, and these are listed in the [repository]().
 
+For each protein matching the provided criteria, the command returuned:
+- GenBank accession
+- PDB accession
+- Genus of the source organism
+- Species of the source organism
+- Protein name listed in UniProt
+
 ## 12. GH3 AND Bacteria AND PDBs 
 
 A list of all PDB accessions associated with bacterial proteins in CAZy family GH3 was retrieved using the following command:
@@ -333,7 +345,7 @@ WITH King_Query (king_gbk) AS (
 	INNER JOIN Kingdoms ON Taxs.kingdom_id = Kingdoms.kingdom_id
 	WHERE Kingdoms.kingdom = 'Bacteria'
 )
-SELECT DISTINCT Genbanks.genbank_accession, Pdbs.pdb_accession
+SELECT DISTINCT Genbanks.genbank_accession, Pdbs.pdb_accession, Taxs.genus, Taxs.species, Uniprots.uniprot_name
 FROM Genbanks
 INNER JOIN Genbanks_CazyFamilies ON Genbanks.genbank_id = Genbanks_CazyFamilies.genbank_id
 INNER JOIN CazyFamilies ON Genbanks_CazyFamilies.family_id = CazyFamilies.family_id
@@ -341,15 +353,26 @@ INNER JOIN Genbanks_Ecs ON Genbanks.genbank_id = Genbanks_Ecs.genbank_id
 INNER JOIN Ecs ON Genbanks_Ecs.ec_id = Ecs.ec_id
 INNER JOIN Genbanks_Pdbs ON Genbanks.genbank_id = Genbanks_Pdbs.genbank_id
 INNER JOIN Pdbs ON Genbanks_Pdbs.pdb_id = Pdbs.pdb_id
+INNER JOIN Taxs ON Genbanks.taxonomy_id = Taxs.taxonomy_id
+INNER JOIN Uniprots ON Genbanks.genbank_id = Uniprots.genbank_id
 LEFT JOIN King_Query ON Genbanks.genbank_accession = King_Query.king_gbk
 WHERE CazyFamilies.family = 'GH3' AND
 	Genbanks.genbank_accession IN King_Query
 ```
 
-55 PDB accessions were returned, and these are listed in the [repository]().
+For each protein matching the provided criteria, the command returuned:
+- GenBank accession
+- PDB accession
+- Genus of the source organism
+- Species of the source organism
+- Protein name listed in UniProt
+
+42 PDB accessions were returned, and these are listed in the [repository]().
 
 
-## 12. _Thermotoga_
+# Exploration of Thermotoga
+
+## 123. _Thermotoga_
 
 The total number of CAZymes from _Thermotoga_ species in CAZy was retrievied using the command:
 
