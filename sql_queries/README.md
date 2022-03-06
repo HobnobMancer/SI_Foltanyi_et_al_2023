@@ -61,7 +61,7 @@ WHERE Ecs.ec_number = '3.2.1.37'
 The CAZy families that contain CAZymes annotated with the EC number 3.2.1.37, and the number of CAZymes in each family with the EC number 3.2.1.37 were retrieved using the following command:
 
 ```sql
-SELECT DISTINCT CazyFamilies.family, COUNT(Genbanks.genbank_accession)
+SELECT DISTINCT CazyFamilies.family, COUNT(Genbanks.genbank_accession) AS num_of_proteins
 FROM CazyFamilies
 INNER JOIN Genbanks_CazyFamilies ON CazyFamilies.family_id = Genbanks_CazyFamilies.family_id
 INNER JOIN Genbanks ON Genbanks_CazyFamilies.genbank_id = Genbanks.genbank_id
@@ -91,7 +91,7 @@ This command returned the following families:
 
 A `csv` file of the results is available in [the repository]().
 
-## 2. EC 3.2.1.37 AND Bacteria
+## 3. EC 3.2.1.37 AND Bacteria
 
 554 proteins were identified as being sourced from bacteria *and* annotated with the EC number 3.2.1.37.
 
@@ -112,7 +112,7 @@ WHERE Ecs.ec_number = '3.2.1.37' AND
 	Genbanks.genbank_accession IN King_Query
 ```
 
-## 3. EC 3.2.1.37 AND PDBs
+## 4. EC 3.2.1.37 AND PDBs
 
 The PDB accessions retrieved from UniProt, CAZy family annotations and source organism for all CAZymes annotated with the EC number 3.2.1.37 were retrieved using the following command.
 
@@ -123,7 +123,7 @@ WITH King_Query (king_gbk, king, king_genus, king_species) AS (
 	INNER JOIN Taxs ON Genbanks.taxonomy_id = Taxs.taxonomy_id
 	INNER JOIN Kingdoms ON Taxs.kingdom_id = Kingdoms.kingdom_id
 )
-SELECT DISTINCT Genbanks.genbank_accession, King_Query.king, King_Query.king_genus, King_Query.king_species, Pdbs.pdb_accession, CazyFamilies.family
+SELECT DISTINCT Genbanks.genbank_accession, King_Query.king AS kingdom, King_Query.king_genus AS genus, King_Query.king_species AS species, Pdbs.pdb_accession, CazyFamilies.family
 FROM Genbanks
 INNER JOIN Genbanks_CazyFamilies ON Genbanks.genbank_id = Genbanks_CazyFamilies.genbank_id
 INNER JOIN CazyFamilies ON Genbanks_CazyFamilies.family_id = CazyFamilies.family_id
@@ -174,7 +174,7 @@ WHERE Genbanks.genbank_accession = 'CAA73902.1' OR
 |     CAA73902.1    |      Aspergillus     |     nidulans    |
 |     CAA93248.1    |      Trichoderma     |     reesei      |
 
-## 4. GH3
+## 5. GH3
 
 The number of CAZymes in GH3 (42,968 proteins) was retrieved using the following command:
 
@@ -186,7 +186,7 @@ INNER JOIN CazyFamilies ON Genbanks_CazyFamilies.family_id = CazyFamilies.family
 WHERE CazyFamilies.family = 'GH3'
 ```
 
-## 5. GH3 AND Bacteria
+## 6. GH3 AND Bacteria
 
 The number of bacterial proteins in CAZy family GH3 (40,090 proteins) was retrieved using the following comamnd:
 
@@ -207,7 +207,7 @@ WHERE CazyFamilies.family = 'GH3' AND
 	Genbanks.genbank_accession IN King_Query
 ```
 
-## 6. GH3 AND EC 3.2.1.37
+## 7. GH3 AND EC 3.2.1.37
 
 The number of CAZymes in CAZy family GH3 *and* annotated with the EC number 3.2.1.37 (173 proteins) was retrieved using the following command:
 
@@ -221,7 +221,7 @@ INNER JOIN Ecs ON Genbanks_Ecs.ec_id = Ecs.ec_id
 WHERE CazyFamilies.family = 'GH3' AND Ecs.ec_number = '3.2.1.37'
 ```
 
-## 7. GH3 AND EC 3.2.1.37 AND Bacteria
+## 8. GH3 AND EC 3.2.1.37 AND Bacteria
 
 The number of proteins in CAZy family GH3, annotated with the EC number 3.2.1.37 *and* are sourced from bacteria was retrieved using the following command:
 
@@ -247,12 +247,12 @@ WHERE CazyFamilies.family = 'GH3' AND
 
 This identified 77 proteins.
 
-## 8. GH3 AND EC 3.2.1.37 AND PDB
+## 9. GH3 AND EC 3.2.1.37 AND PDB
 
-The PDB accessions retrieved from UniProt for proteins in GH3 annotated with the EC number 3.2.1.37 were retrieved using the following command:
+The PDB accessions retrieved from UniProt for proteins in GH3 annotated with the EC number 3.2.1.37, including the source organism, were retrieved using the following command:
 
 ```sql
-SELECT DISTINCT Genbanks.genbank_accession, Pdbs.pdb_id, Pdbs.pdb_accession
+SELECT DISTINCT Genbanks.genbank_accession, Pdbs.pdb_accession, Taxs.genus, Taxs.species
 FROM Genbanks
 INNER JOIN Genbanks_CazyFamilies ON Genbanks.genbank_id = Genbanks_CazyFamilies.genbank_id
 INNER JOIN CazyFamilies ON Genbanks_CazyFamilies.family_id = CazyFamilies.family_id
@@ -260,20 +260,21 @@ INNER JOIN Genbanks_Ecs ON Genbanks.genbank_id = Genbanks_Ecs.genbank_id
 INNER JOIN Ecs ON Genbanks_Ecs.ec_id = Ecs.ec_id
 INNER JOIN Genbanks_Pdbs ON Genbanks.genbank_id = Genbanks_Pdbs.genbank_id
 INNER JOIN Pdbs ON Genbanks_Pdbs.pdb_id = Pdbs.pdb_id
+INNER JOIN Taxs ON Genbanks.taxonomy_id = Taxs.taxonomy_id
 WHERE CazyFamilies.family = 'GH3' AND
 	Ecs.ec_number = '3.2.1.37'
 ```
 
 The returned PDB accessions were:
 
-| GenBank Accession | PDB Accession |
-|-------------------|---------------|
-| CAA73902.1        | 6Q7J          |
-| CAA73902.1        | 6Q7I          |
-| CAA93248.1        | 5AE6          |
-| CAA93248.1        | 5A7M          |
+| GenBank Accession | PDB Accession | Genus       | Species  |
+|-------------------|---------------|-------------|----------|
+| CAA73902.1        | 6Q7J          | Trichoderma | reesei   |
+| CAA73902.1        | 6Q7I          | Trichoderma | reesei   |
+| CAA93248.1        | 5AE6          | Aspergillus | nidulans |
+| CAA93248.1        | 5A7M          | Aspergillus | nidulans |
 
-## 9. GH3 AND EC 3.2.1.37 AND Bacteria
+## 10. GH3 AND EC 3.2.1.37 AND Bacteria and PDBs
 
 The PDB accessions retrieved from UniProt for CAZymes in GH3, annotated with the EC number 3.2.1.37 and retrieved from Bacteria were retrieved using the following command:
 
@@ -301,12 +302,12 @@ WHERE CazyFamilies.family = 'GH3' AND
 
 However, no PDB accessions matched the provided criteria.
 
-## 10. GH3 AND PDBs
+## 11. GH3 AND PDBs
 
-A list of all PDB accessions associated with proteins in CAZy family GH3 was retrieved using the following command:
+To expand the search beyond EC annotated proteins, because the majoirty of proteins are not annotated with an EC number in GH3, a list of all PDB accessions associated with proteins in CAZy family GH3 (including the source organism) was retrieved using the following command:
 
 ```sql
-SELECT DISTINCT Genbanks.genbank_accession, Pdbs.pdb_accession
+SELECT DISTINCT Genbanks.genbank_accession, Pdbs.pdb_accession, Taxs.genus, Taxs.species
 FROM Genbanks
 INNER JOIN Genbanks_CazyFamilies ON Genbanks.genbank_id = Genbanks_CazyFamilies.genbank_id
 INNER JOIN CazyFamilies ON Genbanks_CazyFamilies.family_id = CazyFamilies.family_id
@@ -314,12 +315,13 @@ INNER JOIN Genbanks_Ecs ON Genbanks.genbank_id = Genbanks_Ecs.genbank_id
 INNER JOIN Ecs ON Genbanks_Ecs.ec_id = Ecs.ec_id
 INNER JOIN Genbanks_Pdbs ON Genbanks.genbank_id = Genbanks_Pdbs.genbank_id
 INNER JOIN Pdbs ON Genbanks_Pdbs.pdb_id = Pdbs.pdb_id
+INNER JOIN Taxs ON Genbanks.taxonomy_id = Taxs.taxonomy_id
 WHERE CazyFamilies.family = 'GH3'
 ```
 
-88 PDB accessions were returned, and these are listed in the [repository]().
+63 PDB accessions were returned from 20 proteins, and these are listed in the [repository]().
 
-## 11. GH3 AND PDBs AND Bacteria
+## 12. GH3 AND Bacteria AND PDBs 
 
 A list of all PDB accessions associated with bacterial proteins in CAZy family GH3 was retrieved using the following command:
 
@@ -554,6 +556,20 @@ GROUP BY CazyFamilies.family
 CAZy family annotation
 
 ```sql
+WITH Thermo_Query (thermo_gbk) AS (
+	SELECT DISTINCT genbank_accession
+	FROM Genbanks
+	INNER JOIN Taxs ON Genbanks.taxonomy_id = Taxs.taxonomy_id
+	WHERE Taxs.genus = 'Thermotoga' OR Taxs.genus = 'Pseudothermotoga'
+)
+SELECT DISTINCT Genbanks.genbank_accession, Pdbs.pdb_accession, CazyFamilies.family
+FROM Genbanks
+INNER JOIN Genbanks_Pdbs ON Genbanks.genbank_id = Genbanks_Pdbs.genbank_id
+INNER JOIN Pdbs ON Genbanks_Pdbs.pdb_id = Pdbs.pdb_id
+INNER JOIN Genbanks_CazyFamilies ON Genbanks.genbank_id = Genbanks_CazyFamilies.genbank_id
+INNER JOIN CazyFamilies ON Genbanks_CazyFamilies.family_id = CazyFamilies.family_id
+LEFT JOIN Thermo_Query ON Genbanks.genbank_accession = Thermo_Query.thermo_gbk
+WHERE genbank_accession IN Thermo_Query
 ```
 
 ## 21. _Thermotoga_ OR _Pseudothermotoga_ AND EC 3.2.1.37
