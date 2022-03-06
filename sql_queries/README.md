@@ -386,6 +386,25 @@ A `csv` file of the output is available in the [repository]().
 
 ## 14. _Thermotoga_ AND PDBs
 
+The PDB accessions retrieved from UniProt for CAZymes from _Thermotoga_ species were retrieved using the following command:
+
+```sql
+WITH Thermo_Query (thermo_gbk) AS (
+	SELECT DISTINCT genbank_accession
+	FROM Genbanks
+	INNER JOIN Taxs ON Genbanks.taxonomy_id = Taxs.taxonomy_id
+	WHERE Taxs.genus = 'Thermotoga'
+)
+SELECT DISTINCT Genbanks.genbank_accession, Pdbs.pdb_accession
+FROM Genbanks
+INNER JOIN Genbanks_Pdbs ON Genbanks.genbank_id = Genbanks_Pdbs.genbank_id
+INNER JOIN Pdbs ON Genbanks_Pdbs.pdb_id = Pdbs.pdb_id
+LEFT JOIN Thermo_Query ON Genbanks.genbank_accession = Thermo_Query.thermo_gbk
+WHERE genbank_accession IN Thermo_Query
+```
+
+This returned ___ PDB accession
+
 ## 15. _Thermotoga_ AND EC 3.2.1.37
 
 The number of CAZymes from _Thermotoga_ species annotated with the EC number 3.2.1.37 (1 protein) was retrieved using the command:
