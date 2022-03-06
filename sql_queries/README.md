@@ -5,7 +5,12 @@ This doc lists the queries made in SQL to a local CAZyme database, in the search
 The local CAZyme database was created uing [`cazy_webscraper`](https://hobnobmancer.github.io/cazy_webscraper/). All proteins were retrieved from CAZy, and protein data (IDs, names, EC numbers and PDBs) were retrieved from UniProt for the following CAZy families: GH1, GH2, GH3, GH11, GH26, GH30, GH43, GH51, GH52, GH54, GH116, and GH120.
 
 ## Table of contents
-_Exploration of EC 3.2.1.37_
+
+The queries are grouped by their target of exploration, and each query is named to represent the boolean (AND/OR) operations used to retrieve the data of interest.
+
+### List of queries:
+
+&nbsp; _Exploration of EC 3.2.1.37_
 1. [EC 3.2.1.37](#1-ec-32137)
 2. [EC 3.2.1.37 AND Bacteria](#2-ec-32137-and-bacteria)
 3. [EC 3.2.1.37 AND PDB accessions](#3-ec-32137-and-pdbs)
@@ -20,12 +25,21 @@ _Exploration of EC 3.2.1.37_
 10. [GH3 AND PDBs](#10-gh3-and-pdbs)
 11. [GH3 AND PDBs AND Bacteria](#11-gh3-and-pdbs-and-bacteria)
 
-	_Exploring Thermotoga and closely related Pseudothermotoga_
+	_Exploring Thermotoga_
 12. [_Thermotoga_](#12-thermotoga)
-13. [CAZy families of _Thermotoga_]()
+13. [CAZy families of _Thermotoga_](#13-cazy-families-of-thermotoga)
+14. [_Thermotoga_ AND PDBs](#14-thermotoga-and-pdbs)
+15. [_Thermotoga_ AND EC 3.2.1.37](#15-thermotoga-and-ec-32137)
+16. [CAZy families of _Thermotoga_ AND EC 3.2.1.37](#16-cazy-families-of-thermotoga-and-ec-32137)
+17. [_Thermotoga_ AND EC 3.2.1.37 AND PDBs](#17-thermotoga-and-ec-32137-and-pdbs)
 
-14. [_Thermotoga_ OR _Pseudothermotoga_](#14-thermotoga-or-pseudothermotoga)
-14. [CAZy families of _Thermotoga_ AND _Pseudothermotoga_](#14-cazy-families-of-thermotoga)
+	_Exploration of Thermotoga and closely related Pseudothermotoga_
+18. [_Thermotoga_ OR _Pseudothermotoga_](#18-thermotoga-or-pseudothermotoga)
+19. [CAZy families of _Thermotoga_ AND _Pseudothermotoga_](#19-cazy-families-of-thermotoga-or-pseudothermotoga)
+20. [_Thermotoga_ AND _Pseudothermotoga_ AND PDBs](#20-thermotoga-or-pseudothermotoga-and-pdbs)
+21. [_Thermotoga_ AND _Pseudothermotoga_ AND EC 3.2.1.37](#21-thermotoga-or-pseudothermotoga-and-ec-32137)
+22. [CAZy families of _Thermotoga_ AND _Pseudothermotoga_ AND EC 3.2.1.37](#22-cazy-families-of-thermotoga-or-pseudothermotoga-and-ec-32137)
+23. [_Thermotoga_ AND _Pseudothermotoga_ AND EC 3.2.1.37 AND PDBs](#23-thermotoga-or-pseudothermotoga-and-ec-32137-and-pdbs)
 
 
 ## 1. EC 3.2.1.37
@@ -401,7 +415,7 @@ WITH Thermo_Query (thermo_gbk) AS (
 	INNER JOIN Taxs ON Genbanks.taxonomy_id = Taxs.taxonomy_id
 	WHERE Taxs.genus = 'Thermotoga'
 )
-SELECT genbank_accession
+SELECT DISTINCT genbank_accession
 FROM Genbanks
 INNER JOIN Genbanks_Ecs ON Genbanks.genbank_id = Genbanks_Ecs.genbank_id
 INNER JOIN Ecs ON Genbanks_Ecs.ec_id = Ecs.ec_id
@@ -409,6 +423,20 @@ LEFT JOIN Thermo_Query ON Genbanks.genbank_accession = Thermo_Query.thermo_gbk
 WHERE Ecs.ec_number = '3.2.1.37' AND
 	genbank_accession IN Thermo_Query
 ```
+
+This returned the GenBank accession of **AGL48999.1**.
+
+The taxonomy information for this protein was retrieved using:
+
+```sql
+SELECT Kingdoms.kingdom, Taxs.genus, Taxs.species
+FROM Taxs
+INNER JOIN Kingdoms ON Taxs.kingdom_id = Kingdoms.kingdom_id
+INNER JOIN Genbanks ON Taxs.taxonomy_id = Genbanks.taxonomy_id
+WHERE genbank_accession = 'AGL48999.1'
+```
+
+Which returned **Thermotoga	maritima MSB8** from bacteria.
 
 ## 16. CAZy families of _Thermotoga_ AND EC 3.2.1.37
 
@@ -433,9 +461,29 @@ WHERE Ecs.ec_number = '3.2.1.37' AND
 GROUP BY CazyFamilies.family
 ```
 
+This returned one CAZy family, GH3.
+
 ## 17. _Thermotoga_ AND EC 3.2.1.37 AND PDBs
 
+```sql
+WITH Tax_Query (tax_gbk) AS (
+	SELECT genbank_accession
+	FROM Genbanks
+	INNER JOIN Taxs ON Genbanks.taxonomy_id = Taxs.taxonomy_id
+	WHERE Taxs.genus = 'Thermotoga'
+)
+SELECT DISTINCT pdb_accession
+FROM Pdbs
+INNER JOIN Genbanks_Pdbs ON Pdbs.pdb_id = Genbanks_Pdbs.pdb_id
+INNER JOIN Genbanks ON Genbanks_Pdbs.genbank_id = Genbanks.genbank_id
+INNER JOIN Genbanks_Ecs ON Genbanks.genbank_id = Genbanks_Ecs.genbank_id
+INNER JOIN Ecs ON Genbanks_Ecs.ec_id = Ecs.ec_id
+LEFT JOIN Tax_Query ON Genbanks.genbank_accession = Tax_Query.tax_gbk
+WHERE Ecs.ec_number = '3.2.1.37' AND 
+	Genbanks.genbank_accession IN Tax_Query
+```
 
+No PDB accessions were returned.
 
 
 
@@ -526,5 +574,3 @@ GROUP BY CazyFamilies.family
 ```
 
 ## 23. _Thermotoga_ OR _Pseudothermotoga_ AND EC 3.2.1.37 AND PDBs
-
-
