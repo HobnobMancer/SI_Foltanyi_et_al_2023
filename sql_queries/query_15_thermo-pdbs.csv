@@ -1,0 +1,47 @@
+﻿genbank_accession,pdb_accession,family,uniprot_name
+AAB95492.2,5IDI,GH1,"1,4-beta-D-glucan glucohydrolase (Glucan glucohydrolase) (EC 3.2.1.74) (Beta-D-glucoside glucohydrolase) (Beta-glucosidase) (EC 3.2.1.21) (Glucan 1,4-beta-glucosidase)"
+AAD35369.1,4ATW,GH51,Alpha-L-arabinofuranosidase
+AAD35369.1,3UG5,GH51,Alpha-L-arabinofuranosidase
+AAD35369.1,3UG3,GH51,Alpha-L-arabinofuranosidase
+AAD35369.1,3UG4,GH51,Alpha-L-arabinofuranosidase
+AAD35891.1,3WO8,GH3,"Beta-N-acetylglucosaminidase (EC 3.2.1.52) (Hydrolase, putative)"
+AAK16587.1,5C0Q,GH3,Beta-N-acetylglucosaminidase CbsA
+AAK16587.1,5BZA,GH3,Beta-N-acetylglucosaminidase CbsA
+ABI29899.1,2X41,GH3,Beta-glucosidase (EC 3.2.1.21)
+ABI29899.1,2X40,GH3,Beta-glucosidase (EC 3.2.1.21)
+ABI29899.1,2X42,GH3,Beta-glucosidase (EC 3.2.1.21)
+ABQ46651.1,3S2C,GH51,Alpha-N-arabinofuranosidase (EC 3.2.1.55)
+ABQ46657.1,4KC7,GH43,"Extracellular endo-alpha-(1->5)-L-arabinanase (ABN) (EC 3.2.1.99) (Endo-1,5-alpha-L-arabinanase)"
+ABQ46657.1,4KC8,GH43,"Extracellular endo-alpha-(1->5)-L-arabinanase (ABN) (EC 3.2.1.99) (Endo-1,5-alpha-L-arabinanase)"
+CAA04513.1,6SD0,GH2,Beta-galactosidase (Beta-gal) (EC 3.2.1.23) (Lactase)
+CAA04513.1,6S6Z,GH2,Beta-galactosidase (Beta-gal) (EC 3.2.1.23) (Lactase)
+CAA52276.1,1OIM,GH1,Beta-glucosidase A (EC 3.2.1.21) (Beta-D-glucoside glucohydrolase) (Cellobiase) (Gentiobiase)
+CAA52276.1,1UZ1,GH1,Beta-glucosidase A (EC 3.2.1.21) (Beta-D-glucoside glucohydrolase) (Cellobiase) (Gentiobiase)
+CAA52276.1,1OD0,GH1,Beta-glucosidase A (EC 3.2.1.21) (Beta-D-glucoside glucohydrolase) (Cellobiase) (Gentiobiase)
+CAA52276.1,2CBU,GH1,Beta-glucosidase A (EC 3.2.1.21) (Beta-D-glucoside glucohydrolase) (Cellobiase) (Gentiobiase)
+CAA52276.1,2WBG,GH1,Beta-glucosidase A (EC 3.2.1.21) (Beta-D-glucoside glucohydrolase) (Cellobiase) (Gentiobiase)
+CAA52276.1,2J75,GH1,Beta-glucosidase A (EC 3.2.1.21) (Beta-D-glucoside glucohydrolase) (Cellobiase) (Gentiobiase)
+CAA52276.1,2J78,GH1,Beta-glucosidase A (EC 3.2.1.21) (Beta-D-glucoside glucohydrolase) (Cellobiase) (Gentiobiase)
+CAA52276.1,2VRJ,GH1,Beta-glucosidase A (EC 3.2.1.21) (Beta-D-glucoside glucohydrolase) (Cellobiase) (Gentiobiase)
+CAA52276.1,2J79,GH1,Beta-glucosidase A (EC 3.2.1.21) (Beta-D-glucoside glucohydrolase) (Cellobiase) (Gentiobiase)
+CAA52276.1,2CBV,GH1,Beta-glucosidase A (EC 3.2.1.21) (Beta-D-glucoside glucohydrolase) (Cellobiase) (Gentiobiase)
+CAA52276.1,4GXP,GH1,Beta-glucosidase A (EC 3.2.1.21) (Beta-D-glucoside glucohydrolase) (Cellobiase) (Gentiobiase)
+CAA52276.1,2JAL,GH1,Beta-glucosidase A (EC 3.2.1.21) (Beta-D-glucoside glucohydrolase) (Cellobiase) (Gentiobiase)
+CAA52276.1,2J77,GH1,Beta-glucosidase A (EC 3.2.1.21) (Beta-D-glucoside glucohydrolase) (Cellobiase) (Gentiobiase)
+CAA52276.1,1OIN,GH1,Beta-glucosidase A (EC 3.2.1.21) (Beta-D-glucoside glucohydrolase) (Cellobiase) (Gentiobiase)
+CAA52276.1,1OIF,GH1,Beta-glucosidase A (EC 3.2.1.21) (Beta-D-glucoside glucohydrolase) (Cellobiase) (Gentiobiase)
+CAA52276.1,5OSS,GH1,Beta-glucosidase A (EC 3.2.1.21) (Beta-D-glucoside glucohydrolase) (Cellobiase) (Gentiobiase)
+CAA52276.1,1W3J,GH1,Beta-glucosidase A (EC 3.2.1.21) (Beta-D-glucoside glucohydrolase) (Cellobiase) (Gentiobiase)
+CAA52276.1,2J7E,GH1,Beta-glucosidase A (EC 3.2.1.21) (Beta-D-glucoside glucohydrolase) (Cellobiase) (Gentiobiase)
+CAA52276.1,2J7G,GH1,Beta-glucosidase A (EC 3.2.1.21) (Beta-D-glucoside glucohydrolase) (Cellobiase) (Gentiobiase)
+CAA52276.1,2WC4,GH1,Beta-glucosidase A (EC 3.2.1.21) (Beta-D-glucoside glucohydrolase) (Cellobiase) (Gentiobiase)
+CAA52276.1,2CET,GH1,Beta-glucosidase A (EC 3.2.1.21) (Beta-D-glucoside glucohydrolase) (Cellobiase) (Gentiobiase)
+CAA52276.1,2J7C,GH1,Beta-glucosidase A (EC 3.2.1.21) (Beta-D-glucoside glucohydrolase) (Cellobiase) (Gentiobiase)
+CAA52276.1,2J7D,GH1,Beta-glucosidase A (EC 3.2.1.21) (Beta-D-glucoside glucohydrolase) (Cellobiase) (Gentiobiase)
+CAA52276.1,2WC3,GH1,Beta-glucosidase A (EC 3.2.1.21) (Beta-D-glucoside glucohydrolase) (Cellobiase) (Gentiobiase)
+CAA52276.1,2J7B,GH1,Beta-glucosidase A (EC 3.2.1.21) (Beta-D-glucoside glucohydrolase) (Cellobiase) (Gentiobiase)
+CAA52276.1,5N6S,GH1,Beta-glucosidase A (EC 3.2.1.21) (Beta-D-glucoside glucohydrolase) (Cellobiase) (Gentiobiase)
+CAA52276.1,2J7F,GH1,Beta-glucosidase A (EC 3.2.1.21) (Beta-D-glucoside glucohydrolase) (Cellobiase) (Gentiobiase)
+CAA52276.1,2J7H,GH1,Beta-glucosidase A (EC 3.2.1.21) (Beta-D-glucoside glucohydrolase) (Cellobiase) (Gentiobiase)
+CAA52276.1,5N6T,GH1,Beta-glucosidase A (EC 3.2.1.21) (Beta-D-glucoside glucohydrolase) (Cellobiase) (Gentiobiase)
+CAA52276.1,2CES,GH1,Beta-glucosidase A (EC 3.2.1.21) (Beta-D-glucoside glucohydrolase) (Cellobiase) (Gentiobiase)
