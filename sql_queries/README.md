@@ -648,33 +648,3 @@ GROUP BY CazyFamilies.family
 ```
 
 As with query #16, this only returned the protein of interest _tm_gh3.
-
-# GH3-CE7 complex
-
-## 24. Species with at least one CAZyme in GH3 and at least one CAZyme in CE7
-
-A comprehensive list of all species with at least one CAZyme in GH3 and at least one CAZyme in CE7 was retrieved using the following command:
-
-```sql
-WITH Cgh3 (cazyme_id, cazyme_name, family, taxonomy_id) as (
-    SELECT G.genbank_id, U.uniprot_name, F.family, G.taxonomy_id
-    FROM Genbanks AS G
-    LEFT JOIN Genbanks_CazyFamilies AS Gf ON G.genbank_id = Gf.genbank_id
-    LEFT JOIN CazyFamilies AS F ON Gf.family_id = F.family_id
-	LEFT JOIN Uniprots AS U ON G.genbank_id = U.genbank_id
-    WHERE F.family = 'GH3'
-), Cce7 (cazyme_id, cazyme_name, family, taxonomy_id) AS (
-    SELECT G.genbank_id, U.uniprot_name, F.family, G.taxonomy_id
-    FROM Genbanks AS G
-    LEFT JOIN Genbanks_CazyFamilies AS Gf ON G.genbank_id = Gf.genbank_id
-    LEFT JOIN CazyFamilies AS F ON Gf.family_id = F.family_id
-	LEFT JOIN Uniprots AS U ON G.genbank_id = U.genbank_id
-    WHERE F.family = 'CE7'
-)
-
-SELECT T.taxonomy_id, T.genus, T.species, Cgh3.cazyme_name AS GH32_cazyme, Cce7.cazyme_name AS GH68_cazyme
-FROM Taxs AS T
-LEFT JOIN Cgh3 ON T.taxonomy_id = Cgh3.taxonomy_id
-LEFT JOIN Cce7 ON T.taxonomy_id = Cce7.taxonomy_id
-WHERE Cgh3.family is not null AND Cce7.family is not null
-```
