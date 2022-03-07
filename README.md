@@ -240,7 +240,7 @@ aligned single-copy orthologues, all downloaded RefSeq genomes were reannotated 
 To reproduce the annotation of the genomes, run the `annotate_genomes_prodigal.sh` script from the root of 
 this repository.
 ```bash
-scripts/reconstruct_tree/ml_tree/annotate_genomes_prodigal.sh ml_tree_genomes
+scripts/reconstruct_tree/annotate_genomes_prodigal.sh ml_tree_genomes
 ```
 Only one argument is provided: the path to the directory containing the downloaded genomes.
 
@@ -260,7 +260,7 @@ Orthologues present in the RefSeq _Thermotoga_ genomes were identified using [`o
 
 To reproduce the identifcation of orthologues, run the following command from the root of this repository:
 ```bash
-scripts/reconstruct_tree/ml_tree/get_scos.sh \
+scripts/reconstruct_tree/get_scos.sh \
   ml_tree_genomes/proteins \
   orthologues
 ```
@@ -281,7 +281,7 @@ Each collection of single-copy orthologous was aligned using [`MAFFT`](https://m
 
 To reproduce the MSA, run following command from the root of this repository.
 ```bash
-scripts/reconstruct_tree/ml_tree/align_scos.sh \
+scripts/reconstruct_tree/align_scos.sh \
   orthologues/Results_Nov11/Single_Copy_Orthologue_Sequences
 ```
 
@@ -294,7 +294,7 @@ The CDS sequences corresponding to each set of single-copy orthologues are ident
 directed to the correct output directory for orthofinder. The script can then be run from the current directory with:
 
 ```bash
-python3 scripts/reconstruct_tree/ml_tree/extract_cds.py
+python3 scripts/reconstruct_tree/extract_cds.py
 ```
 
 The output is a set of unaligned CDS sequences corresponding to each single-copy orthologue, which are 
@@ -310,7 +310,7 @@ The single-copy orthologue CDS sequences are threaded onto the corresponding ali
 The results can be reproduced by executing the `backtranslate.sh` script from this directory.
 
 ```bash
-scripts/reconstruct_tree/ml_tree/backtranslate.sh \
+scripts/reconstruct_tree/backtranslate.sh \
   sco_proteins_aligned \
   sco_cds_aligned
 ```
@@ -391,7 +391,7 @@ The script takes the following args:
 
 To reproduce the analysis, run the following command from the root of the repository:
 ```bash
-python3 scripts/cazome_annotation/extract_proteins.py \
+python3 scripts/get_cazomes/extract_proteins.py \
   cazomes/cazome_genomes \
   cazomes/extracted_proteins
 ```
@@ -420,7 +420,7 @@ This script produced 3 outputs:
 
 Run the following command from the root of the repository to repeat this analysis:
 ```bash
-python3 scripts/cazome_annotation/get_cazy_cazymes.py \
+python3 scripts/get_cazomes/get_cazy_cazymes.py \
   cazomes/extracted_proteins \
   cazy_database.db \
   cazomes/non_cazy_proteins \
