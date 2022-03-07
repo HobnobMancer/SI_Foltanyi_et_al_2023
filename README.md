@@ -182,10 +182,9 @@ The results are stored in [`results/hhpred_results.hhr`](https://hobnobmancer.gi
 
 Using the MSA did not signficantly increase the number of functionally relevant hits returned by HHpred. In general, the results between the two queries were similar. This potentially reflects the limited knowledge pool for _Thermotoga_ glycoside hydrolase GH3 proteins.
 
-### 3. Interrogation of the CAZy database
+## Interrogation of the CAZy database
 
-So why couldn't we find anything? Let's interrogate CAZy.
-SQL commands... why does our protein come up with so few hits?
+A series of SQL commands were peformed to interrogoate the local CAZyme database. The commands are presented [here](https://hobnobmancer.github.io/Foltanyi_et_al_2022/sql_queries/), and all results are stored in the repository in the [`sql_queries/` dir](https://github.com/HobnobMancer/Foltanyi_et_al_2022/tree/master/sql_queries).
 
 ## Exploration of a GH3-CE complex
 
