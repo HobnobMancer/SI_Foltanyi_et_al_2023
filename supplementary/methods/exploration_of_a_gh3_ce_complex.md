@@ -3,21 +3,21 @@
 Below is the detailed method used to generate the results presented in the paper `Folyanyi _et al_., 2022` during the identification of a potentially novel GH3-CE7 complex.
 
 The work is broken into 2 steps:
-1. [Reconstruction of the phylogenetic tree](#recontruction-of-the-phylogenetic-tree)
-1.1 [Download genomes](#download-genomes)
-1.2 [CDS prediction](#cds-prediction)
-1.3 [Identifying Single-Copy Orthologues (SCOs)](#identifying-single-copy-orthologues)
-1.4 [Multiple Sequence Alignment](#multiple-sequence-alignment)
-1.5 [Collect Single-Copy Orthologues CDS sequences](#collect-single-copy-orthologoues-cds-sequences)
-1.6 [Back-translate](#back-translate)
-1.7 [Concatenate](#concatenate)
-1.8 [Phylogenetic reconstruction](#phylogenetic-reconstruction)
-2. [Annotate the CAZomes](#annotate-the-cazomes)
-2.1 [Extract proteins](#extract-proteins)
-2.2 [Identify proteins in CAZy](#identifying-proteins-in-CAZy)
-2.3 [Run and parse dbCAN](#run-and-parse-dbcan)
-3. [Run FlaGs](#run-flags)
-4. [GH3 flanking genes](#gh3-flanking-genes)
+1. [Reconstruction of the phylogenetic tree](#recontruction-of-the-phylogenetic-tree)  
+1.1 [Download genomes](#download-genomes)  
+1.2 [CDS prediction](#cds-prediction)  
+1.3 [Identifying Single-Copy Orthologues (SCOs)](#identifying-single-copy-orthologues)  
+1.4 [Multiple Sequence Alignment](#multiple-sequence-alignment)  
+1.5 [Collect Single-Copy Orthologues CDS sequences](#collect-single-copy-orthologoues-cds-sequences)  
+1.6 [Back-translate](#back-translate)  
+1.7 [Concatenate](#concatenate)  
+1.8 [Phylogenetic reconstruction](#phylogenetic-reconstruction)  
+2. [Annotate the CAZomes](#annotate-the-cazomes)  
+2.1 [Extract proteins](#extract-proteins)  
+2.2 [Identify proteins in CAZy](#identifying-proteins-in-CAZy)  
+2.3 [Run and parse dbCAN](#run-and-parse-dbcan)  
+3. [Run FlaGs](#run-flags)  
+4. [GH3 flanking genes](#gh3-flanking-genes)  
 
 Exploration of the local CAZyme database revealed the frequent co-occurence of a GH3 and CE4 and/or CE7 protein in the same _Thermotoga_ genomes. 
 This mirrored the proposal of possible GH3-CE4 and/or GH3-CE7 complexes in the literature. To explore the probability of a GH3 and CE4 and/or CE7 complexes in 
