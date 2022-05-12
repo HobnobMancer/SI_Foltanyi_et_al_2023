@@ -55,11 +55,11 @@ The method is split into three sections:
 
 
 2. [Systematic exploration of tmgh3](#systematic-exploration-of-tmgh3)
-  - [Query tmgh against the NR database](#query_tmgh_against_the_nr_database)
-  - [Query tmgh against the CAZy database](#query_tmgh_against_the_cazy_database)
-  - [Compare NR and CAZy hits](#compare-nr-and-cazy-hits)
-  - [Generation of a MSA of xylosdiases](#generation-of-a-MSA-of-xylosidases)
-  - [HHpred](#HHpred)
+  2.1 [Query tmgh against the NR database](#query_tmgh_against_the_nr_database)
+  2.2 [Query tmgh against the CAZy database](#query_tmgh_against_the_cazy_database)
+  2.3 [Compare NR and CAZy hits](#compare-nr-and-cazy-hits)
+  2.4 [Generation of a MSA of xylosdiases](#generation-of-a-MSA-of-xylosidases)
+  2.5 [HHpred](#HHpred)
 
 
 3. [Interrogation of the CAZy database](#interrogation-of-the-cazy-database)
@@ -68,15 +68,15 @@ The method is split into three sections:
 4. [Exploration of a GH3-CE complex](#exploration-of-a-gh3-ce-complex)
   - [Reconstructing the _Thermotoga_ genus phylogenetic tree](#reconstructing-the-thermotoga-genus-phylogenetic-tree)
   - [Annotate the CAZomes](#annotate-the-cazomes)
-  - [Run `FlaGs`](#run-flags)
   - [GH3 flanking genes](#gh3-flanking-genes)
 
 Below is presented a summary of the methods.
 
 Individually pages are presented for each section of the analysis which include additional details, as well as commands used to faciltiate navigate the method. The hyperlinks are listed immediately below and in each summary section:
-1. [Construct a local CAZyme database](https://hobnobmancer.github.io/Foltanyi_et_al_2022/sql_queries/)
+1. [Construct a local CAZyme database](https://hobnobmancer.github.io/Foltanyi_et_al_2022/supplementary/methods/construct_a_local_cazyme_database)
 2. [Systematic exploration of tmgh3](https://hobnobmancer.github.io/Foltanyi_et_al_2022/supplementary/methods/systematic_exploration_of_tmgh3)
-3. [Exploration of a GH3-CE complex](https://hobnobmancer.github.io/Foltanyi_et_al_2022/sql_queries/)
+3. [Interrogation of the CAZy database](https://hobnobmancer.github.io/Foltanyi_et_al_2022/sql_queries/)
+4. [Exploration of a GH3-CE complex](https://hobnobmancer.github.io/Foltanyi_et_al_2022/supplementary/methods/exploration_of_a_gh3_ce_complex)
 
 ## 1. Construct a local CAZyme database
 
@@ -143,16 +143,16 @@ The results are stored in [`results/hhpred_results.hhr`](https://hobnobmancer.gi
 
 Using the MSA did not signficantly increase the number of functionally relevant hits returned by HHpred. In general, the results between the two queries were similar. This potentially reflects the limited knowledge pool for _Thermotoga_ glycoside hydrolase GH3 proteins.
 
-## Interrogation of the CAZy database
+## 3.Interrogation of the CAZy database
 
 A series of SQL commands were peformed to interrogoate the local CAZyme database. The commands are presented [here](https://hobnobmancer.github.io/Foltanyi_et_al_2022/sql_queries/), and all results are stored in the repository in the [`sql_queries/` dir](https://github.com/HobnobMancer/Foltanyi_et_al_2022/tree/master/sql_queries).
 
-## Exploration of a GH3-CE complex
+## 4. Exploration of a GH3-CE7 complex
+
+More detailed explanation of the method for identifying the novel GH3-CE7 complex, and all commands used is presented [here](https://hobnobmancer.github.io/Foltanyi_et_al_2022/supplementary/methods/exploration_of_a_gh3_ce_complex)
 
 Exploration of the local CAZyme database revealed the frequent co-occurence of a GH3 and CE4 and/or CE7 protein in the same _Thermotoga_ genomes. 
-This mirrored the proposal of possible GH3-CE4 and/or GH3-CE7 complexes in the literature. To explore the probability of a GH3 and CE4 and/or CE7 complexes in 
-_Thermotoga_ genomes, the CAZomes (all CAZymes incoded in a genome) of _Thermotoga_ genomes were annotated. The flanking genes of each GH3 protein in the 
-_Thermotoga_ genomes were then identified using FlaGs (Saha _et al_., 2021).
+This mirrored the proposal of possible GH3-CE4 and/or GH3-CE7 complexes in the literature. To explore the probability of a GH3 and CE4 and/or CE7 complexes in _Thermotoga_ genomes, the CAZomes (all CAZymes incoded in a genome) of _Thermotoga_ genomes were annotated. The flanking genes of each GH3 protein in the _Thermotoga_ genomes were then identified using FlaGs (Saha _et al_., 2021).
 
 > Saha, C. K, Pires, R. S., Brolin, H., Delannoy, M., Atkinson, G. C. (2021) 'FlaGs and webFlaGs: discovering novel biology through the analysis of gene neighbourhood conservation', Bioinformatics, 37(9), pp. 1312–1314
 
@@ -162,71 +162,30 @@ _Thermotoga_ genomes were then identified using FlaGs (Saha _et al_., 2021).
 
 To reconstruct the phylogenetic tree of _Thermotoga_ genus the method presented in [Hugouvieux-Cotte-Pattat _et al_., 2021](https://pure.strath.ac.uk/ws/portalfiles/portal/124038859/Hugouvieux_Cotte_Pattat_etal_IJSEM_2021_Proposal_for_the_creation_of_a_new_genus_Musicola_gen_nov_reclassification_of_Dickeya_paradisiaca.pdf) was used. The specific methodolgy is found in the [Hugouvieux-Cotte-Pattat _et al_. supplementary](https://widdowquinn.github.io/SI_Hugouvieux-Cotte-Pattat_2021/).
 
-#### 1. Download genomes
+#### A. Download genomes
 
-RefSeq genomic assemblies were retrieved from NCBI. The genomic accessions of the genomic assemblies used to 
+RefSeq genomic assemblies were retrieved from NCBI using [`ncbi-genome-download`](https://github.com/kblin/ncbi-genome-download/).
+
+The genomic accessions of the genomic assemblies used to 
 reconstruct the phylogenetic tree are listed in `data/ref_genomes_of_interest_acc.txt`. This includes the 
 RefSef genome of **_Fervidobacterium changbaicum_ CBS-1 GCF_004117075.1 as an out group**, to facilitate 
-identifying the root of the _Thermotoga_ tree. The output group was selected based upon the 
-the Thermotogae distance based tree (the method for construction is laid out further down), and was 
-labelled with an assembly level of 'chromosome or greater' and genome representation labelled as 'full', in NCBI Assembly database.
-
-The genomes were downloaded from NCBI using [`ncbi-genome-download`](https://github.com/kblin/ncbi-genome-download/).
-
-To reproduce this download run the following command from the root of this repository:
-```bash
-scripts ncbi/download_genomes.sh \
-  data/ref_genomes_of_interest_acc.txt \
-  ml_tree_genomes \
-  fasta
-```
-The arguments provided are:
-1. Path to the file containing a list of the genomes of interest
-2. Path to the output directory
-3. The file format to download the genomes as
-
-25 genomes were downloaded and stored in the directory `ml_tree_genomes`. The accession numbers of the downloaded genomes are listed in `data/downloaded_genome_acc.txt`
+identifying the root of the _Thermotoga_ tree.
 
 The 25 genomes were downloaded in GenBank Flat File and FASTA format. The latter was used for reconstruction of the phylogenetic tree, the former were used for annotating the CAZome.
 
-#### 2. CDS prediction
+#### B. CDS prediction
 
-In order to ensure consistency of nomenclature and support back threading the nucleotides sequences onto 
+To ensure consistency of nomenclature and support back threading the nucleotides sequences onto 
 aligned single-copy orthologues, all downloaded RefSeq genomes were reannotated using 
-[`prodigal](https://github.com/hyattpd/Prodigal)
+[`prodigal`](https://github.com/hyattpd/Prodigal)
 
 > Hyatt D, Chen GL, Locascio PF, Land ML, Larimer FW, Hauser LJ. Prodigal: prokaryotic gene recognition and translation initiation site identification. BMC Bioinformatics. 2010 Mar 8;11:119. doi: 10.1186/1471-2105-11-119. PMID: 20211023; PMCID: PMC2848648.
 
-To reproduce the annotation of the genomes, run the `annotate_genomes_prodigal.sh` script from the root of 
-this repository.
-```bash
-scripts/reconstruct_tree/annotate_genomes_prodigal.sh ml_tree_genomes
-```
-Only one argument is provided: the path to the directory containing the downloaded genomes.
-
-The output from `prodigal` are placed in the following directories:
-- The predicted CDS are placed in the `genomes/cds` directory
-- The conceptural translations are placed in `genomes/proteins`
-- The GenBank formate files are placed in the `genomes/gbk` directory
-
-A log of the `prodigal` terminal output was placed in `data/logs/prodigal.log`.
-
-
-#### 3. Identifying Single-Copy Orthologues (SCOs)
+#### C. Identifying Single-Copy Orthologues (SCOs)
 
 Orthologues present in the RefSeq _Thermotoga_ genomes were identified using [`orthofinder`](https://github.com/davidemms/OrthoFinder)
 
 > Emms, D.M. and Kelly, S. (2019) OrthoFinder: phylogenetic orthology inference for comparative genomics. [Genome Biology 20:238](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-019-1832-y)
-
-To reproduce the identifcation of orthologues, run the following command from the root of this repository:
-```bash
-scripts/reconstruct_tree/get_scos.sh \
-  ml_tree_genomes/proteins \
-  orthologues
-```
-To arguments are provided:
-1. The path to the directory containing the FASTA files of predicted protein sequences from `prodigal`
-2. A path to an output directory
 
 The output from `orthofinder` was written to the `orthologues/Results_Nov11/Single_Copy_Orthologue_Sequences` directory.
 
@@ -235,20 +194,14 @@ The output from `orthofinder` was written to the `orthologues/Results_Nov11/Sing
 `orthofinder` identified genome GCF_004117075.1 as the best out group.
 
 
-#### 4. Multiple Sequence Alignment
+#### D. Multiple Sequence Alignment
 
 Each collection of single-copy orthologous was aligned using [`MAFFT`](https://mafft.cbrc.jp/alignment/software/).
-
-To reproduce the MSA, run following command from the root of this repository.
-```bash
-scripts/reconstruct_tree/align_scos.sh \
-  orthologues/Results_Nov11/Single_Copy_Orthologue_Sequences
-```
 
 The output from `MAFFT` (the aligned files) are placed in the `sco_proteins_aligned` directory.
 
 
-#### 5. Collect Single-Copy Orthologues CDS sequences
+#### E. Collect Single-Copy Orthologues CDS sequences
 
 The CDS sequences corresponding to each set of single-copy orthologues are identified and extracted with the Python script `extract_cds.py`. To reproduce this analysis, ensure the `PROTDIR` constant in the script is 
 directed to the correct output directory for orthofinder. The script can then be run from the current directory with:
@@ -261,7 +214,7 @@ The output is a set of unaligned CDS sequences corresponding to each single-copy
 placed in the `sco_cds` directory
 
 
-#### 6. Back-translate Aligned Single-Copy Orthologues
+#### F. Back-translate Aligned Single-Copy Orthologues
 
 The single-copy orthologue CDS sequences are threaded onto the corresponding aligned protein sequences using [`t-coffee`](http://www.tcoffee.org/Projects/tcoffee/).
 
@@ -278,7 +231,7 @@ scripts/reconstruct_tree/backtranslate.sh \
 The backtranslated CDS sequences are placed in the `sco_cds_aligned` directory.
 
 
-#### 7. Concatenating CDS into a Multigene Alignment
+#### G. Concatenating CDS into a Multigene Alignment
 
 The threaded single-copy orthologue CDS sequences are concatenated into a single sequence per input organism using the Python script `concatenate_cds.py`. To reproduce this, execute the script from this directory with:
 
@@ -289,29 +242,13 @@ python scripts/reconstruct_tree/concatenate_cds.py
 Two files are generated, a FASTA file with the concatenated multigene sequences, and a partition file allowing a different set of model parameters to be fit to each gene in phylogenetic reconstruction.
 
 
-#### 8. Phylogenetic reconstruction
+#### H. Phylogenetic reconstruction
 
 To reconstruct the phylogenetic tree, the bash script `raxml_ng_build_tree.sh` is used, and is 
 run from the root of this repository. This executes a series of [`raxml-ng`](https://github.com/amkozlov/raxml-ng) commands.
 
-```bash
-scripts/reconstruct_tree/raxml_ng_build_tree.sh \
-  concatenated_cds
-```
-
-The `raxml-ng parse` command estimated memory and processor requirements as
-
-```text
-* Estimated memory requirements                : 6428 MB
-* Recommended number of threads / MPI processes: 77
-```
-
-but, as we had limited access to computing resource at the time, we had to proceed with 8 cores.
-
 All genes were considered as separate partitions in the reconstuction, 
 with parameters estimated  for the `GTR+FO+G4m+B` model (as recommended by `raxml-ng check`).
-
-The log files from `raxml-ng` are stored in `data/raxmlng_tree_reconstruction`.
 
 Tree reconstructions are placed in the `tree` directory. The best estimate tree is `03_infer.raxml.bestTree` and the midpoint-rooted, manually-annotated/coloured tree (using [`figtree`](http://tree.bio.ed.ac.uk/software/figtree/)) is `03_infer.raxml.bestTree.annotated`
 
@@ -324,97 +261,33 @@ The resulting tree in the [original format](https://hobnobmancer.github.io/Folta
 
 `cazy_webscraper` and `dbCAN` were used to annotate all CAZymes in the _Thermotoga_ genomes (the CAZomes).
 
-#### 1. Download genomes
-
-The proteins from the _Thermotoga_ genomes were required, therefore, the genomes of interested were downloaded in 
-GenBank Flat File format.
-
-To reproduce this download run the following command from the root of this repository:
-```bash
-scripts/ncbi/download_genomes.sh \
-  data/ref_genomes_of_interest_acc.txt \
-  cazomes/cazome_genomes \
-  genbank
-```
-
-25 genomes were downloaded and stored in the `cazome_genomes` directory, and were decompressed by the `download_genomes.sh` script.
-
-#### 2. Extract proteins
+#### 1. Extract proteins
 
 The Python script `extract_proteins.py` was used to extract the protein sequences from each downloaded genome, and write the protein 
 sequences to FASTA files. One FASTA file was created by per downloaded genome, and contained all protein sequences extracted from the 
 respective genome.
 
-The script takes the following args:
-1. Path to input dir containing genomes (in `.gbff` format)
-2. Path to output dir to write out FASTA files
-
-To reproduce the analysis, run the following command from the root of the repository:
-```bash
-python3 scripts/get_cazomes/extract_proteins.py \
-  cazomes/cazome_genomes \
-  cazomes/extracted_proteins
-```
-
 The FASTA files were written to the `cazomes/extracted_proteins` directory.
 
 In total 34,671 proteins were extracted.
 
-#### 3. Identify proteins in CAZy
+#### 2. Identify proteins in CAZy
 
 All proteins extracted from the downloaded genomes were queried against a local CAZyme database using the `get_cazy_cazymes.py` script. 
 
-The script has 3 positiional arguments:
-1. Path to directory containing FASTA files of extracted protein sequences
-2. Path to the local CAZyme database
-3. Path to output directory to write out FASTA files of proteins not in CAZy
-4. Path to write out tab delimited list of proteins in the CAZy families of interest.
-
 _The list of CAZy families of interest is hardcoded in to the `get_cazy_cazymes.py` script, in the constant `FAMILIES_OF_INTEREST`._ 
 
-This script produced 3 outputs:
-1. A single `csv` file containing all extrated CAZy annotations (including the genomic accession, protein accession and CAZy family annotation), in tidy data formatting (this is written to the output directory)
-2. A FASTA file per parsed genome containing all protein sequences that are not included in CAZy (these are written to the output directory)
-3. A single tab-delimited list with the genomic accession and protein accession of all proteins that are from the families of interest.
-4. A `summary.txt` file, listing the number of proteins from CAZy, not in CAZy and from the families of interest (this is writte to the output directory)
+In total 0 proteins were found to be annotated by CAZy.  
 
-Run the following command from the root of the repository to repeat this analysis:
-```bash
-python3 scripts/get_cazomes/get_cazy_cazymes.py \
-  cazomes/extracted_proteins \
-  cazy_database.db \
-  cazomes/non_cazy_proteins \
-  cazomes/proteins_of_interest.txt
-```
+#### 3. Run and parse dbCAN
 
-In total 0 proteins were retrieved from CAZy.  
-34,671 proteins were extracted from the genomes and were not included in CAZy.  
-
-#### 4. Run and parse dbCAN
-
-CAzy annotates the GenBank protein sequence releases, therefore, it is rare for CAZy to include the RefSeq protein accessions. To annotate the comprehensive CAZome of each genome, `dbCAN` was used to annotate the CAZomes.
+CAZy annotates the GenBank protein sequence releases, therefore, it is rare for CAZy to include the RefSeq protein accessions. To annotate the comprehensive CAZome of each genome, `dbCAN` was used to annotate the CAZomes.
 
 _`dbCAN` version 3.0.2_
 
 > Zhang, H., Yohe, T., Huang, L., Entwistle, S., Wu, P., Yang, Z., Busk, P.K., Xu, Y., Yin, Y. (2018) ‘dbCAN2: a meta server for automated carbohydrate-active enzyme annotation’, Nucleic Acids Res., 46(W1), pp. W95-W101. doi: 10.1093/nar/gky418
 
-To run dbCAN for every set of protein sequences extracted from the genomes and not included in CAZy, run the following command in `dbcan` directory (*this is necessary because the paths encoded in `dbCAN` are hard coded, this does require copying the input data into a new directory withint the `dbcan` directory*):
-```bash
-python3 invoke_dbcan.py \
-  non_cazy_proteins_copy \
-  dbcan_output \
-```
-
 The output directory `dbcan_output` was moved to the `cazomes` directory: `cazomes/dbcan_output`.
-
-To parse the output from dbCAN, and the proteins from the CAZy GH3 of interest to the tab delimited list, run the following command in the root of the repository:
-```bash
-python3 scripts/get_cazomes/get_dbcan_cazymes.py \
-  cazomes/dbcan_output \
-  cazomes/proteins_of_interest.txt \
-  -f -n
-```
-The first argument is the path to the directory containing output from `dbCAN`. The second argument is a path to the tab delimited lists of genomic accessions and protein accession, listing proteins from GH3.
 
 `dbCAN` parsed 34,671 proteins.  
 1,663 of these proteinse were predicted to be CAZymes with a consensus CAZy family prediction (i.e. a CAZy family annotation that at least two of three tools in dbCAN agreed upon).
@@ -423,21 +296,15 @@ The first argument is the path to the directory containing output from `dbCAN`. 
 
 To facilitate reproduction of this analysis, the raw output `overview.txt` files from dbCAN for each _Thermotoga_ genome are available in the [`data/dbcan_output`](https://github.com/HobnobMancer/Foltanyi_et_al_2022/tree/master/data/dbcan_output) directory of this repository.
 
-### Run `FlaGs`
+### GH3 flanking genes
 
-To repeat the analysis using [`FlaGs`](http://www.webflags.se/), install `FlaGs` in a dir called `FlaGs` (located in the root of the repository) and run the following from the root of this repository:
-```bash
-mkdir cazomes/flags_output  # create output directory
+#### 1. Run `FlaGs`
 
-python3 FlaGs/FlaGs.py \
-  -a cazomes/proteins_of_interest.txt \
-  -o cazomes_flags_output/thermotoga_gh3_flags_ \
-  -u <email_address>
-```
+The flanking genes of each GH3 protein were identified using the Pythn tool [`FlaGs`](http://www.webflags.se/), using the list of GH3 protein accessions generated in the last step.
 
 > Chayan Kumar Saha, Rodrigo Sanches Pires, Harald Brolin, Maxence Delannoy, Gemma Catherine Atkinson, FlaGs and webFlaGs: discovering novel biology through the analysis of gene neighbourhood conservation, Bioinformatics, Volume 37, Issue 9, 1 May 2021, Pages 1312–1314, https://doi.org/10.1093/bioinformatics/btaa788
 
-### GH3 flanking genes
+#### 2. Generate figures
 
 NitroPro was used to recolour the output from `FlaGs` and annotate a substree of the _Thermotoga_ phylogenetic tree shown in figure 1.
 
@@ -446,26 +313,13 @@ NitroPro was used to recolour the output from `FlaGs` and annotate a substree of
 <figcaption align = "center"><b>Fig.1 - Rooted phylogenetic tree of Thermotoga, annotated with the presence of a GH3 gene cluster</b></figcaption>
 </figure>
 
-#### Addressing proteins that were not clustered
+#### 3. Addressing proteins that were not clustered
 
 ##### _Thermotoga_ sp. 2812B (GCF_000789335.1)
 
-To determine if the unclustered protein from _Thermotoga_ sp. 2812B (GCF_000789335.1) was a CE7 protein, `cazy_webscraper` was used to retrieve the protein sequences from GenBank for all proteins in CE7.
-
-```bash
-cw_get_genbank_seqs cazy_database.db <user email> --families CE7
-```
+To determine if the unclustered protein from _Thermotoga_ sp. 2812B (GCF_000789335.1) was a CE7 protein, `cazy_webscraper` was used to retrieve the protein sequences from GenBank for all proteins in CE7. 
 
 The protein sequences were written to the local CAZyme database, and extracted to a FASTA file using `cazy_webscraper`.
-
-```bash
-cw_extract_db_seqs \
-  cazy_database.db \
-  genbank \
-  --families CE7 \
-  --fasta_file data/gh3_complex/cazy_ce7_proteins.fasta \
-  -f -n
-```
 
 In total, 2,664 protein sequences were retrieved from NCBI and written to the fasta a file [`cazy_ce7_proteins.fasta`]().
 
@@ -475,15 +329,9 @@ The nucleotide sequence of the gene that encoded the putative CE7 protein (named
 - Product: Cephalosporin-C deacetylase
 - location: complement(901723..902701)
 
-
-The nucleotide sequence was translated to a protein sequence (specifically the reverse strand was translated), and the protein sequence was stored at [`data/gh3_complex/unclustered_ce7_prt.fasta]().
+The nucleotide sequence was translated to a protein sequence (specifically the reverse strand was translated), and the protein sequence was stored at [`data/gh3_complex/unclustered_ce7_prt.fasta`]().
 
 The Python script `run_blastp_unclustered_ce7.py` was used to query the potential CE7 protein from _Thermotoga_ sp. 2812B against all GenBank proteins in the CAZy family CE7. To allow for greater sequence diversity between proteins with a similar structure the BLOSUM45 matrix was used.
-
-To repeat this analysis run the following command from the root of this repository:
-```bash
-python3 scripts/gh3_complex/run_blastp_unclustered_ce7.py
-```
 
 The output was written to [`results/blastpUnclusteredCe7.tsv]().
 
@@ -509,129 +357,9 @@ The local CAZyme database `cazy_database.db` was queried to return the following
 - EC number annotations
 - UniProt database record ID
 
-```sql
-WITH Tax_Query (tax_gbk, organism_genus, organism_sp) AS (
-	SELECT DISTINCT GenBanks.genbank_accession, Taxs.genus, Taxs.species
-	FROM Genbanks
-	INNER JOIN Taxs ON Genbanks.taxonomy_id = Taxs.taxonomy_id
-	WHERE Genbanks.genbank_accession = 'AIY86427.1'
-), Fam_Query (fam_gbk, cazy_family) AS (
-	SELECT Genbanks.genbank_accession, CazyFamilies.family
-	FROM Genbanks
-	INNER JOIN Genbanks_CazyFamilies ON Genbanks.genbank_id = Genbanks_CazyFamilies.genbank_id
-	INNER JOIN CazyFamilies ON Genbanks_CazyFamilies.family_id = CazyFamilies.family_id
-	WHERE Genbanks.genbank_accession = 'AIY86427.1'
-), Ec_Query (ec_gbk, ec_annotation) AS (
-	SELECT Genbanks.genbank_accession, Ecs.ec_number
-	FROM Genbanks
-	INNER JOIN Genbanks_Ecs ON Genbanks.genbank_id = Genbanks_Ecs.genbank_id
-	INNER JOIN Ecs ON Genbanks_Ecs.ec_id = Ecs.ec_id
-	WHERE Genbanks.genbank_accession = 'AIY86427.1'
-), Uniprot_Query (uni_gbk, uniprot) AS (
-	SELECT Genbanks.genbank_accession, UniProts.uniprot_accession
-	FROM Genbanks
-	INNER JOIN Uniprots ON Genbanks.genbank_id = Uniprots.genbank_id
-	WHERE Genbanks.genbank_accession = 'AIY86427.1'
-)
-SELECT DISTINCT Genbanks.genbank_accession, Tax_Query.organism_genus, Tax_Query.organism_sp, Fam_Query.cazy_family, Ec_Query.ec_annotation, Uniprot_Query.uniprot
-FROM Genbanks
-LEFT JOIN Tax_Query ON Genbanks.genbank_accession = Tax_Query.tax_gbk
-LEFT JOIN Fam_Query ON Genbanks.genbank_accession = Fam_Query.fam_gbk
-LEFT JOIN Ec_Query ON Genbanks.genbank_accession = Ec_Query.ec_gbk
-LEFT JOIN Uniprot_Query ON Genbanks.genbank_accession = Uniprot_Query.uni_gbk
-WHERE Genbanks.genbank_accession = 'AIY86427.1'
-```
-
 The source organism was returned as 'Thermotoga	sp. 2812B', with the only CAZy family annotation being CE7. No EC number annotations of UniProt ID was returned.
 
 This query was expanded to retrieve data for the 12 proteins with greater than or equal to 90% precentage identity with the query unclustered CE7 protein.
-```sql
-WITH Tax_Query (tax_gbk, organism_genus, organism_sp) AS (
-	SELECT DISTINCT GenBanks.genbank_accession, Taxs.genus, Taxs.species
-	FROM Genbanks
-	INNER JOIN Taxs ON Genbanks.taxonomy_id = Taxs.taxonomy_id
-	WHERE Genbanks.genbank_accession = 'AIY86427.1' OR
-		Genbanks.genbank_accession = 'AKE29758.1' OR
-		Genbanks.genbank_accession = 'AGL49000.1' OR
-		Genbanks.genbank_accession = 'NP_227893.1' OR
-		Genbanks.genbank_accession = 'AKE26023.1' OR
-		Genbanks.genbank_accession = 'AHD18153.1' OR
-		Genbanks.genbank_accession = 'AAD35171.1' OR
-		Genbanks.genbank_accession = 'AKE27885.1' OR
-		Genbanks.genbank_accession = 'ACB09222.1' OR
-		Genbanks.genbank_accession = 'ADA66802.1' OR
-		Genbanks.genbank_accession = 'ABQ46866.1' OR
-		Genbanks.genbank_accession = 'AIY88183.1'
-), Fam_Query (fam_gbk, cazy_family) AS (
-	SELECT Genbanks.genbank_accession, CazyFamilies.family
-	FROM Genbanks
-	INNER JOIN Genbanks_CazyFamilies ON Genbanks.genbank_id = Genbanks_CazyFamilies.genbank_id
-	INNER JOIN CazyFamilies ON Genbanks_CazyFamilies.family_id = CazyFamilies.family_id
-	WHERE Genbanks.genbank_accession = 'AIY86427.1' OR
-		Genbanks.genbank_accession = 'AKE29758.1' OR
-		Genbanks.genbank_accession = 'AGL49000.1' OR
-		Genbanks.genbank_accession = 'NP_227893.1' OR
-		Genbanks.genbank_accession = 'AKE26023.1' OR
-		Genbanks.genbank_accession = 'AHD18153.1' OR
-		Genbanks.genbank_accession = 'AAD35171.1' OR
-		Genbanks.genbank_accession = 'AKE27885.1' OR
-		Genbanks.genbank_accession = 'ACB09222.1' OR
-		Genbanks.genbank_accession = 'ADA66802.1' OR
-		Genbanks.genbank_accession = 'ABQ46866.1' OR
-		Genbanks.genbank_accession = 'AIY88183.1'
-), Ec_Query (ec_gbk, ec_annotation) AS (
-	SELECT Genbanks.genbank_accession, Ecs.ec_number
-	FROM Genbanks
-	INNER JOIN Genbanks_Ecs ON Genbanks.genbank_id = Genbanks_Ecs.genbank_id
-	INNER JOIN Ecs ON Genbanks_Ecs.ec_id = Ecs.ec_id
-	WHERE Genbanks.genbank_accession = 'AIY86427.1' OR
-		Genbanks.genbank_accession = 'AKE29758.1' OR
-		Genbanks.genbank_accession = 'AGL49000.1' OR
-		Genbanks.genbank_accession = 'NP_227893.1' OR
-		Genbanks.genbank_accession = 'AKE26023.1' OR
-		Genbanks.genbank_accession = 'AHD18153.1' OR
-		Genbanks.genbank_accession = 'AAD35171.1' OR
-		Genbanks.genbank_accession = 'AKE27885.1' OR
-		Genbanks.genbank_accession = 'ACB09222.1' OR
-		Genbanks.genbank_accession = 'ADA66802.1' OR
-		Genbanks.genbank_accession = 'ABQ46866.1' OR
-		Genbanks.genbank_accession = 'AIY88183.1'
-), Uniprot_Query (uni_gbk, uniprot) AS (
-	SELECT Genbanks.genbank_accession, UniProts.uniprot_accession
-	FROM Genbanks
-	INNER JOIN Uniprots ON Genbanks.genbank_id = Uniprots.genbank_id
-	WHERE Genbanks.genbank_accession = 'AIY86427.1' OR
-		Genbanks.genbank_accession = 'AKE29758.1' OR
-		Genbanks.genbank_accession = 'AGL49000.1' OR
-		Genbanks.genbank_accession = 'NP_227893.1' OR
-		Genbanks.genbank_accession = 'AKE26023.1' OR
-		Genbanks.genbank_accession = 'AHD18153.1' OR
-		Genbanks.genbank_accession = 'AAD35171.1' OR
-		Genbanks.genbank_accession = 'AKE27885.1' OR
-		Genbanks.genbank_accession = 'ACB09222.1' OR
-		Genbanks.genbank_accession = 'ADA66802.1' OR
-		Genbanks.genbank_accession = 'ABQ46866.1' OR
-		Genbanks.genbank_accession = 'AIY88183.1'
-)
-SELECT DISTINCT Genbanks.genbank_accession, Tax_Query.organism_genus, Tax_Query.organism_sp, Fam_Query.cazy_family, Ec_Query.ec_annotation, Uniprot_Query.uniprot
-FROM Genbanks
-LEFT JOIN Tax_Query ON Genbanks.genbank_accession = Tax_Query.tax_gbk
-LEFT JOIN Fam_Query ON Genbanks.genbank_accession = Fam_Query.fam_gbk
-LEFT JOIN Ec_Query ON Genbanks.genbank_accession = Ec_Query.ec_gbk
-LEFT JOIN Uniprot_Query ON Genbanks.genbank_accession = Uniprot_Query.uni_gbk
-	WHERE Genbanks.genbank_accession = 'AIY86427.1' OR
-		Genbanks.genbank_accession = 'AKE29758.1' OR
-		Genbanks.genbank_accession = 'AGL49000.1' OR
-		Genbanks.genbank_accession = 'NP_227893.1' OR
-		Genbanks.genbank_accession = 'AKE26023.1' OR
-		Genbanks.genbank_accession = 'AHD18153.1' OR
-		Genbanks.genbank_accession = 'AAD35171.1' OR
-		Genbanks.genbank_accession = 'AKE27885.1' OR
-		Genbanks.genbank_accession = 'ACB09222.1' OR
-		Genbanks.genbank_accession = 'ADA66802.1' OR
-		Genbanks.genbank_accession = 'ABQ46866.1' OR
-		Genbanks.genbank_accession = 'AIY88183.1'
-```
 
 The results are stored in [`results/unclustedCE7_cazy_query.csv`]().
 
