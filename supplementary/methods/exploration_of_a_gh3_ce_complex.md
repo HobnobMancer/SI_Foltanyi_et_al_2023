@@ -16,8 +16,7 @@ The work is broken into 2 steps:
 2.1 [Extract proteins](#extract-proteins)  
 2.2 [Identify proteins in CAZy](#identifying-proteins-in-CAZy)  
 2.3 [Run and parse dbCAN](#run-and-parse-dbcan)  
-3. [Run FlaGs](#run-flags)  
-4. [GH3 flanking genes](#gh3-flanking-genes)  
+3. [GH3 flanking genes](#gh3-flanking-genes)  
 
 Exploration of the local CAZyme database revealed the frequent co-occurence of a GH3 and CE4 and/or CE7 protein in the same _Thermotoga_ genomes. 
 This mirrored the proposal of possible GH3-CE4 and/or GH3-CE7 complexes in the literature. To explore the probability of a GH3 and CE4 and/or CE7 complexes in 
