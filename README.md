@@ -21,12 +21,14 @@ This repo contains the commands and data files necessary to repeat the study pre
 - `HMMER` >= 3.3
 - `Coinfinder`
 - `Pyani`
+- `seqkit` == v2.2.0
+- `MAFFT` >= v7.505
 - `cazy_webscraper` >= 2.0.0
 - `Cazomevolve`
 - `get-ncbi-genomes`
 - `dbCAN` >= [3.0.2](https://github.com/linnabrown/run_dbcan)
 
-**Note on install dbCAN:** Paths are hardcoded in `dbCAN` v2.0.11, therefore, to use `dbCAN` in this analysis, follow 
+**Note on install dbCAN:** Paths are hardcoded in `dbCAN`, therefore, to use `dbCAN` in this analysis, follow 
 the exact instructions provided in the `dbCAN` [README]((https://github.com/linnabrown/run_dbcan)) and run the commands in the `scripts/cazome_annotation` directory.
 
 ### Python packages
@@ -38,36 +40,49 @@ the exact instructions provided in the `dbCAN` [README]((https://github.com/linn
 
 ## Data, results and scripts
 
-All **scripts** used in this analysis are stored in the `scripts` directory in the repo.  
+- All **scripts** used in this analysis are stored in the `scripts` directory in the repo.  
+- **Input data** for the analysis, such as FASTA files, are stored in the `data` directory.  
+- **Results** data from this analysis, such as R markdown notebooks and MSA files, are stored in the `results` directory.
 
-**Input data** for the analysis, such as FASTA files, are stored in the `data` directory.  
-
-**Results** data from this analysis, such as R markdown notebooks and MSA files, are stored in the `results` directory.
+The protein sequence of _tmgh3_ is stored in [`data/tmgh3_exploration/tmgh3.fasta`](https://hobnobmancer.github.io/Foltanyi_et_al_2022/data/tmgh3_exploration.zip). All analyses were performed in March 2022.
 
 ## Method to reconstruct the analysis
 
 To reconstruct the analysis run all commands from this directory.
 
-The method is split into four sections:
+The method is split into three sections:
 1. [Construct a local CAZyme database](#construct-a-local-cazyme-database)
+
+
 2. [Systematic exploration of tmgh3](#systematic-exploration-of-tmgh3)
-3. [Exploration of a GH3-CE complex](#exploration-of-a-gh3-ce-complex)
+  - [Query tmgh against the NR database](#query_tmgh_against_the_nr_database)
+  - [Query tmgh against the CAZy database](#query_tmgh_against_the_cazy_database)
+  - [Compare NR and CAZy hits](#compare-nr-and-cazy-hits)
+  - [Generation of a MSA of xylosdiases](#generation-of-a-MSA-of-xylosidases)
+  - [HHpred](#HHpred)
+
+
+3. [Interrogation of the CAZy database](#interrogation-of-the-cazy-database)
+
+
+4. [Exploration of a GH3-CE complex](#exploration-of-a-gh3-ce-complex)
   - [Reconstructing the _Thermotoga_ genus phylogenetic tree](#reconstructing-the-thermotoga-genus-phylogenetic-tree)
   - [Annotate the CAZomes](#annotate-the-cazomes)
   - [Run `FlaGs`](#run-flags)
   - [GH3 flanking genes](#gh3-flanking-genes)
 
+Below is presented a summary of the methods.
 
-## Construct a local CAZyme database
+Individually pages are presented for each section of the analysis which include additional details, as well as commands used to faciltiate navigate the method. The hyperlinks are listed immediately below and in each summary section:
+1. [Construct a local CAZyme database](https://hobnobmancer.github.io/Foltanyi_et_al_2022/sql_queries/)
+2. [Systematic exploration of tmgh3](https://hobnobmancer.github.io/Foltanyi_et_al_2022/supplementary/methods/systematic_exploration_of_tmgh3)
+3. [Exploration of a GH3-CE complex](https://hobnobmancer.github.io/Foltanyi_et_al_2022/sql_queries/)
+
+## 1. Construct a local CAZyme database
 
 `cazy_webscraper` [Hobbs et al., 2021] (DOI:) was used to construct a local CAZyme database, to facilitate the thorough interrogation of the CAZy dataset.
 
 > Hobbs, Emma E. M.; Pritchard, Leighton; Chapman, Sean; Gloster, Tracey M. (2021): cazy_webscraper Microbiology Society Annual Conference 2021 poster. figshare. Poster. https://doi.org/10.6084/m9.figshare.14370860.v7
-
-To reconstruct the database to repeat the analysis, use the following command from the root of this repository:
-```bash
-cazy_webscraper <user_email> --db_output cazy_database.db
-```
 
 Data from UniProt was retrieved for proteins in the local CAZyme database, and added to the datbase. The following data was retrieved:
 - UniProt accession
@@ -75,104 +90,50 @@ Data from UniProt was retrieved for proteins in the local CAZyme database, and a
 - PDB accessions
 - EC numbers
 
-The retreival of data was limited to proteins from the following families of interest:
-- GH1
-- GH2
-- GH3
-- GH11
-- GH26
-- GH30
-- GH43
-- GH51
-- GH52
-- GH54
-- GH116
-- GH120
-
-The retreival of the data can be repeated using the following command:
-```bash
-cw_get_uniprot_data cazy_database.db \
-  --families GH1,GH2,GH3,GH11,GH26,GH30,GH43,GH51,GH52,GH54,GH116,GH120
-  --ec \
-  -- pdb
-```
+The retreival of data was limited to proteins from the following GH families of interest: 1, 2, 3, 11, 26, 30, 43, 50, 51, 52, 54, 116, 120.
 
 These data were downloaded in Feburary 2022. To faciltiate reproducing the analyses presenter here using this data set, a 
 copy of this database is available in the [`data`]() directory of this repository.
 
-## Systematic exploration of tmgh3
+## 2. Systematic exploration of tmgh3
 
-The protein sequence of _tmgh3_ is stored in [`data/tmgh3_exploration/tmgh3.fasta`](https://hobnobmancer.github.io/Foltanyi_et_al_2022/data/tmgh3_exploration.zip).
+### A. Query _tmgh3_ against the NR database
 
-### 1. Query against the NR database
-
-As a preliminary search to identify potentially functionally similar proteins to infer functional and structural information about _tmgh3_, the 
-[non-redundant database](https://www.ncbi.nlm.nih.gov/refseq/about/nonredundantproteins/#related-documentation) was queried using BLASTP.
+_Tmgh3_ was queryies against the [non-redundant database](https://www.ncbi.nlm.nih.gov/refseq/about/nonredundantproteins/#related-documentation) using BLASTP (via the NCBI BLASTP webinterface, using default parameters).
 
 > Altschul, S. F., Gish, W., Miller, W., Myers, E. W., Lipman, D. J. (1990) 'Basic local alignment search tool', Journal of Molecular Biology, 215(3), pp. 403-10
 
-This was done via the NCBI BLASTP (webinterface)[https://blast.ncbi.nlm.nih.gov/Blast.cgi?PROGRAM=blastp&PAGE_TYPE=BlastSearch&LINK_LOC=blasthome] using default query parameters.
-
 The reults of the query against the NR database were stored in [`results/tmgh3_nr_query_desc_table.csv`](https://hobnobmancer.github.io/Foltanyi_et_al_2022/results/tmgh3_nr_query_desc_table.csv).
 
-A 70% identity cut-off was used to select proteins, which is widely accepted as a reasonably cut-off for selecting proteins that share the first 3 digits of their respective EC numbers.
+### B. Query _tmgh3_ against CAZy db
 
-The protein sequences of the 19 hits with sequence identity of equal to or greater than 70% against _tmgh3_ were written to the FASTA file `data/tmgh3_exploration/nr_hits.fasta`.
+The CAZy website does not support querying the database using BLASTP. Therefore, `cazy_webscraper` was used to facilitate a BLASTP comparison of the protein sequence of _tmgh3_ against the CAZy database. Specifically, `cazy_webscraper` was used to extract the GenBank protein sequences for all proteins in GH CAZy families of interest from the local CAZyme database and write them to a FASTA file.
 
-### 2. Query against CAZy
-
-CAZy annotates GenBank database releases. Reference sequence protein IDs are not catalogued in CAZy. Therefore, the _tmgh3_ prortein sequence was queried against the CAZy database to find potentially functionally similar proteins to infer functional and structural information about _tmgh3_.
-
-The CAZy website does not support querying the database using BLASTP. Therefore, `cazy_webscraper` was used to extract the GenBank protein sequences for all GH CAZy families of interest from the local CAZyme database and write them to a FASTA file.
-```bash
-cw_extract_protein_sequences \
-  cazy_database.db genbank \
-  --families GH1,GH2,GH3,GH11,GH26,GH30,GH43,GH51,GH52,GH54,GH116,GH120 \
-  --fasta_file data/tmgh3_exploration/cazy_proteins_seqs.fasta \
-  -f -n
-```
-
-The Python script `run_blastp_cazy.py` was used to query _tmgh3_ against the proteins from the CAZy families of interest using BLASTP. To repeat this analysis, run the following command from the root of the repository.
-```bash
-python3 scripts/tmgh3_exploration/run_blastp_cazy.py
-```
+The Python script `run_blastp_cazy.py` was used to query _tmgh3_ against the proteins from the GH protein sequences from CAZy GH families of interest using BLASTP.
 
 The results were written to [`results/cazy_blastp_results.tsv`](https://hobnobmancer.github.io/Foltanyi_et_al_2022/results/cazy_blastp_results.tsv).
 
-The protein sequences of the 19 hits with sequence identity of equal to or greater than 70% against _tmgh3_ were written to the FASTA file `data/tmgh3_exploration/cazy_hits.fasta`.
+### C. Compare NR and CAZy hits
 
-### 3. Exploration of NR and CAZy hits
-
-Both the BLASTP query against the NR and CAZy databases returned 19 proteins from _Thermotoga_ with percentage identities of equal to or greater than 70% against _tmgh3_. 
-
-CAZy annotates GenBank database releases. Reference sequence protein IDs are not catalogued in CAZy. To determine if the hits from NR were reference sequences of proteins in CAZy, the Python script `run_blastp_nr_cazy.py` was used to perform a BLASTP analysis of the 19 hits from NR against the 19 hits from querying CAZy. To repeat this analysis, run the following command from the root of the repository.
-```bash
-python3 scripts/tmgh3_exploration/run_blastp_nr_cazy.py
-```
+Both the BLASTP query against the NR and CAZy databases returned 19 proteins from _Thermotoga_ with percentage identities of equal to or greater than 70% against _tmgh3_. To determine if the 19 hits from the BLASTP NR query (step A) were the non-redundanrt protein sequence representatives of the 19 hits from the BLASTP CAZy query (step B), the Python script `run_blastp_nr_cazy.py` was used to perform a BLASTP analysis of the 19 hits from NR query (step A) against the 19 hits from querying CAZy (step B).
 
 The resulting `tsv` file was written to [`results/nr_cazy_blastp_results.tsv`](https://hobnobmancer.github.io/Foltanyi_et_al_2022/results/nr_cazy_blastp_results.tsv).
 
 The protein sequences for the 15 of the 19 from NR shared 100% sequence identity with at least one protein from CAZy, the remaining proteins shared greater than 90% sequence identity with at least one protein from CAZy.
 
-### 4. Generation of a MSA of xylosdiases
+### D. Generation of a MSA of xylosdiases
 
 Previously _tmgh3_ had been queried against HHpred to find potential templates for molecular modelling. To explore the potential cause for HHpred returning many non-functionally relevant proteins and few xylosidases, the analysis using HHpred was repeated using an MSA of xylosdiase protein sequences.
 
-To create the MSA the proteins sequences 19 hits from quering the NR database and the 19 hits from querying the CAZy database, which had greater than or equal to 70% sequence identity with _tmgh3_ were combined into a single fasta file. This is located at [`data/tmgh3_exploration/nr_and_cazy_hits.fasta`]().
+The 19 hits from quering the NR database and the 19 hits from querying the CAZy database, which had greater than or equal to 70% sequence identity with _tmgh3_ were combined into a single fasta file. This is located at [`data/tmgh3_exploration/nr_and_cazy_hits.fasta`]().
 
-The previous BLASTP query of the NR hits against the CAZy hits revealed several NR hits shared 100% sequence identity with hits from CAZy. Therefore, [`seqkit`](https://bioinf.shenwei.me/seqkit/) was used to remove redundant protein sequences based upon sequence.
-```bash
-seqkit rmdup -s data/tmgh3_exploration/nr_and_cazy_hits.fasta data/tmgh3_exploration/nr_cazy_hits_nonred.fasta
-```
+Redundant protein sequences were removed from the NR-CAZy hit pool using [`seqkit`](https://bioinf.shenwei.me/seqkit/) (v2.2.0).
 
-`MAFFT` was used to align the protein sequences. To repeat this analysis run the following command from the root of the repository.
-```bash
-mafft --thread 12 data/tmgh3_exploration/nr_cazy_hits_nonred.fasta > data/tmgh3_exploration/nr_and_cazy_hits_aligned.fasta
-```
+`MAFFT` [Katoh et al., 2002] (v7.505) was used to align the protein sequences, and generate the MSA.
 
 > Katoh K, Misawa K, Kuma K, Miyata T. MAFFT: a novel method for rapid multiple sequence alignment based on fast Fourier transform. Nucleic Acids Res. 2002 Jul 15;30(14):3059-66. doi: 10.1093/nar/gkf436. PMID: 12136088; PMCID: PMC135756.
 
-### 4. Repeating the analysis using HHpred
+### E. Repeating the analysis using HHpred
 
 HHpred was run using the default parameters (via the [HHpred webserver](https://toolkit.tuebingen.mpg.de/tools/hhpred)) and the MSA stored in `data/tmgh3_exploration/nr_and_cazy_hits_aligned.fasta`. 
 
