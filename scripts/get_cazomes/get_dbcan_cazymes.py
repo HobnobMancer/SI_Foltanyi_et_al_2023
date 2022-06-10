@@ -153,6 +153,24 @@ def build_parser():
         help="Path to write out tab deliminated list",
     )
 
+    parser.add_argument(
+        "-f",
+        "--force",
+        dest="force",
+        action="store_true",
+        default=False,
+        help="Force writing into existing output dir",
+    )
+
+    parser.add_argument(
+        "-n",
+        "--nodelete",
+        dest="nodelete",
+        action="store_true",
+        default=False,
+        help="Do not nuke contents in existing output dir",
+    )
+
     # Add option to specific directory for log to be written out to
     parser.add_argument(
         "-l",
