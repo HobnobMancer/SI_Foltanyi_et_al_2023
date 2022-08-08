@@ -51,24 +51,24 @@ The protein sequence of _tmgh3_ is stored in [`data/tmgh3_exploration/tmgh3.fast
 To reconstruct the analysis run all commands from this directory.
 
 The method is split into three sections:
-1. [Construct a local CAZyme database](#construct-a-local-cazyme-database)
+1. [Construct a local CAZyme database](#construct-a-local-cazyme-database)  
 
 
-2. [Systematic exploration of tmgh3](#systematic-exploration-of-tmgh3)
-  2.1 [Query tmgh against the NR database](#query_tmgh_against_the_nr_database)
-  2.2 [Query tmgh against the CAZy database](#query_tmgh_against_the_cazy_database)
-  2.3 [Compare NR and CAZy hits](#compare-nr-and-cazy-hits)
-  2.4 [Generation of a MSA of xylosdiases](#generation-of-a-MSA-of-xylosidases)
-  2.5 [HHpred](#HHpred)
+2. [Systematic exploration of tmgh3](#systematic-exploration-of-tmgh3)  
+  2.1 [Query tmgh against the NR database](#query_tmgh_against_the_nr_database)  
+  2.2 [Query tmgh against the CAZy database](#query_tmgh_against_the_cazy_database)  
+  2.3 [Compare NR and CAZy hits](#compare-nr-and-cazy-hits)  
+  2.4 [Generation of a MSA of xylosdiases](#generation-of-a-MSA-of-xylosidases)  
+  2.5 [HHpred](#HHpred)  
 
 
-3. [Interrogation of the CAZy database](#interrogation-of-the-cazy-database)
+3. [Interrogation of the CAZy database](#interrogation-of-the-cazy-database)  
 
 
-4. [Exploration of a GH3-CE complex](#exploration-of-a-gh3-ce-complex)
-  - [Reconstructing the _Thermotoga_ genus phylogenetic tree](#reconstructing-the-thermotoga-genus-phylogenetic-tree)
-  - [Annotate the CAZomes](#annotate-the-cazomes)
-  - [GH3 flanking genes](#gh3-flanking-genes)
+4. [Exploration of a GH3-CE complex](#exploration-of-a-gh3-ce-complex)  
+  - [Reconstructing the _Thermotoga_ genus phylogenetic tree](#reconstructing-the-thermotoga-genus-phylogenetic-tree)  
+  - [Annotate the CAZomes](#annotate-the-cazomes)  
+  - [GH3 flanking genes](#gh3-flanking-genes)  
 
 Below is presented a summary of the methods.
 
