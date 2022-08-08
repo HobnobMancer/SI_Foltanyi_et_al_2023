@@ -373,7 +373,7 @@ To investigate if the entire GH3-CE7 gene cluster was conserved, the protein rec
 
 The protein was annotated as ABC transporter ATP-binding protein.
 
-##### _Thermotoga_ sp. TBGT1765 () and _Thermtoga_ sp. TBGT1766 ()
+##### _Thermotoga_ sp. TBGT1765 (GCF_000784795.1) and _Thermotoga_ sp. TBGT1766 (GCF_000784825.1)
 
 1765
 annotated as pseudogene_27.2 by flags
