@@ -1,7 +1,8 @@
-# Foltanyi_et_al_2022
+# SI_Foltanyi_et_al_2023
 
 Welcome to the repository containing all scripts, commands and methods used in the bioinformatic analysis
-presented in the paper Foltanyi _et al._, 2022.
+presented in the paper Foltanyi _et al._, 2023.
+(_Note: this repo was renamed from Foltanyi et al., 2022_)
 
 This repo contains the commands and data files necessary to repeat the study presented in the paper.
 
