@@ -4,7 +4,7 @@ Welcome to the repository containing all scripts, commands and methods used in t
 presented in the paper Foltanyi _et al._, 2023.
 (_Note: this repo was renamed from Foltanyi et al., 2022_)
 
-This repo contains the commands and data files necessary to repeat the study presented in the paper.
+This repo contains the scripts, commands and data files necessary to repeat the computational analyses presented in the paper, which support the experimental findings.
 
 ## Contributors
 
