@@ -8,8 +8,11 @@ This repo contains the scripts, commands and data files necessary to repeat the 
 
 ## Contributors
 
+### Computational work
 - [Emma E. M. Hobbs](https://github.com/HobnobMancer), PhD candidate, University of St Andrews, James Hutton Institute and University of Strathclyde
 - [Dr Leighton Pritchard](https://github.com/widdowquinn), University of Strathclyde
+
+### Laboratory work
 - Flora Foltanyi, PhD candidate, University of St Andrews
 - Dr Tracey M. Gloster, University of St Andrews
 
